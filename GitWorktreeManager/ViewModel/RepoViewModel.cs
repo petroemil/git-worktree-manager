@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using GitWorktreeManager.Services;
 using System;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,6 +30,7 @@ public class WorktreeViewModel
     public string DisplayName => Info.Branch.Replace("/", " / ");
     public ICommand RemoveCommand { get; init; }
     public ICommand OpenFolderCommand { get; init; }
+    public ICommand OpenTerminalCommand { get; init; }
     public ICommand OpenSolutionCommand { get; init; }
 }
 
@@ -92,7 +94,8 @@ public partial class RepoViewModel
                 Info = new WorktreeInfo { Branch = wt.Key, Path = wt.Value },
                 RemoveCommand = this.RemoveCommand,
                 OpenFolderCommand = this.OpenFolderCommand,
-                OpenSolutionCommand = this.OpenSolutionCommand
+                OpenSolutionCommand = this.OpenSolutionCommand,
+                OpenTerminalCommand = this.OpenTerminalCommand
             })
             .ToImmutableList();
     }
@@ -101,6 +104,17 @@ public partial class RepoViewModel
     private async Task OpenFolder(WorktreeInfo worktree)
     {
         await Launcher.LaunchFolderPathAsync(worktree.Path);
+    }
+
+    [RelayCommand]
+    private void OpenTerminal(WorktreeInfo worktree)
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            UseShellExecute = false,
+            FileName = "powershell",
+            WorkingDirectory = worktree.Path
+        });
     }
 
     [RelayCommand]

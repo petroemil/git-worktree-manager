@@ -86,6 +86,7 @@
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
                                                 </Grid.ColumnDefinitions>
 
                                                 <Viewbox Stretch="UniformToFill" Width="15" VerticalAlignment="Center" Margin="10, 0">
@@ -115,6 +116,16 @@
                                                 </Border>
 
                                                 <Border Grid.Column="4">
+                                                    <Border.Resources>
+                                                        <SolidColorBrush x:Key="HyperlinkButtonForegroundPointerOver" Color="#6E8BBF"/>
+                                                        <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#3E6DBF"/>
+                                                    </Border.Resources>
+                                                    <HyperlinkButton Foreground="{ThemeResource ButtonForegroundThemeBrush}" Command="{x:Bind OpenTerminalCommand}" CommandParameter="{x:Bind Info}">
+                                                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE756;"/>
+                                                    </HyperlinkButton>
+                                                </Border>
+
+                                                <Border Grid.Column="5">
                                                     <Border.Resources>
                                                         <SolidColorBrush x:Key="HyperlinkButtonForegroundPointerOver" Color="#C3A7D9"/>
                                                         <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#A36BD9"/>
