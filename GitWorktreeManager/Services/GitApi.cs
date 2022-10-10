@@ -1,4 +1,4 @@
-﻿namespace GitWorktreeManager;
+﻿namespace GitWorktreeManager.Services;
 
 using System;
 using System.Collections.Immutable;
@@ -46,21 +46,21 @@ internal class GitApi
     private async Task<bool> IsLocalBranchAvailable(string branch)
     {
         // branch --list <branch>
-        var result = await RunGitCommand(this.workingDir, $"branch --list \"{branch}\"");
+        var result = await RunGitCommand(workingDir, $"branch --list \"{branch}\"");
         return result.IsEmpty is false;
     }
 
     private async Task<bool> IsKnownRemoteBranchAvailable(string branch)
     {
         // branch --list -r <remote>/<branch>
-        var result = await RunGitCommand(this.workingDir, $"branch --list -r \"origin/{branch}\"");
+        var result = await RunGitCommand(workingDir, $"branch --list -r \"origin/{branch}\"");
         return result.IsEmpty is false;
     }
 
     private async Task<bool> IsUnknownRemoteBranchAvailable(string branch)
     {
         // ls-remote --heads origin <branch>
-        var result = await RunGitCommand(this.workingDir, $"ls-remote --heads origin \"{branch}\"");
+        var result = await RunGitCommand(workingDir, $"ls-remote --heads origin \"{branch}\"");
         return result.IsEmpty is false;
     }
 
@@ -72,7 +72,7 @@ internal class GitApi
 
     public async Task<ImmutableDictionary<string, string>> ListWorktrees()
     {
-        var lines = await RunGitCommand(this.workingDir, "worktree list --porcelain");
+        var lines = await RunGitCommand(workingDir, "worktree list --porcelain");
 
         // Output format:
         // --------------------------
@@ -128,7 +128,7 @@ internal class GitApi
         var path = GetRelativeWorktreePath(branch);
 
         // git worktree add <path> <branch>
-        _ = await RunGitCommand(this.workingDir, $"worktree add \"{path}\" \"{branch}\"");
+        _ = await RunGitCommand(workingDir, $"worktree add \"{path}\" \"{branch}\"");
     }
 
     private async Task AddWorktreeForRemoteBranch(string branch)
@@ -137,7 +137,7 @@ internal class GitApi
         var remote = $"origin/{branch}";
 
         // git worktree add --track -b <branch> <path> <remote>/<branch>
-        _ = await RunGitCommand(this.workingDir, $"worktree add --track -b \"{branch}\" \"{path}\" \"{remote}\"");
+        _ = await RunGitCommand(workingDir, $"worktree add --track -b \"{branch}\" \"{path}\" \"{remote}\"");
     }
 
     private async Task AddWorktreeForNewBranch(string branch)
@@ -145,17 +145,17 @@ internal class GitApi
         var path = GetRelativeWorktreePath(branch);
 
         // git worktree add -b <branch> <path>
-        _ = await RunGitCommand(this.workingDir, $"worktree add -b \"{branch}\" \"{path}\"");
+        _ = await RunGitCommand(workingDir, $"worktree add -b \"{branch}\" \"{path}\"");
     }
 
     public async Task RemoveWorktree(string branch)
     {
-        _ = await RunGitCommand(this.workingDir, $"worktree remove \"{branch}\"");
+        _ = await RunGitCommand(workingDir, $"worktree remove \"{branch}\"");
     }
 
     private string GetRelativeWorktreePath(string branch)
         => Path.Combine(".worktrees", branch);
 
     public string GetAbsoluteWorktreePath(string branch)
-        => Path.Combine(this.workingDir, GetRelativeWorktreePath(branch));
+        => Path.Combine(workingDir, GetRelativeWorktreePath(branch));
 }

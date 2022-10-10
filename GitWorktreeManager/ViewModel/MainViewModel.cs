@@ -2,6 +2,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using GitWorktreeManager.Behaviors;
 using System;
 using System.Threading.Tasks;
 using Windows.Storage.Pickers;
