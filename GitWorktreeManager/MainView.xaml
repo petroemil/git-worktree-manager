@@ -1,0 +1,145 @@
+﻿<UserControl
+    x:Class="GitWorktreeManager.MainView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GitWorktreeManager"
+    xmlns:behaviors="using:GitWorktreeManager.Behaviors"
+    xmlns:vm="using:GitWorktreeManager.ViewModel"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Margin="10, 10, 10, 0">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="AppTitleBar" Grid.Row="0" Margin="-10, -10, -10, 10" Height="40">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Image Grid.Column="0" Height="25" VerticalAlignment="Center" Margin="10, 10, 10, 10" Source="ms-appx:///Assets/StoreAppList.png" />
+
+            <TextBlock x:Name="AppTitle" Grid.Column="1" Text="{x:Bind VM.Title}" VerticalAlignment="Center" />
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="5, 0, 5, 5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox Text="{x:Bind VM.Repo.RepoInfo.Name, Mode=OneWay}" PlaceholderText="Repo" IsEnabled="False" Margin="5, 0" />
+
+            <Button Grid.Column="1" Command="{x:Bind VM.OpenRepoCommand}" Margin="5, 0">
+                <SymbolIcon Symbol="OpenLocal" />
+            </Button>
+
+            <Button Grid.Column="2" Command="{x:Bind VM.Repo.RefreshCommand}" Margin="5, 0"
+                    IsEnabled="{x:Bind VM.Repo, Mode=OneWay, Converter={StaticResource NullToBoolConverter}}">
+                <SymbolIcon Symbol="Refresh" />
+            </Button>
+
+        </Grid>
+
+        <ContentControl Grid.Row="2" Content="{x:Bind VM.Repo, Mode=OneWay}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                        IsEnabled="{x:Bind VM.Repo, Mode=OneWay, Converter={StaticResource NullToBoolConverter}}">
+            <ContentControl.ContentTemplate>
+                <DataTemplate x:DataType="vm:RepoViewModel">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Name="BranchName" PlaceholderText="Branch" Margin="5, 0"
+                                     behaviors:EnterKeyHelper.EnterKeyCommand="{x:Bind AddCommand, Mode=OneWay}" />
+
+                            <Button Grid.Column="1" Command="{x:Bind AddCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=BranchName, Path=Text}" Margin="5, 0">
+                                <SymbolIcon Symbol="Add" />
+                            </Button>
+
+                        </Grid>
+
+                        <ScrollViewer Grid.Row="1" Margin="-10, 5, -10, 0" Padding="15, 0">
+                            <ItemsRepeater ItemsSource="{x:Bind Worktrees, Mode=OneWay}">
+                                <ItemsRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:WorktreeViewModel">
+                                        <Border Background="{ThemeResource WorktreeItemBackgroundBrush}" CornerRadius="5" Margin="5, 0, 5, 3" Padding="2"
+                                                BorderBrush="#05000000" BorderThickness="1">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <Viewbox Stretch="UniformToFill" Width="15" VerticalAlignment="Center" Margin="10, 0">
+                                                    <PathIcon Data="M512 192c-70.625 0-128 57.344-128 128 0 47.219 25.875 88.062 64 110.281V448c0 0 0 128-128 128-53.062 0-94.656 11.375-128 28.812V302.28099999999995c38.156-22.219 64-63.062 64-110.281 0-70.656-57.344-128-128-128S0 121.34400000000005 0 192c0 47.219 25.844 88.062 64 110.281V721.75C25.844 743.938 0 784.75 0 832c0 70.625 57.344 128 128 128s128-57.375 128-128c0-33.5-13.188-63.75-34.25-86.625C240.375 722.5 270.656 704 320 704c254 0 256-256 256-256v-17.719c38.125-22.219 64-63.062 64-110.281C640 249.34400000000005 582.625 192 512 192zM128 128c35.406 0 64 28.594 64 64s-28.594 64-64 64-64-28.594-64-64S92.594 128 128 128zM128 896c-35.406 0-64-28.625-64-64 0-35.312 28.594-64 64-64s64 28.688 64 64C192 867.375 163.406 896 128 896zM512 384c-35.375 0-64-28.594-64-64s28.625-64 64-64 64 28.594 64 64S547.375 384 512 384z" />
+                                                </Viewbox>
+
+                                                <TextBlock Grid.Column="1" Text="{x:Bind DisplayName}" VerticalAlignment="Center" Margin="5, 0" />
+
+                                                <Border Grid.Column="2">
+                                                    <Border.Resources>
+                                                        <SolidColorBrush x:Key="HyperlinkButtonForegroundPointerOver" Color="#D99F9F"/>
+                                                        <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#D94740"/>
+                                                    </Border.Resources>
+                                                    <HyperlinkButton Foreground="{ThemeResource ButtonForegroundThemeBrush}" Command="{x:Bind RemoveCommand}" CommandParameter="{x:Bind Info}">
+                                                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE74D;"/>
+                                                    </HyperlinkButton>
+                                                </Border>
+
+                                                <Border Grid.Column="3">
+                                                    <Border.Resources>
+                                                        <SolidColorBrush x:Key="HyperlinkButtonForegroundPointerOver" Color="#F7D178"/>
+                                                        <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#F7BE36"/>
+                                                    </Border.Resources>
+                                                    <HyperlinkButton Foreground="{ThemeResource ButtonForegroundThemeBrush}" Command="{x:Bind OpenFolderCommand}" CommandParameter="{x:Bind Info}">
+                                                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE838;"/>
+                                                    </HyperlinkButton>
+                                                </Border>
+
+                                                <Border Grid.Column="4">
+                                                    <Border.Resources>
+                                                        <SolidColorBrush x:Key="HyperlinkButtonForegroundPointerOver" Color="#C3A7D9"/>
+                                                        <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#A36BD9"/>
+                                                    </Border.Resources>
+                                                    <HyperlinkButton Foreground="{ThemeResource ButtonForegroundThemeBrush}" Command="{x:Bind OpenSolutionCommand}" CommandParameter="{x:Bind Info}">
+                                                        <Viewbox Stretch="UniformToFill" Height="20">
+                                                            <PathIcon Data="M23.063,0L11,12L3,6L0,7v15l3,2l8-6l11.875,12L30,27V2.938L23.063,0z M3,19v-8l5,4L3,19z M23,21l-8-6l8-6V21z" />
+                                                        </Viewbox>
+                                                    </HyperlinkButton>
+                                                </Border>
+
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsRepeater.ItemTemplate>
+                            </ItemsRepeater>
+                        </ScrollViewer>
+
+                    </Grid>
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
+
+
+
+    </Grid>
+</UserControl>
