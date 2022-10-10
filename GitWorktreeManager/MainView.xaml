@@ -101,7 +101,7 @@
                                                         <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#D94740"/>
                                                     </Border.Resources>
                                                     <HyperlinkButton Foreground="{ThemeResource ButtonForegroundThemeBrush}" Command="{x:Bind RemoveCommand}" CommandParameter="{x:Bind Info}">
-                                                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE74D;"/>
+                                                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE74D;"/>
                                                     </HyperlinkButton>
                                                 </Border>
 
@@ -111,7 +111,7 @@
                                                         <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#F7BE36"/>
                                                     </Border.Resources>
                                                     <HyperlinkButton Foreground="{ThemeResource ButtonForegroundThemeBrush}" Command="{x:Bind OpenFolderCommand}" CommandParameter="{x:Bind Info}">
-                                                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE838;"/>
+                                                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xEC50;"/>
                                                     </HyperlinkButton>
                                                 </Border>
 
@@ -121,7 +121,7 @@
                                                         <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#3E6DBF"/>
                                                     </Border.Resources>
                                                     <HyperlinkButton Foreground="{ThemeResource ButtonForegroundThemeBrush}" Command="{x:Bind OpenTerminalCommand}" CommandParameter="{x:Bind Info}">
-                                                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE756;"/>
+                                                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE756;"/>
                                                     </HyperlinkButton>
                                                 </Border>
 
