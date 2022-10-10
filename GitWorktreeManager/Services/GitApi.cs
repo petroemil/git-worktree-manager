@@ -125,7 +125,7 @@ internal class GitApi
 
     private async Task AddWorktreeForLocalBranch(string branch)
     {
-        var path = GetRelativeWorktreePath(branch);
+        var path = GetWorktreePath(branch);
 
         // git worktree add <path> <branch>
         _ = await RunGitCommand(workingDir, $"worktree add \"{path}\" \"{branch}\"");
@@ -133,7 +133,7 @@ internal class GitApi
 
     private async Task AddWorktreeForRemoteBranch(string branch)
     {
-        var path = GetRelativeWorktreePath(branch);
+        var path = GetWorktreePath(branch);
         var remote = $"origin/{branch}";
 
         // git worktree add --track -b <branch> <path> <remote>/<branch>
@@ -142,7 +142,7 @@ internal class GitApi
 
     private async Task AddWorktreeForNewBranch(string branch)
     {
-        var path = GetRelativeWorktreePath(branch);
+        var path = GetWorktreePath(branch);
 
         // git worktree add -b <branch> <path>
         _ = await RunGitCommand(workingDir, $"worktree add -b \"{branch}\" \"{path}\"");
@@ -153,9 +153,12 @@ internal class GitApi
         _ = await RunGitCommand(workingDir, $"worktree remove \"{branch}\"");
     }
 
-    private string GetRelativeWorktreePath(string branch)
-        => Path.Combine(".worktrees", branch);
+    public string GetWorktreePath(string branch)
+    {
+        const string worktreesRoot = ".worktrees";
 
-    public string GetAbsoluteWorktreePath(string branch)
-        => Path.Combine(workingDir, GetRelativeWorktreePath(branch));
+        var tempPath = Path.Combine(this.workingDir, worktreesRoot, branch);
+        var path = Path.GetFullPath(tempPath);
+        return path;
+    }
 }
