@@ -15,6 +15,14 @@ public partial class MainViewModel
     [ObservableProperty]
     private RepoViewModel repo;
 
+    public MainViewModel()
+    {
+        if (JumpListHelper.TryGetLaunchArgs(out var repoPath))
+        {
+            _ = this.InitRepo(repoPath);
+        }
+    }
+
     [RelayCommand]
     private async Task OpenRepo()
     {
@@ -28,7 +36,12 @@ public partial class MainViewModel
             return;
         }
 
-        this.Repo = new RepoViewModel(folder.Path);
-        await this.Repo.RefreshCommand.ExecuteAsync(null);
+        await this.InitRepo(folder.Path);
+        await JumpListHelper.AddItem(folder.Path);
+    }
+
+    private async Task InitRepo(string repoPath)
+    {
+        this.Repo = await RepoViewModel.Create(repoPath);
     }
 }

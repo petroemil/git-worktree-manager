@@ -44,7 +44,7 @@ public partial class RepoViewModel
     [ObservableProperty]
     private ImmutableList<WorktreeViewModel> worktrees;
 
-    public RepoViewModel(string repoPath)
+    private RepoViewModel(string repoPath)
     {
         var path = Path.GetFullPath(repoPath);
         var name = Path.GetFileName(path);
@@ -56,6 +56,13 @@ public partial class RepoViewModel
         };
 
         this.gitClient = new GitApi(path);
+    }
+
+    public static async Task<RepoViewModel> Create(string repoPath)
+    {
+        var repoVm = new RepoViewModel(repoPath);
+        await repoVm.Refresh();
+        return repoVm;
     }
 
     [RelayCommand]
