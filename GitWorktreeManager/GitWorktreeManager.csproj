@@ -12,10 +12,9 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <!--<WindowsPackageType>None</WindowsPackageType>-->
     <SupportedOSPlatformVersion>10.0.22000.0</SupportedOSPlatformVersion>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="MainView.xaml" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />

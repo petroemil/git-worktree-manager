@@ -7,6 +7,16 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+public class GitException : Exception
+{
+    public int ExitCode { get; init; }
+    public string Error { get; init; }
+
+    public GitException(string message) : base(message)
+    {
+    }
+}
+
 internal class GitApi
 {
     private readonly string workingDir;
@@ -34,10 +44,16 @@ internal class GitApi
             .Split('\n', StringSplitOptions.RemoveEmptyEntries)
             .ToImmutableList();
 
+        var error = await process!.StandardError.ReadToEndAsync();
+
         await process.WaitForExitAsync();
         if (process.ExitCode is not 0)
         {
-            throw new Exception($"Git command terminated with error code: {process.ExitCode}");
+            throw new GitException($"Git command terminated with error code: {process.ExitCode}") 
+            {
+                ExitCode = process.ExitCode,
+                Error = error
+            };
         }
 
         return lines;

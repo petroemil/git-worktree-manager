@@ -3,6 +3,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GitWorktreeManager.Services;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -61,59 +62,125 @@ public partial class RepoViewModel
     [RelayCommand]
     private async Task Add(string worktree)
     {
-        await this.gitClient.AddWorktree(worktree);
-        await this.Refresh();
+        try
+        {
+            await this.gitClient.AddWorktree(worktree);
+            await this.Refresh();
+        }
+        catch (GitException ex)
+        {
+            await ShowErrorPopup(ex.Message + Environment.NewLine + ex.Error);
+        }
+        catch (Exception ex)
+        {
+            await ShowErrorPopup(ex.Message);
+        }
     }
 
     [RelayCommand]
     private async Task Remove(WorktreeInfo worktree)
     {
-        await this.gitClient.RemoveWorktree(worktree.Branch);
-        await this.Refresh();
+        try
+        {
+            await this.gitClient.RemoveWorktree(worktree.Branch);
+            await this.Refresh();
+        }
+        catch (GitException ex)
+        {
+            await ShowErrorPopup(ex.Message + Environment.NewLine + ex.Error);
+        }
+        catch (Exception ex)
+        {
+            await ShowErrorPopup(ex.Message);
+        }
     }
 
     [RelayCommand]
     private async Task Refresh()
     {
-        var worktrees = await this.gitClient.ListWorktrees();
+        try
+        {
+            var worktrees = await this.gitClient.ListWorktrees();
 
-        this.Worktrees = worktrees
-            .OrderBy(wt => wt.Key)
-            .Select(wt => new WorktreeViewModel
-            {
-                Info = new WorktreeInfo { Branch = wt.Key, Path = wt.Value },
-                RemoveCommand = this.RemoveCommand,
-                OpenFolderCommand = this.OpenFolderCommand,
-                OpenSolutionCommand = this.OpenSolutionCommand,
-                OpenTerminalCommand = this.OpenTerminalCommand
-            })
-            .ToImmutableList();
+            this.Worktrees = worktrees
+                .OrderBy(wt => wt.Key)
+                .Select(wt => new WorktreeViewModel
+                {
+                    Info = new WorktreeInfo { Branch = wt.Key, Path = wt.Value },
+                    RemoveCommand = this.RemoveCommand,
+                    OpenFolderCommand = this.OpenFolderCommand,
+                    OpenSolutionCommand = this.OpenSolutionCommand,
+                    OpenTerminalCommand = this.OpenTerminalCommand
+                })
+                .ToImmutableList();
+        }
+        catch (GitException ex)
+        {
+            await ShowErrorPopup(ex.Message + Environment.NewLine + ex.Error);
+        }
+        catch (Exception ex)
+        {
+            await ShowErrorPopup(ex.Message);
+        }
     }
 
     [RelayCommand]
     private async Task OpenFolder(WorktreeInfo worktree)
     {
-        await Launcher.LaunchFolderPathAsync(worktree.Path);
+        try
+        {
+            await Launcher.LaunchFolderPathAsync(worktree.Path);
+        }
+        catch (Exception ex)
+        {
+            await ShowErrorPopup(ex.Message);
+        }
     }
 
     [RelayCommand]
-    private void OpenTerminal(WorktreeInfo worktree)
+    private async Task OpenTerminal(WorktreeInfo worktree)
     {
-        Process.Start(new ProcessStartInfo
+        try
         {
-            UseShellExecute = false,
-            FileName = "powershell",
-            WorkingDirectory = worktree.Path
-        });
+            Process.Start(new ProcessStartInfo
+            {
+                UseShellExecute = false,
+                FileName = "powershell",
+                WorkingDirectory = worktree.Path
+            });
+        }
+        catch (Exception ex)
+        {
+            await ShowErrorPopup(ex.Message);
+        }
     }
 
     [RelayCommand]
     private async Task OpenSolution(WorktreeInfo worktree)
     {
-        var sln = Directory.EnumerateFiles(worktree.Path, "*.sln").FirstOrDefault();
-        if (sln is not null)
+        try
         {
-            await Launcher.LaunchUriAsync(new Uri(sln));
+            var sln = Directory.EnumerateFiles(worktree.Path, "*.sln").FirstOrDefault();
+            if (sln is not null)
+            {
+                await Launcher.LaunchUriAsync(new Uri(sln));
+            }
         }
+        catch (Exception ex)
+        {
+            await ShowErrorPopup(ex.Message);
+        }
+    }
+
+    private async Task ShowErrorPopup(string message)
+    {
+        var noWifiDialog = new ContentDialog
+        {
+            Title = "Error",
+            Content = message,
+            CloseButtonText = "Ok"
+        };
+
+        await noWifiDialog.ShowAsync();
     }
 }

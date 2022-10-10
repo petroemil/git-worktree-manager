@@ -36,7 +36,7 @@
         BackgroundColor="transparent"
         Square150x150Logo="Assets\StoreMedTile.png"
           Square44x44Logo="Assets\StoreAppList.png">
-        <uap:DefaultTile Square71x71Logo="Assets\StoreSmallTile.png" Wide310x150Logo="Assets\StoreWideTile.png" Square310x310Logo="Assets\StoreLargeTile.png" />
+        <uap:DefaultTile Square71x71Logo="Assets\StoreSmallTile.png" />
       </uap:VisualElements>
     </Application>
   </Applications>
