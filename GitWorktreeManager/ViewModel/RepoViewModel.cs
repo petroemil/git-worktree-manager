@@ -61,11 +61,6 @@ public partial class RepoViewModel
     [RelayCommand]
     private async Task Add(string worktree)
     {
-        if (this.gitClient is null)
-        {
-            return;
-        }
-
         await this.gitClient.AddWorktree(worktree);
         await this.Refresh();
     }
@@ -73,11 +68,6 @@ public partial class RepoViewModel
     [RelayCommand]
     private async Task Remove(WorktreeInfo worktree)
     {
-        if (this.gitClient is null)
-        {
-            return;
-        }
-
         await this.gitClient.RemoveWorktree(worktree.Branch);
         await this.Refresh();
     }

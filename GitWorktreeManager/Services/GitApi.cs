@@ -150,6 +150,7 @@ internal class GitApi
 
     public async Task RemoveWorktree(string branch)
     {
+        // git worktree remove <branch>
         _ = await RunGitCommand(workingDir, $"worktree remove \"{branch}\"");
     }
 
