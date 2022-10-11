@@ -9,7 +9,7 @@ internal static class WinRTInteropHelper
     /// </summary>
     public static void InteropInitialize(this object obj)
     {
-        var window = (Microsoft.UI.Xaml.Application.Current as App).Window;
+        var window = MainWindow.Instance;
 
         // Get the current window's HWND by passing in the Window object
         var hwnd = WindowNative.GetWindowHandle(window);

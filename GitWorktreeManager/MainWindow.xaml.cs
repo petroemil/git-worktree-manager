@@ -5,7 +5,10 @@ using Microsoft.UI.Xaml;
 
 public sealed partial class MainWindow : Window
 {
-    public MainWindow()
+    private static MainWindow instance;
+    public static MainWindow Instance => instance ??= new MainWindow();
+
+    private MainWindow()
     {
         this.InitializeComponent();
 

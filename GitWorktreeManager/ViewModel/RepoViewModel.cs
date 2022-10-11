@@ -69,11 +69,11 @@ public partial class RepoViewModel
         }
         catch (GitException ex)
         {
-            await ShowErrorPopup(ex.Message + Environment.NewLine + ex.Error);
+            await ShowErrorPopup($"Git Error ({ex.ExitCode})", ex.Error);
         }
         catch (Exception ex)
         {
-            await ShowErrorPopup(ex.Message);
+            await ShowErrorPopup(ex.GetType().Name, ex.Message);
         }
     }
 
@@ -87,11 +87,11 @@ public partial class RepoViewModel
         }
         catch (GitException ex)
         {
-            await ShowErrorPopup(ex.Message + Environment.NewLine + ex.Error);
+            await ShowErrorPopup($"Git Error ({ex.ExitCode})", ex.Error);
         }
         catch (Exception ex)
         {
-            await ShowErrorPopup(ex.Message);
+            await ShowErrorPopup(ex.GetType().Name, ex.Message);
         }
     }
 
@@ -116,11 +116,11 @@ public partial class RepoViewModel
         }
         catch (GitException ex)
         {
-            await ShowErrorPopup(ex.Message + Environment.NewLine + ex.Error);
+            await ShowErrorPopup($"Git Error ({ex.ExitCode})", ex.Error);
         }
         catch (Exception ex)
         {
-            await ShowErrorPopup(ex.Message);
+            await ShowErrorPopup(ex.GetType().Name, ex.Message);
         }
     }
 
@@ -133,7 +133,7 @@ public partial class RepoViewModel
         }
         catch (Exception ex)
         {
-            await ShowErrorPopup(ex.Message);
+            await ShowErrorPopup(ex.GetType().Name, ex.Message);
         }
     }
 
@@ -151,7 +151,7 @@ public partial class RepoViewModel
         }
         catch (Exception ex)
         {
-            await ShowErrorPopup(ex.Message);
+            await ShowErrorPopup(ex.GetType().Name, ex.Message);
         }
     }
 
@@ -168,16 +168,19 @@ public partial class RepoViewModel
         }
         catch (Exception ex)
         {
-            await ShowErrorPopup(ex.Message);
+            await ShowErrorPopup(ex.GetType().Name, ex.Message);
         }
     }
 
-    private async Task ShowErrorPopup(string message)
+    private async Task ShowErrorPopup(string title, string details)
     {
         var noWifiDialog = new ContentDialog
         {
-            Title = "Error",
-            Content = message,
+            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+            XamlRoot = MainWindow.Instance.Content.XamlRoot,
+
+            Title = title,
+            Content = details,
             CloseButtonText = "Ok"
         };
 
