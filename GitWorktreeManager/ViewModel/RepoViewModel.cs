@@ -2,8 +2,8 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using GitWorktreeManager.Behaviors;
 using GitWorktreeManager.Services;
-using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -67,13 +67,9 @@ public partial class RepoViewModel
             await this.gitClient.AddWorktree(worktree);
             await this.Refresh();
         }
-        catch (GitException ex)
+        catch (Exception e)
         {
-            await ShowErrorPopup($"Git Error ({ex.ExitCode})", ex.Error);
-        }
-        catch (Exception ex)
-        {
-            await ShowErrorPopup(ex.GetType().Name, ex.Message);
+            await DialogHelper.ShowErrorAsync(e);
         }
     }
 
@@ -85,13 +81,9 @@ public partial class RepoViewModel
             await this.gitClient.RemoveWorktree(worktree.Branch);
             await this.Refresh();
         }
-        catch (GitException ex)
+        catch (Exception e)
         {
-            await ShowErrorPopup($"Git Error ({ex.ExitCode})", ex.Error);
-        }
-        catch (Exception ex)
-        {
-            await ShowErrorPopup(ex.GetType().Name, ex.Message);
+            await DialogHelper.ShowErrorAsync(e);
         }
     }
 
@@ -114,13 +106,9 @@ public partial class RepoViewModel
                 })
                 .ToImmutableList();
         }
-        catch (GitException ex)
+        catch (Exception e)
         {
-            await ShowErrorPopup($"Git Error ({ex.ExitCode})", ex.Error);
-        }
-        catch (Exception ex)
-        {
-            await ShowErrorPopup(ex.GetType().Name, ex.Message);
+            await DialogHelper.ShowErrorAsync(e);
         }
     }
 
@@ -131,9 +119,9 @@ public partial class RepoViewModel
         {
             await Launcher.LaunchFolderPathAsync(worktree.Path);
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            await ShowErrorPopup(ex.GetType().Name, ex.Message);
+            await DialogHelper.ShowErrorAsync(e);
         }
     }
 
@@ -149,9 +137,9 @@ public partial class RepoViewModel
                 WorkingDirectory = worktree.Path
             });
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            await ShowErrorPopup(ex.GetType().Name, ex.Message);
+            await DialogHelper.ShowErrorAsync(e);
         }
     }
 
@@ -166,24 +154,9 @@ public partial class RepoViewModel
                 await Launcher.LaunchUriAsync(new Uri(sln));
             }
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            await ShowErrorPopup(ex.GetType().Name, ex.Message);
+            await DialogHelper.ShowErrorAsync(e);
         }
-    }
-
-    private async Task ShowErrorPopup(string title, string details)
-    {
-        var noWifiDialog = new ContentDialog
-        {
-            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
-            XamlRoot = MainWindow.Instance.Content.XamlRoot,
-
-            Title = title,
-            Content = details,
-            CloseButtonText = "Ok"
-        };
-
-        await noWifiDialog.ShowAsync();
     }
 }
