@@ -7,13 +7,13 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="e8151bc2-40bc-4630-9ef9-0091ccf6713f"
-    Publisher="CN=empetro"
+    Name="36214PetrEmil.GitWorktreeManager"
+    Publisher="CN=89848537-CB1A-4385-9E53-BB9E507F2CE8"
     Version="1.0.0.0" />
 
   <Properties>
     <DisplayName>Git Worktree Manager</DisplayName>
-    <PublisherDisplayName>petroemil</PublisherDisplayName>
+    <PublisherDisplayName>Emil Petro</PublisherDisplayName>
     <Logo>Assets\StoreStoreLogo.png</Logo>
   </Properties>
 
