@@ -1,26 +1,12 @@
 ﻿<Application
     x:Class="GitWorktreeManager.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:GitWorktreeManager"
-    xmlns:behaviors="using:GitWorktreeManager.Behaviors">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
             </ResourceDictionary.MergedDictionaries>
-
-            <ResourceDictionary.ThemeDictionaries>
-                <ResourceDictionary x:Key="Light">
-                    <SolidColorBrush x:Key="WorktreeItemBackgroundBrush" Color="#EEFFFFFF" />
-                </ResourceDictionary>
-                <ResourceDictionary x:Key="Dark">
-                    <SolidColorBrush x:Key="WorktreeItemBackgroundBrush" Color="#10FFFFFF" />
-                </ResourceDictionary>
-            </ResourceDictionary.ThemeDictionaries>
-
-            <behaviors:NullToBoolConverter x:Key="NullToBoolConverter" />
-
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -10,8 +10,6 @@ using Windows.Storage.Pickers;
 [INotifyPropertyChanged]
 public partial class MainViewModel
 {
-    public string Title => "Git Worktree Manager";
-
     [ObservableProperty]
     private RepoViewModel repo;
 

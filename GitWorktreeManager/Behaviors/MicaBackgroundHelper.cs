@@ -9,22 +9,16 @@ using WinRT;
 internal class MicaBackgroundHelper
 {
     private readonly Window window;
-    private MicaBackgroundHelper(Window window)
+    public MicaBackgroundHelper(Window window)
     {
         this.window = window;
-    }
-
-    public static void SetMicaBackdrop(Window window)
-    {
-        var helper = new MicaBackgroundHelper(window);
-        helper.TrySetMicaBackdrop();
     }
 
     WindowsSystemDispatcherQueueHelper wsdqHelper;
     MicaController micaController;
     SystemBackdropConfiguration configurationSource;
 
-    private bool TrySetMicaBackdrop()
+    public bool TrySetMicaBackdrop()
     {
         if (MicaController.IsSupported())
         {
