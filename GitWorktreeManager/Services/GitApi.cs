@@ -122,6 +122,9 @@ internal class GitApi
     /// </summary>
     public async Task AddWorktree(string branch)
     {
+        // Remove potential leading or trailing white spaces from the branch
+        branch = branch.Trim();
+
         var worktrees = await ListWorktrees();
         var worktreeExists = worktrees.ContainsKey(branch);
         if (worktreeExists)
