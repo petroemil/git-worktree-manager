@@ -32,7 +32,8 @@ public class WorktreeViewModel
     public ICommand RemoveCommand { get; init; }
     public ICommand OpenFolderCommand { get; init; }
     public ICommand OpenTerminalCommand { get; init; }
-    public ICommand OpenSolutionCommand { get; init; }
+    public ICommand OpenVisualStudioCodeCommand { get; init; }
+    public ICommand OpenVisualStudioCommand { get; init; }
 }
 
 [INotifyPropertyChanged]
@@ -101,8 +102,9 @@ public partial class RepoViewModel
                     Info = new WorktreeInfo { Branch = wt.Key, Path = wt.Value },
                     RemoveCommand = this.RemoveCommand,
                     OpenFolderCommand = this.OpenFolderCommand,
-                    OpenSolutionCommand = this.OpenSolutionCommand,
-                    OpenTerminalCommand = this.OpenTerminalCommand
+                    OpenTerminalCommand = this.OpenTerminalCommand,
+                    OpenVisualStudioCodeCommand = this.OpenVisualStudioCodeCommand,
+                    OpenVisualStudioCommand = this.OpenVisualStudioCommand
                 })
                 .ToImmutableList();
         }
@@ -144,7 +146,28 @@ public partial class RepoViewModel
     }
 
     [RelayCommand]
-    private async Task OpenSolution(WorktreeInfo worktree)
+    private async Task OpenVisualStudioCode(WorktreeInfo worktree)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                UseShellExecute = true,
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                FileName = "code",
+                Arguments = ".",
+                WorkingDirectory = worktree.Path
+            });
+        }
+        catch (Exception e)
+        {
+            await DialogHelper.ShowErrorAsync(e);
+        }
+    }
+
+    [RelayCommand]
+    private async Task OpenVisualStudio(WorktreeInfo worktree)
     {
         try
         {

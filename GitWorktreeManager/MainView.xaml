@@ -24,11 +24,12 @@
             <behaviors:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
 
             <x:String x:Key="BranchIcon">M512 192c-70.625 0-128 57.344-128 128 0 47.219 25.875 88.062 64 110.281V448c0 0 0 128-128 128-53.062 0-94.656 11.375-128 28.812V302.28099999999995c38.156-22.219 64-63.062 64-110.281 0-70.656-57.344-128-128-128S0 121.34400000000005 0 192c0 47.219 25.844 88.062 64 110.281V721.75C25.844 743.938 0 784.75 0 832c0 70.625 57.344 128 128 128s128-57.375 128-128c0-33.5-13.188-63.75-34.25-86.625C240.375 722.5 270.656 704 320 704c254 0 256-256 256-256v-17.719c38.125-22.219 64-63.062 64-110.281C640 249.34400000000005 582.625 192 512 192zM128 128c35.406 0 64 28.594 64 64s-28.594 64-64 64-64-28.594-64-64S92.594 128 128 128zM128 896c-35.406 0-64-28.625-64-64 0-35.312 28.594-64 64-64s64 28.688 64 64C192 867.375 163.406 896 128 896zM512 384c-35.375 0-64-28.594-64-64s28.625-64 64-64 64 28.594 64 64S547.375 384 512 384z</x:String>
-            <x:String x:Key="DeleteIcon">&#xE74D;</x:String>
+            <x:String x:Key="RemoveIcon">&#xE74D;</x:String>
             <x:String x:Key="FileExplorerIcon">&#xEC50;</x:String>
             <x:String x:Key="TerminalIcon">&#xE756;</x:String>
-            <x:String x:Key="VisualStudioIcon">M23.063,0L11,12L3,6L0,7v15l3,2l8-6l11.875,12L30,27V2.938L23.063,0z M3,19v-8l5,4L3,19z M23,21l-8-6l8-6V21z</x:String>
-            
+            <x:String x:Key="VisualStudioCodeIcon">M 31.517 2.094 C 32.519 2.703 33.387 4.082 33.502 5.248 L 33.502 26.743 C 33.388 27.912 32.527 29.286 31.523 29.897 L 24.935 33.068 C 24.321 33.321 23.445 33.471 22.832 33.367 C 22.218 33.262 21.494 32.882 21.001 32.44 L 9.309 21.772 L 4.815 25.184 C 4.314 25.504 3.518 25.788 2.974 25.765 C 2.431 25.741 1.659 25.388 1.189 25.03 L -0.566 23.431 C -1.05 22.892 -1.498 21.976 -1.499 21.335 C -1.5 20.694 -1.058 19.779 -0.577 19.24 L 2.975 15.999 L -0.576 12.759 C -1.056 12.221 -1.5 11.304 -1.499 10.663 C -1.498 10.022 -1.056 9.111 -0.571 8.572 L 1.189 6.968 C 1.659 6.608 2.428 6.257 2.972 6.233 C 3.516 6.21 4.307 6.489 4.808 6.809 L 9.308 10.221 L 20.945 -0.395 C 21.44 -0.835 22.217 -1.265 22.83 -1.369 C 23.444 -1.473 24.318 -1.324 24.932 -1.071 L 30.557 1.635 L 30.634 1.557 Z M 30.564 4.968 L 23.632 1.633 C 23.48 1.516 23.516 1.558 23.332 1.589 C 23.149 1.62 23.171 1.568 23.067 1.727 L 10.408 13.279 L 9.486 14.121 L 3.104 9.282 L 1.583 10.668 L 6.211 14.891 L 7.425 15.999 L 1.583 21.33 L 3.104 22.716 L 8.49 18.627 L 9.485 17.872 L 23.023 30.224 C 23.124 30.381 23.153 30.378 23.334 30.409 C 23.517 30.44 23.479 30.483 23.631 30.366 L 30.221 27.193 C 30.604 27.138 30.616 27.116 30.502 26.743 L 30.502 5.248 C 30.543 5.117 30.568 5.029 30.564 4.968 Z M 11.951 16 L 25.505 5.712 L 25.505 26.288 Z M 22.505 11.756 L 16.913 16 L 22.505 20.244 Z</x:String>
+            <x:String x:Key="VisualStudioIcon">M 23.469 -1.404 C 23.918 -1.378 24.512 -1.236 24.921 -1.058 C 24.921 -1.058 31.502 2.105 31.502 2.105 C 32.405 2.637 33.258 3.885 33.476 4.908 C 33.481 4.975 33.49 5.097 33.49 5.216 C 33.49 5.232 33.49 26.731 33.49 26.747 C 33.49 26.778 33.487 26.83 33.482 26.91 C 33.48 26.95 33.478 26.977 33.477 26.994 L 33.44 27.313 L 33.439 27.318 C 33.441 27.307 33.457 27.16 33.47 27.039 L 33.451 27.205 L 33.427 27.394 C 33.433 27.353 33.432 27.378 33.411 27.486 L 33.336 27.886 L 33.372 27.647 C 33.354 27.714 33.336 27.771 33.321 27.817 C 33.313 27.844 33.306 27.868 33.305 27.87 C 33.285 27.926 33.259 27.993 33.233 28.054 C 33.221 28.096 33.195 28.163 33.151 28.252 C 33.125 28.304 33.088 28.374 33.042 28.457 C 32.979 28.567 32.904 28.687 32.855 28.758 L 32.638 29.075 L 32.674 28.986 C 32.649 29.016 32.62 29.049 32.588 29.086 C 32.289 29.393 31.874 29.708 31.513 29.896 L 24.807 33.118 C 24.786 33.125 24.87 33.089 24.806 33.113 C 24.699 33.16 24.566 33.212 24.506 33.231 C 24.502 33.232 24.41 33.258 24.293 33.288 C 24.088 33.351 24.201 33.316 24.188 33.32 C 24.139 33.331 24.189 33.318 24.163 33.323 C 24.094 33.338 24.023 33.352 23.962 33.363 L 23.663 33.393 C 23.7 33.389 23.736 33.386 23.764 33.385 L 23.574 33.403 C 23.643 33.396 23.606 33.408 23.47 33.408 C 23.439 33.408 23.402 33.408 23.371 33.408 C 23.219 33.408 23.187 33.403 23.272 33.403 C 23.141 33.403 23.011 33.385 22.95 33.376 C 22.894 33.371 22.87 33.369 22.835 33.364 C 22.737 33.348 22.701 33.336 22.71 33.335 C 22.597 33.311 22.49 33.285 22.444 33.272 C 22.44 33.27 22.382 33.251 22.289 33.222 C 22.234 33.201 22.179 33.181 22 33.107 L 22.243 33.207 L 22.227 33.202 C 22.203 33.194 22.06 33.137 21.91 33.073 C 21.894 33.066 21.922 33.082 21.834 33.038 C 21.762 33.002 21.63 32.926 21.63 32.927 C 21.599 32.908 21.617 32.916 21.639 32.93 L 19.365 31.469 L 21.384 32.764 C 21.455 32.809 21.378 32.757 21.301 32.707 C 21.372 32.752 21.287 32.684 21.11 32.544 L 21.075 32.516 C 21.017 32.462 20.932 32.381 20.881 32.332 L 11.22 21.647 L 6.137 25.812 L 5.6 26.276 C 4.858 26.767 3.541 26.975 2.666 26.734 L 0.258 25.719 C -0.188 25.497 -0.756 25.065 -1.015 24.677 C -1.274 24.289 -1.456 23.601 -1.491 23.107 L -1.491 8.899 C -1.491 8.883 -1.49 8.847 -1.487 8.801 L -1.486 8.79 C -1.466 8.59 -1.472 8.653 -1.469 8.632 C -1.47 8.638 -1.458 8.528 -1.471 8.649 L -1.432 8.299 L -1.413 8.237 C -1.398 8.185 -1.387 8.152 -1.387 8.15 L -1.425 8.297 L -1.428 8.314 C -1.42 8.273 -1.379 8.14 -1.331 8.001 C -1.328 7.994 -1.326 7.987 -1.324 7.982 L -1.178 7.609 L -1.098 7.478 C -1.111 7.518 -1.167 7.637 -1.241 7.779 L -1.004 7.323 L -0.999 7.316 L -1.002 7.32 L -0.999 7.314 C -0.952 7.251 -0.883 7.164 -0.792 7.055 L -0.885 7.166 L -0.917 7.199 C -0.819 7.079 -0.718 6.961 -0.703 6.945 L -0.708 6.951 C -0.683 6.922 -0.665 6.903 -0.661 6.898 C -0.645 6.882 -0.554 6.801 -0.457 6.719 L -0.438 6.703 L -0.642 6.886 C -0.516 6.773 -0.564 6.816 -0.53 6.786 C -0.515 6.773 -0.501 6.762 -0.49 6.753 L -0.295 6.594 C -0.219 6.542 -0.148 6.494 -0.173 6.509 C -0.163 6.503 -0.151 6.494 -0.135 6.484 L -0.077 6.446 L 0.015 6.402 C 0.03 6.395 0.06 6.378 0.058 6.378 C 0.152 6.334 0.284 6.275 0.255 6.287 L 2.677 5.287 L 3.249 5.173 C 3.23 5.181 3.212 5.188 3.196 5.195 C 4.005 5.124 4.872 5.262 5.612 5.737 L 6.138 6.193 L 11.221 10.357 C 11.221 10.357 20.934 -0.383 20.934 -0.383 C 20.998 -0.441 21.057 -0.495 21.059 -0.498 C 21.683 -0.99 22.686 -1.365 23.453 -1.406 L 23.695 -1.419 L 23.777 -1.386 Z M 23.217 1.621 L 23.162 1.599 C 23.14 1.624 23.116 1.661 23.08 1.716 C 23.065 1.73 23.087 1.709 23.074 1.721 L 11.529 14.489 L 4.221 8.5 L 3.747 8.09 L 3.207 8.313 L 10.157 16 L 3.194 23.701 L 3.73 23.927 L 4.189 23.53 L 10.423 18.421 L 11.528 17.515 L 23.065 30.274 C 23.091 30.297 23.109 30.313 23.119 30.322 C 23.12 30.322 23.12 30.323 23.121 30.323 L 23.127 30.33 C 23.126 30.329 23.124 30.326 23.121 30.323 C 23.128 30.327 23.133 30.33 23.148 30.339 C 23.163 30.348 23.173 30.353 23.177 30.355 C 23.184 30.358 23.197 30.364 23.214 30.373 C 23.235 30.378 23.273 30.389 23.32 30.403 C 23.425 30.404 23.441 30.408 23.371 30.408 C 23.396 30.408 23.424 30.408 23.45 30.408 C 23.454 30.408 23.459 30.408 23.466 30.408 C 23.496 30.401 23.524 30.395 23.524 30.394 C 23.544 30.39 23.558 30.387 23.565 30.386 C 23.572 30.383 23.579 30.38 23.586 30.377 C 23.586 30.376 23.59 30.374 23.598 30.372 C 23.631 30.358 23.661 30.345 23.672 30.341 L 30.211 27.192 C 30.323 27.153 30.305 27.177 30.34 27.11 C 30.348 27.101 30.367 27.077 30.392 27.046 L 30.389 27.05 C 30.39 27.048 30.391 27.047 30.392 27.045 C 30.396 27.04 30.4 27.035 30.404 27.03 C 30.404 27.03 30.404 27.03 30.404 27.03 C 30.404 27.029 30.405 27.029 30.405 27.029 C 30.411 27.022 30.417 27.014 30.423 27.007 C 30.348 27.183 30.393 27.187 30.457 26.963 L 30.475 26.94 L 30.475 26.928 L 30.461 26.948 C 30.466 26.931 30.47 26.912 30.475 26.893 C 30.467 26.913 30.454 26.942 30.447 26.958 C 30.452 26.943 30.453 26.94 30.452 26.944 C 30.453 26.942 30.453 26.939 30.454 26.937 C 30.454 26.937 30.454 26.937 30.454 26.937 C 30.444 26.958 30.435 26.977 30.428 26.995 L 30.408 27.023 C 30.417 27.007 30.437 26.971 30.455 26.935 C 30.466 26.904 30.478 26.871 30.473 26.879 C 30.475 26.875 30.476 26.874 30.476 26.874 L 30.477 26.862 C 30.477 26.871 30.481 26.848 30.49 26.799 L 30.487 26.833 C 30.487 26.838 30.486 26.844 30.485 26.851 L 30.487 26.833 L 30.481 26.905 C 30.482 26.901 30.483 26.897 30.484 26.891 C 30.487 26.835 30.49 26.807 30.489 26.82 L 30.493 26.784 C 30.498 26.757 30.505 26.723 30.513 26.684 L 30.494 26.777 L 30.496 26.76 L 30.499 26.645 C 30.497 26.712 30.49 26.778 30.49 26.747 C 30.49 26.731 30.49 5.232 30.49 5.216 C 30.49 5.209 30.489 5.197 30.484 5.128 C 30.536 4.797 30.545 4.867 30.218 4.817 C 30.218 4.817 23.621 1.646 23.621 1.646 C 23.51 1.574 23.54 1.58 23.417 1.596 Z M 1.509 9.014 L 1.509 22.991 L 2.505 23.411 L 2.505 8.603 Z M 25.495 25.94 L 13.369 16 L 25.495 6.06 Z M 18.101 16 L 22.495 19.602 L 22.495 12.398 Z M 5.505 16.672 L 6.113 16 L 5.505 15.328 Z</x:String>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -118,49 +119,29 @@
 
                                                 <TextBlock Grid.Column="1" Text="{x:Bind DisplayName}" VerticalAlignment="Center" Margin="5, 0" />
 
-                                                <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                                    <Border>
-                                                        <Border.Resources>
-                                                            <SolidColorBrush x:Key="HyperlinkButtonForegroundPointerOver" Color="#D99F9F"/>
-                                                            <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#D94740"/>
-                                                        </Border.Resources>
-                                                        <HyperlinkButton Foreground="{ThemeResource ButtonForegroundThemeBrush}" Command="{x:Bind RemoveCommand}" CommandParameter="{x:Bind Info}">
-                                                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource DeleteIcon}"/>
-                                                        </HyperlinkButton>
-                                                    </Border>
+                                                <CommandBar Grid.Column="2" Margin="-5" OverflowButtonVisibility="Collapsed">
+                                                    <AppBarButton Width="35" Command="{x:Bind RemoveCommand}" CommandParameter="{x:Bind Info}">
+                                                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource RemoveIcon}"/>
+                                                    </AppBarButton>
+                                                    <AppBarSeparator />
+                                                    <AppBarButton Width="35" Command="{x:Bind OpenFolderCommand}" CommandParameter="{x:Bind Info}">
+                                                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource FileExplorerIcon}"/>
+                                                    </AppBarButton>
+                                                    <AppBarButton Width="35" Command="{x:Bind OpenTerminalCommand}" CommandParameter="{x:Bind Info}">
+                                                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource TerminalIcon}"/>
+                                                    </AppBarButton>
+                                                    <AppBarButton Width="35" Command="{x:Bind OpenVisualStudioCodeCommand}" CommandParameter="{x:Bind Info}">
+                                                        <Viewbox Stretch="UniformToFill">
+                                                            <PathIcon Data="{StaticResource VisualStudioCodeIcon}" />
+                                                        </Viewbox>
+                                                    </AppBarButton>
+                                                    <AppBarButton Width="35" Command="{x:Bind OpenVisualStudioCommand}" CommandParameter="{x:Bind Info}">
+                                                        <Viewbox Stretch="UniformToFill">
+                                                            <PathIcon Data="{StaticResource VisualStudioIcon}" />
+                                                        </Viewbox>
+                                                    </AppBarButton>
+                                                </CommandBar>
 
-                                                    <Border>
-                                                        <Border.Resources>
-                                                            <SolidColorBrush x:Key="HyperlinkButtonForegroundPointerOver" Color="#F7D178"/>
-                                                            <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#F7BE36"/>
-                                                        </Border.Resources>
-                                                        <HyperlinkButton Foreground="{ThemeResource ButtonForegroundThemeBrush}" Command="{x:Bind OpenFolderCommand}" CommandParameter="{x:Bind Info}">
-                                                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource FileExplorerIcon}"/>
-                                                        </HyperlinkButton>
-                                                    </Border>
-
-                                                    <Border>
-                                                        <Border.Resources>
-                                                            <SolidColorBrush x:Key="HyperlinkButtonForegroundPointerOver" Color="#6E8BBF"/>
-                                                            <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#3E6DBF"/>
-                                                        </Border.Resources>
-                                                        <HyperlinkButton Foreground="{ThemeResource ButtonForegroundThemeBrush}" Command="{x:Bind OpenTerminalCommand}" CommandParameter="{x:Bind Info}">
-                                                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource TerminalIcon}"/>
-                                                        </HyperlinkButton>
-                                                    </Border>
-
-                                                    <Border>
-                                                        <Border.Resources>
-                                                            <SolidColorBrush x:Key="HyperlinkButtonForegroundPointerOver" Color="#C3A7D9"/>
-                                                            <SolidColorBrush x:Key="HyperlinkButtonForegroundPressed" Color="#A36BD9"/>
-                                                        </Border.Resources>
-                                                        <HyperlinkButton Foreground="{ThemeResource ButtonForegroundThemeBrush}" Command="{x:Bind OpenSolutionCommand}" CommandParameter="{x:Bind Info}">
-                                                            <Viewbox Stretch="UniformToFill" Height="20">
-                                                                <PathIcon Data="{StaticResource VisualStudioIcon}" />
-                                                            </Viewbox>
-                                                        </HyperlinkButton>
-                                                    </Border>
-                                                </StackPanel>
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
