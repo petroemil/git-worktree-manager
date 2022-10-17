@@ -75,7 +75,7 @@
         <ContentControl Grid.Row="2" Content="{x:Bind VM.Repo, Mode=OneWay}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                         Visibility="{x:Bind VM.Repo, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}">
             <ContentControl.ContentTransitions>
-                <ContentThemeTransition />
+                <EntranceThemeTransition />
             </ContentControl.ContentTransitions>
             <ContentControl.ContentTemplate>
                 <DataTemplate x:DataType="vm:RepoViewModel">
