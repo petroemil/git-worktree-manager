@@ -3,6 +3,7 @@
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml;
+using System;
 using System.Runtime.InteropServices;
 using WinRT;
 
@@ -85,7 +86,7 @@ internal class MicaBackgroundHelper
     }
 }
 
-internal class WindowsSystemDispatcherQueueHelper
+internal partial class WindowsSystemDispatcherQueueHelper
 {
     [StructLayout(LayoutKind.Sequential)]
     struct DispatcherQueueOptions
@@ -95,10 +96,10 @@ internal class WindowsSystemDispatcherQueueHelper
         internal int apartmentType;
     }
 
-    [DllImport("CoreMessaging.dll")]
-    private static extern int CreateDispatcherQueueController([In] DispatcherQueueOptions options, [In, Out, MarshalAs(UnmanagedType.IUnknown)] ref object dispatcherQueueController);
+    [LibraryImport("CoreMessaging.dll")]
+    private static unsafe partial int CreateDispatcherQueueController(DispatcherQueueOptions options, IntPtr* instance);
 
-    object m_dispatcherQueueController = null;
+    IntPtr m_dispatcherQueueController = IntPtr.Zero;
     public void EnsureWindowsSystemDispatcherQueueController()
     {
         if (Windows.System.DispatcherQueue.GetForCurrentThread() is not null)
@@ -107,14 +108,19 @@ internal class WindowsSystemDispatcherQueueHelper
             return;
         }
 
-        if (m_dispatcherQueueController is null)
+        if (m_dispatcherQueueController == IntPtr.Zero)
         {
             DispatcherQueueOptions options;
             options.dwSize = Marshal.SizeOf(typeof(DispatcherQueueOptions));
             options.threadType = 2;    // DQTYPE_THREAD_CURRENT
             options.apartmentType = 2; // DQTAT_COM_STA
 
-            CreateDispatcherQueueController(options, ref m_dispatcherQueueController);
+            unsafe
+            {
+                IntPtr dispatcherQueueController;
+                CreateDispatcherQueueController(options, &dispatcherQueueController);
+                m_dispatcherQueueController = dispatcherQueueController;
+            }
         }
     }
 }
