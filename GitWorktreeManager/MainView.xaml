@@ -65,7 +65,7 @@
                 <SymbolIcon Symbol="OpenLocal" />
             </Button>
 
-            <Button Grid.Column="2" Command="{x:Bind VM.Repo.RefreshCommand}" Margin="5, 0"
+            <Button Grid.Column="2" Command="{x:Bind VM.Repo.RefreshCommand, Mode=OneWay}" Margin="5, 0"
                     IsEnabled="{x:Bind VM.Repo, Mode=OneWay, Converter={StaticResource NullToBoolConverter}}">
                 <SymbolIcon Symbol="Refresh" />
             </Button>
