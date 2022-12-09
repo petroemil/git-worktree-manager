@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml;
 public sealed partial class MainWindow : Window
 {
     private static MainWindow instance;
-    public static MainWindow Instance => instance ??= new MainWindow { Title = "Worktree Manager" };
+    public static MainWindow Instance => instance ??= new MainWindow { Title = "Branch Manager" };
 
     private MainWindow()
     {

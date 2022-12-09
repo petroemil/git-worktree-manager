@@ -49,7 +49,7 @@
 
             <Image Grid.Column="0" Height="25" VerticalAlignment="Center" Margin="10, 10, 10, 10" Source="ms-appx:///Assets/StoreAppList.png" />
 
-            <TextBlock x:Name="AppTitle" Grid.Column="1" Text="Worktree Manager" VerticalAlignment="Center" />
+            <TextBlock x:Name="AppTitle" Grid.Column="1" Text="Branch Manager" VerticalAlignment="Center" />
         </Grid>
 
         <Grid Grid.Row="1" Margin="5, 0, 5, 5">

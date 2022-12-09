@@ -12,7 +12,7 @@
     Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>Worktree Manager</DisplayName>
+    <DisplayName>Branch Manager</DisplayName>
     <PublisherDisplayName>Emil Petro</PublisherDisplayName>
     <Logo>Assets\StoreStoreLogo.png</Logo>
   </Properties>
@@ -31,7 +31,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="Worktree Manager"
+        DisplayName="Branch Manager"
         Description="A simple GUI to manage Git Worktrees"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\StoreMedTile.png"
