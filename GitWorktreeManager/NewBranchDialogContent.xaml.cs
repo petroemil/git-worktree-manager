@@ -1,3 +1,5 @@
+using Microsoft.UI.Xaml.Controls;
+
 namespace GitWorktreeManager
 {
     public sealed partial class NewBranchDialogContent : UserControl
