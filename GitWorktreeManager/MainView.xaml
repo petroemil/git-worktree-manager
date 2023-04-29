@@ -227,13 +227,12 @@
                         </Grid.RowDefinitions>
 
                         <Grid Grid.Row="0" Margin="5">
-
-                            <TextBox Name="BranchName" PlaceholderText="Find branch" Margin="5, 0"/>
-
+                            <TextBox Name="BranchName" PlaceholderText="Find branch" Margin="5, 0"
+                                     behaviors:TextChangedCommandBehavior.TextChangedCommand="{x:Bind QueryChangedCommand}" />
                         </Grid>
 
                         <ListView Grid.Row="1" Margin="-10, 5, -10, 0"
-                                  ItemsSource="{x:Bind Worktrees, Mode=OneWay}" 
+                                  ItemsSource="{x:Bind FilteredBranches, Mode=OneWay}" 
                                   ItemTemplateSelector="{StaticResource BranchTemplateSelector}">
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem">

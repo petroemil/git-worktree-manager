@@ -89,8 +89,6 @@ public partial class RepoViewModel
 
     public RepoInfo RepoInfo { get; }
 
-    [ObservableProperty]
-    private ImmutableList<BranchViewModel> worktrees;
 
     public RepoViewModel(string repoPath)
     {
@@ -104,6 +102,20 @@ public partial class RepoViewModel
         };
 
         this.gitClient = new GitApi(path);
+    }
+
+    private ImmutableList<BranchViewModel> branches;
+
+    [ObservableProperty]
+    private ImmutableList<BranchViewModel> filteredBranches;
+
+    [RelayCommand]
+    private void QueryChanged(string query)
+    {
+        FilteredBranches = this.branches?
+            .Where(branch => branch.Name.Contains(query))
+            .Take(50)
+            .ToImmutableList();
     }
 
     [RelayCommand]
@@ -183,13 +195,15 @@ public partial class RepoViewModel
                     CreateWorktreeFromBranch = this.CreateWorktreeFromBranchCommand
                 });
 
-            this.Worktrees = Enumerable.Empty<BranchViewModel>()
+            this.branches = Enumerable.Empty<BranchViewModel>()
                 .Append(localHeadVm)
                 .Concat(worktreeVms)
                 .Concat(localBranchVms)
                 .Append(remoteHeadVm)
                 .Concat(remoteBranchVms)
                 .ToImmutableList();
+
+            QueryChanged(string.Empty);
         }
         catch (Exception e)
         {
@@ -341,8 +355,7 @@ public partial class RepoViewModel
     {
         try
         {
-            await DialogHelper.ShowErrorAsync(new Exception($"Name of new branch based on '{vm.Name}'"));
-            var newBranchName = "test-123";
+            var newBranchName = await DialogHelper.ShowNewBranchDialogAsync();
 
             if (vm is LocalBranchViewModel or LocalBranchWithWorktreeViewModel or LocalHeadBranchWithWorkTreeViewModel)
             {

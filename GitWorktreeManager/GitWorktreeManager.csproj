@@ -38,6 +38,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="NewBranchDialogContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
