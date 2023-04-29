@@ -109,9 +109,13 @@ public partial class RepoViewModel
     [ObservableProperty]
     private ImmutableList<BranchViewModel> filteredBranches;
 
+    private string mostRecentQuery = string.Empty;
+
     [RelayCommand]
     private void QueryChanged(string query)
     {
+        this.mostRecentQuery = query;
+
         FilteredBranches = this.branches?
             .Where(branch => branch.Name.Contains(query))
             .Take(50)
@@ -203,7 +207,7 @@ public partial class RepoViewModel
                 .Concat(remoteBranchVms)
                 .ToImmutableList();
 
-            QueryChanged(string.Empty);
+            QueryChanged(this.mostRecentQuery);
         }
         catch (Exception e)
         {
