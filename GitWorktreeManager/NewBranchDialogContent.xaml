@@ -8,6 +8,9 @@
     mc:Ignorable="d">
 
     <Grid>
-        <TextBox Text="{x:Bind BranchName, Mode=TwoWay}" />
+        <StackPanel>
+            <TextBlock Text="{x:Bind BaseBranchName}" />
+            <TextBox Text="{x:Bind BranchName, Mode=TwoWay}" Margin="0, 10" />
+        </StackPanel>
     </Grid>
 </UserControl>

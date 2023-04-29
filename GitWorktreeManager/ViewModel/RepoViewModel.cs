@@ -355,7 +355,12 @@ public partial class RepoViewModel
     {
         try
         {
-            var newBranchName = await DialogHelper.ShowNewBranchDialogAsync();
+            var newBranchName = await DialogHelper.ShowNewBranchDialogAsync(vm.Name);
+
+            if (string.IsNullOrWhiteSpace(newBranchName))
+            {
+                return;
+            }
 
             if (vm is LocalBranchViewModel or LocalBranchWithWorktreeViewModel or LocalHeadBranchWithWorkTreeViewModel)
             {

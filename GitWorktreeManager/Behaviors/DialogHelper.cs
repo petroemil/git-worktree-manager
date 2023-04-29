@@ -39,9 +39,12 @@ internal static class DialogHelper
         await dialog.ShowAsync();
     }
 
-    public static async Task<string> ShowNewBranchDialogAsync()
+    public static async Task<string> ShowNewBranchDialogAsync(string baseBranch)
     {
-        var content = new NewBranchDialogContent();
+        var content = new NewBranchDialogContent 
+        {
+            BaseBranchName = $"Based on '{baseBranch}'"
+        };
 
         var dialog = new ContentDialog
         {
