@@ -2,6 +2,7 @@
 
 using GitWorktreeManager.Behaviors;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 
 public sealed partial class MainWindow : Window
 {
@@ -12,7 +13,8 @@ public sealed partial class MainWindow : Window
     {
         this.InitializeComponent();
 
-        this.SetMicaBackdrop();
+        this.SystemBackdrop = new MicaBackdrop();
+
         this.SetTransparentTitlebar();
         this.SetAppIcon();
         this.SetSize(750, 1000);
