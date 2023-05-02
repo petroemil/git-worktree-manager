@@ -1,4 +1,8 @@
+![Branch Manager](GitWorktreeManager\Assets\StoreStoreLogo.scale-400.png)
+
 # Branch Manager
+
+[![Get it from Microsoft](https://get.microsoft.com/images/en-US%20dark.svg)](https://apps.microsoft.com/store/detail/9MTB226W9TKV?launch=true&mode=mini)
 
 Branch Manager is a GUI for git worktree.
 
