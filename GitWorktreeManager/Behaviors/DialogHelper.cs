@@ -26,7 +26,7 @@ internal static class DialogHelper
 
     private static async Task ShowAsync(string title, string details)
     {
-        var noWifiDialog = new ContentDialog
+        var dialog = new ContentDialog
         {
             // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
             XamlRoot = MainWindow.Instance.Content.XamlRoot,
@@ -36,6 +36,28 @@ internal static class DialogHelper
             CloseButtonText = "Ok"
         };
 
-        await noWifiDialog.ShowAsync();
+        await dialog.ShowAsync();
+    }
+
+    public static async Task<string> ShowNewBranchDialogAsync(string baseBranch)
+    {
+        var content = new NewBranchDialogContent 
+        {
+            BaseBranchName = $"Based on '{baseBranch}'"
+        };
+
+        var dialog = new ContentDialog
+        {
+            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+            XamlRoot = MainWindow.Instance.Content.XamlRoot,
+
+            Title = "New branch",
+            Content = content,
+            CloseButtonText = "Ok"
+        };
+
+        await dialog.ShowAsync();
+
+        return content.BranchName;
     }
 }

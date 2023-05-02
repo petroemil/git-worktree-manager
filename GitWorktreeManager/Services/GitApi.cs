@@ -3,8 +3,6 @@
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 public class GitException : Exception
@@ -13,18 +11,18 @@ public class GitException : Exception
     public int ExitCode { get; init; }
     public string Error { get; init; }
 
-    public GitException(string message) : base(message) 
+    public GitException(string message) : base(message)
     {
     }
 }
 
 internal class GitApi
 {
-    private readonly string workingDir;
+    private readonly GitApiHelper helper;
 
     public GitApi(string workingDir)
     {
-        this.workingDir = workingDir;
+        this.helper = new GitApiHelper(workingDir, ".worktrees");
     }
 
     private async Task<ImmutableList<string>> RunCommand(string command)
@@ -36,7 +34,7 @@ internal class GitApi
             RedirectStandardOutput = true,
             FileName = "git",
             CreateNoWindow = true,
-            WorkingDirectory = this.workingDir,
+            WorkingDirectory = this.helper.RootPath,
             Arguments = command
         });
 
@@ -61,125 +59,54 @@ internal class GitApi
         return lines;
     }
 
-    /// <summary>
-    /// <code>git branch --list {branch}</code>
-    /// </summary>
-    private async Task<bool> IsLocalBranchAvailable(string branch)
+    private async Task RunCommandNoResponse(string command)
+        => _ = await RunCommand(command);
+
+    private async Task<TResult> RunCommandProcessResponse<TResult>(string command, Func<ImmutableList<string>, TResult> resultProcessor)
     {
-        var result = await RunCommand($"branch --list \"{branch}\"");
-        return result.IsEmpty is false;
+        var result = await RunCommand(command);
+        return resultProcessor(result);
+    }
+
+    public async Task<ListBranchResult> ListBranchesAsync()
+    {
+        return await RunCommandProcessResponse<ListBranchResult>(
+            helper.ListBranches_CreateCommand(),
+            helper.ListBranches_ProcessResult);
     }
 
     /// <summary>
-    /// <code>git branch --list -r {remote}/{branch}</code>
-    /// </summary>
-    private async Task<bool> IsKnownRemoteBranchAvailable(string branch)
-    {
-        var result = await RunCommand($"branch --list -r \"origin/{branch}\"");
-        return result.IsEmpty is false;
-    }
-
-    /// <summary>
-    /// <code>git ls-remote --heads origin {branch}</code>
-    /// </summary>
-    private async Task<bool> IsUnknownRemoteBranchAvailable(string branch)
-    {
-        var result = await RunCommand($"ls-remote --heads origin \"{branch}\"");
-        return result.IsEmpty is false;
-    }
-
-    /// <summary>
-    /// <code>git worktree list --porcelain</code>
+    /// <code>git worktree list</code>
     /// </summary>
     public async Task<ImmutableDictionary<string, string>> ListWorktrees()
     {
-        var lines = await RunCommand("worktree list --porcelain");
-
-        // Output format:
-        // --------------------------
-        // worktree <path>
-        // HEAD <commit-id>
-        // branch refs/heads/<branch>
-        var worktrees = lines
-            .Chunk(3)
-            .Skip(1)
-            .Select(x =>
-            {
-                var path = x[0]["worktree ".Length..];
-                path = Path.GetFullPath(path);
-
-                var branch = x[2]["branch refs/heads/".Length..];
-
-                return (branch, path);
-            })
-            .ToImmutableDictionary(x => x.branch, x => x.path);
-
-        return worktrees;
-    }
-
-    /// <summary>
-    /// <code>git worktree add ...</code>
-    /// </summary>
-    public async Task AddWorktree(string branch)
-    {
-        // Remove potential leading or trailing white spaces from the branch
-        branch = branch.Trim();
-
-        var worktrees = await ListWorktrees();
-        var worktreeExists = worktrees.ContainsKey(branch);
-        if (worktreeExists)
-        {
-            return;
-        }
-
-        if (await IsLocalBranchAvailable(branch))
-        {
-            await AddWorktreeForLocalBranch(branch);
-        }
-        else if (await IsKnownRemoteBranchAvailable(branch))
-        {
-            await AddWorktreeForRemoteBranch(branch);
-        }
-        else if (await IsUnknownRemoteBranchAvailable(branch))
-        {
-            await Fetch();
-            await AddWorktreeForRemoteBranch(branch);
-        }
-        else
-        {
-            await AddWorktreeForNewBranch(branch);
-        }
+        return await RunCommandProcessResponse(
+            helper.ListWorktrees_CreateCommand(),
+            helper.ListWorktrees_ProcessResult);
     }
 
     /// <summary>
     /// <code>git worktree add {path} {branch}</code>
     /// </summary>
-    private async Task AddWorktreeForLocalBranch(string branch)
+    public async Task AddWorktreeForLocalBranch(string branch)
     {
-        var path = GetWorktreePath(branch);
-
-        _ = await RunCommand($"worktree add \"{path}\" \"{branch}\"");
+        await RunCommandNoResponse(helper.AddWorktreeForLocalBranch_CreateCommand(branch));
     }
 
     /// <summary>
     /// <code>git worktree add --track -b {branch} {path} {remote}/{branch}</code>
     /// </summary>
-    private async Task AddWorktreeForRemoteBranch(string branch)
+    public async Task AddWorktreeForRemoteBranch(string branch)
     {
-        var path = GetWorktreePath(branch);
-        var remote = $"origin/{branch}";
-
-        _ = await RunCommand($"worktree add --track -b \"{branch}\" \"{path}\" \"{remote}\"");
+        await RunCommandNoResponse(helper.AddWorktreeForRemoteBranch_CreateCommand(branch));
     }
 
     /// <summary>
     /// <code>git worktree add -b {branch} {path}</code>
     /// </summary>
-    private async Task AddWorktreeForNewBranch(string branch)
+    public async Task AddWorktreeForNewBranch(string branch, string baseBranch)
     {
-        var path = GetWorktreePath(branch);
-
-        _ = await RunCommand($"worktree add -b \"{branch}\" \"{path}\"");
+        await RunCommandNoResponse(helper.AddWorkTree_CreateCommand(branch, baseBranch));
     }
 
     /// <summary>
@@ -187,23 +114,14 @@ internal class GitApi
     /// </summary>
     public async Task RemoveWorktree(string branch)
     {
-        _ = await RunCommand($"worktree remove \"{branch}\"");
+        await RunCommandNoResponse(helper.RemoveWorktree_CreateCommand(branch));
     }
 
     /// <summary>
     /// <code>git fetch</code>
     /// </summary>
-    private async Task Fetch()
+    public async Task Fetch()
     {
-        _ = await RunCommand("fetch");
-    }
-
-    private string GetWorktreePath(string branch)
-    {
-        const string worktreesRoot = ".worktrees";
-
-        var tempPath = Path.Combine(this.workingDir, worktreesRoot, branch);
-        var path = Path.GetFullPath(tempPath);
-        return path;
+        await RunCommandNoResponse(helper.Fetch_CreateCommand());
     }
 }
