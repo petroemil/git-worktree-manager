@@ -1,4 +1,4 @@
-![Branch Manager](GitWorktreeManager\Assets\StoreStoreLogo.scale-400.png)
+![Branch Manager](GitWorktreeManager/Assets/StoreStoreLogo.scale-400.png)
 
 # Branch Manager
 
