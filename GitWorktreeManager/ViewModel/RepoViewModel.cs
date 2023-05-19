@@ -129,11 +129,7 @@ public partial class RepoViewModel
     private void QueryChanged(string query)
     {
         this.mostRecentQuery = query;
-
-        FilteredBranches = this.branches?
-            .Where(branch => branch.Name.Contains(query))
-            .Take(50)
-            .ToImmutableList();
+        this.FilteredBranches = ViewModelHelpers.FilterBranches(this.branches, query);
     }
 
     [RelayCommand]
@@ -159,58 +155,14 @@ public partial class RepoViewModel
             var branches = await this.gitClient.ListBranchesAsync();
             var worktrees = await this.gitClient.ListWorktrees();
 
-            // Work tree for HEAD
-            var localHeadVm = new LocalHeadBranchWithWorkTreeViewModel
-            {
-                Name = branches.LocalHead,
-                Path = worktrees[branches.LocalHead],
-                CreateWorktreeFromBranchCommand = this.CreateWorktreeFromBranchCommand,
-                OpenFolderCommand = this.OpenFolderCommand,
-                OpenTerminalCommand = this.OpenTerminalCommand,
-                OpenVisualStudioCodeCommand = this.OpenVisualStudioCodeCommand,
-                OpenVisualStudioCommand = this.OpenVisualStudioCommand
-            };
-
-            // Local branches with worktree
-            var worktreeVms = branches.LocalBranches
-                .Where(branch => worktrees.ContainsKey(branch) is true)
-                .Select(branch => new LocalBranchWithWorktreeViewModel
-                {
-                    Name = branch,
-                    Path = worktrees[branch],
-                    CreateWorktreeFromBranchCommand = this.CreateWorktreeFromBranchCommand,
-                    RemoveCommand = this.RemoveCommand,
-                    OpenFolderCommand = this.OpenFolderCommand,
-                    OpenTerminalCommand = this.OpenTerminalCommand,
-                    OpenVisualStudioCodeCommand = this.OpenVisualStudioCodeCommand,
-                    OpenVisualStudioCommand = this.OpenVisualStudioCommand
-                });
-
-            // Local branches without worktree
-            var localBranchVms = branches.LocalBranches
-                .Where(branch => worktrees.ContainsKey(branch) is false)
-                .Select(branch => new LocalBranchViewModel
-                {
-                    Name = branch,
-                    CreateWorktreeForBranchCommand = this.CreateWorktreeForBranchCommand,
-                    CreateWorktreeFromBranchCommand = this.CreateWorktreeFromBranchCommand
-                });
-
-            // Remote branches
-            var remoteBranchVms = branches.RemoteBranches
-                .Select(branch => new RemoteBranchViewModel
-                {
-                    Name = branch,
-                    CreateWorktreeForBranchCommand = this.CreateWorktreeForBranchCommand,
-                    CreateWorktreeFromBranchCommand = this.CreateWorktreeFromBranchCommand
-                });
-
-            this.branches = Enumerable.Empty<BranchViewModel>()
-                .Append(localHeadVm)
-                .Concat(worktreeVms)
-                .Concat(localBranchVms)
-                .Concat(remoteBranchVms)
-                .ToImmutableList();
+            this.branches = ViewModelHelpers.CreateBranchVms(branches, worktrees,
+                this.CreateWorktreeForBranchCommand,
+                this.CreateWorktreeFromBranchCommand,
+                this.RemoveCommand,
+                this.OpenFolderCommand,
+                this.OpenTerminalCommand,
+                this.openVisualStudioCodeCommand,
+                this.OpenVisualStudioCommand);
 
             QueryChanged(this.mostRecentQuery);
         }
@@ -225,19 +177,9 @@ public partial class RepoViewModel
     {
         try
         {
-            var path = vm switch
-            {
-                LocalBranchWithWorktreeViewModel x => x.Path,
-                LocalHeadBranchWithWorkTreeViewModel x => x.Path,
-                _ => null
-            };
+            var path = ViewModelHelpers.GetFolderPathForBranch(vm);
 
-            if (path is null)
-            {
-                return;
-            }
-
-            await Launcher.LaunchFolderPathAsync(Path.GetFullPath(path));
+            await Launcher.LaunchFolderPathAsync(path);
         }
         catch (Exception e)
         {
@@ -250,23 +192,13 @@ public partial class RepoViewModel
     {
         try
         {
-            var path = vm switch
-            {
-                LocalBranchWithWorktreeViewModel x => x.Path,
-                LocalHeadBranchWithWorkTreeViewModel x => x.Path,
-                _ => null
-            };
-
-            if (path is null)
-            {
-                return;
-            }
+            var path = ViewModelHelpers.GetFolderPathForBranch(vm);
 
             Process.Start(new ProcessStartInfo
             {
                 UseShellExecute = false,
                 FileName = "powershell",
-                WorkingDirectory = Path.GetFullPath(path)
+                WorkingDirectory = path
             });
         }
         catch (Exception e)
@@ -280,17 +212,7 @@ public partial class RepoViewModel
     {
         try
         {
-            var path = vm switch
-            {
-                LocalBranchWithWorktreeViewModel x => x.Path,
-                LocalHeadBranchWithWorkTreeViewModel x => x.Path,
-                _ => null
-            };
-
-            if (path is null)
-            {
-                return;
-            }
+            var path = ViewModelHelpers.GetFolderPathForBranch(vm);
 
             Process.Start(new ProcessStartInfo
             {
@@ -299,7 +221,7 @@ public partial class RepoViewModel
                 WindowStyle = ProcessWindowStyle.Hidden,
                 FileName = "code",
                 Arguments = ".",
-                WorkingDirectory = Path.GetFullPath(path)
+                WorkingDirectory = path
             });
         }
         catch (Exception e)
@@ -313,19 +235,9 @@ public partial class RepoViewModel
     {
         try
         {
-            var path = vm switch
-            {
-                LocalBranchWithWorktreeViewModel x => x.Path,
-                LocalHeadBranchWithWorkTreeViewModel x => x.Path,
-                _ => null
-            };
+            var path = ViewModelHelpers.GetFolderPathForBranch(vm);
 
-            if (path is null)
-            {
-                return;
-            }
-
-            var sln = Directory.EnumerateFiles(Path.GetFullPath(path), "*.sln").FirstOrDefault();
+            var sln = Directory.EnumerateFiles(path, "*.sln").FirstOrDefault();
             if (sln is not null)
             {
                 await Launcher.LaunchUriAsync(new Uri(sln));
@@ -349,7 +261,7 @@ public partial class RepoViewModel
             }
             else if (vm is RemoteBranchViewModel)
             {
-                await this.gitClient.AddWorktreeForRemoteBranch(vm.Name["origin/".Length..]);
+                await this.gitClient.AddWorktreeForRemoteBranch(vm.Name);
                 await this.Refresh();
             }
         }
@@ -378,7 +290,7 @@ public partial class RepoViewModel
             }
             else if (vm is RemoteBranchViewModel)
             {
-                await this.gitClient.AddWorktreeForNewBranch(newBranchName, vm.Name["origin/".Length..]);
+                await this.gitClient.AddWorktreeForNewBranch(newBranchName, $"origin/{vm.Name}");
                 await this.Refresh();
             }
         }
