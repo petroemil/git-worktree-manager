@@ -34,7 +34,7 @@
 
             <vm:BranchTemplateSelector x:Key="BranchTemplateSelector">
                 <vm:BranchTemplateSelector.LocalHeadBranchTemplate>
-                    <DataTemplate x:DataType="vm:LocalHeadBranchWithWorkTreeViewModel">
+                    <DataTemplate x:DataType="vm:HeadBranchWithWorktree">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -43,7 +43,7 @@
                             </Grid.ColumnDefinitions>
 
                             <Viewbox Stretch="UniformToFill" Width="15" VerticalAlignment="Center" Margin="10, 0">
-                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#0078D4" ToolTipService.ToolTip="{x:Bind HeadBranchLabel}" />
+                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#0078D4" ToolTipService.ToolTip="{x:Bind Label}" />
                             </Viewbox>
 
                             <TextBlock Grid.Column="1" Text="{x:Bind DisplayName}" VerticalAlignment="Center" Margin="5, 0" />
@@ -74,7 +74,7 @@
                     </DataTemplate>
                 </vm:BranchTemplateSelector.LocalHeadBranchTemplate>
                 <vm:BranchTemplateSelector.LocalBranchWithWorktreeTemplate>
-                    <DataTemplate x:DataType="vm:LocalBranchWithWorktreeViewModel">
+                    <DataTemplate x:DataType="vm:LocalBranchWithWorktree">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -83,7 +83,7 @@
                             </Grid.ColumnDefinitions>
 
                             <Viewbox Stretch="UniformToFill" Width="15" VerticalAlignment="Center" Margin="10, 0">
-                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#00CC6A" ToolTipService.ToolTip="{x:Bind LocalBranchWithWorktreeLabel}" />
+                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#00CC6A" ToolTipService.ToolTip="{x:Bind Label}" />
                             </Viewbox>
 
                             <TextBlock Grid.Column="1" Text="{x:Bind DisplayName}" VerticalAlignment="Center" Margin="5, 0" />
@@ -118,7 +118,7 @@
                     </DataTemplate>
                 </vm:BranchTemplateSelector.LocalBranchWithWorktreeTemplate>
                 <vm:BranchTemplateSelector.LocalBranchTemplate>
-                    <DataTemplate x:DataType="vm:LocalBranchViewModel">
+                    <DataTemplate x:DataType="vm:LocalBranchWithoutWorktree">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -127,7 +127,7 @@
                             </Grid.ColumnDefinitions>
 
                             <Viewbox Stretch="UniformToFill" Width="15" VerticalAlignment="Center" Margin="10, 0">
-                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#FFB900" ToolTipService.ToolTip="{x:Bind LocalBranchLabel}" />
+                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#FFB900" ToolTipService.ToolTip="{x:Bind Label}" />
                             </Viewbox>
 
                             <TextBlock Grid.Column="1" Text="{x:Bind DisplayName}" VerticalAlignment="Center" Margin="5, 0" />
@@ -144,7 +144,7 @@
                     </DataTemplate>
                 </vm:BranchTemplateSelector.LocalBranchTemplate>
                 <vm:BranchTemplateSelector.RemoteBranchTemplate>
-                    <DataTemplate x:DataType="vm:RemoteBranchViewModel">
+                    <DataTemplate x:DataType="vm:RemoteBranchWithoutWorktree">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -153,7 +153,7 @@
                             </Grid.ColumnDefinitions>
 
                             <Viewbox Stretch="UniformToFill" Width="15" VerticalAlignment="Center" Margin="10, 0">
-                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#FF4343" ToolTipService.ToolTip="{x:Bind RemoteBranchLabel}" />
+                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#FF4343" ToolTipService.ToolTip="{x:Bind Label}" />
                             </Viewbox>
 
                             <TextBlock Grid.Column="1" Text="{x:Bind DisplayName}" VerticalAlignment="Center" Margin="5, 0" />

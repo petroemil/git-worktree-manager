@@ -1,4 +1,5 @@
 ﻿namespace GitWorktreeManager.ViewModel;
+
 using GitWorktreeManager.Services;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Windows.Input;
 
 public static class ViewModelHelpers
 {
-    public static ImmutableList<BranchViewModel> FilterBranches(ImmutableList<BranchViewModel> branches, string query)
+    public static ImmutableList<Branch> FilterBranches(ImmutableList<Branch> branches, string query)
     {
         return branches?
             .Where(branch => string.IsNullOrWhiteSpace(query) || branch.Name.Contains(query.Trim(), StringComparison.OrdinalIgnoreCase))
@@ -17,7 +18,7 @@ public static class ViewModelHelpers
             .ToImmutableList();
     }
 
-    public static ImmutableList<BranchViewModel> CreateBranchVms(
+    public static ImmutableList<Branch> CreateBranchVms(
         ListBranchResult branches,
         IReadOnlyDictionary<string, string> worktrees,
         ICommand createWorktreeForBranchCommand,
@@ -29,7 +30,7 @@ public static class ViewModelHelpers
         ICommand openVisualStudioCommand)
     {
         // Work tree for HEAD
-        var localHeadVm = new LocalHeadBranchWithWorkTreeViewModel
+        var localHeadVm = new HeadBranchWithWorktree
         {
             Name = branches.LocalHead,
             Path = worktrees[branches.LocalHead],
@@ -43,7 +44,7 @@ public static class ViewModelHelpers
         // Local branches with worktree
         var worktreeVms = branches.LocalBranches
             .Where(branch => worktrees.ContainsKey(branch) is true)
-            .Select(branch => new LocalBranchWithWorktreeViewModel
+            .Select(branch => new LocalBranchWithWorktree
             {
                 Name = branch,
                 Path = worktrees[branch],
@@ -58,7 +59,7 @@ public static class ViewModelHelpers
         // Local branches without worktree
         var localBranchVms = branches.LocalBranches
             .Where(branch => worktrees.ContainsKey(branch) is false)
-            .Select(branch => new LocalBranchViewModel
+            .Select(branch => new LocalBranchWithoutWorktree
             {
                 Name = branch,
                 CreateWorktreeForBranchCommand = createWorktreeForBranchCommand,
@@ -67,14 +68,14 @@ public static class ViewModelHelpers
 
         // Remote branches
         var remoteBranchVms = branches.RemoteBranches
-            .Select(branch => new RemoteBranchViewModel
+            .Select(branch => new RemoteBranchWithoutWorktree
             {
                 Name = branch,
                 CreateWorktreeForBranchCommand = createWorktreeForBranchCommand,
                 CreateWorktreeFromBranchCommand = createWorktreeFromBranchCommand
             });
 
-        return Enumerable.Empty<BranchViewModel>()
+        return Enumerable.Empty<Branch>()
             .Append(localHeadVm)
             .Concat(worktreeVms)
             .Concat(localBranchVms)
@@ -82,20 +83,8 @@ public static class ViewModelHelpers
             .ToImmutableList();
     }
 
-    public static string GetFolderPathForBranch(BranchViewModel vm)
+    public static string GetFolderPathForBranch(BranchWithWorktree branch)
     {
-        var path = vm switch
-        {
-            LocalBranchWithWorktreeViewModel x => x.Path,
-            LocalHeadBranchWithWorkTreeViewModel x => x.Path,
-            _ => null
-        };
-
-        if (path is null)
-        {
-            return null;
-        }
-
-        return Path.GetFullPath(path);
+        return Path.GetFullPath(branch.Path);
     }
 }

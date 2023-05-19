@@ -21,59 +21,61 @@ public class RepoInfo
     public string Path { get; init; }
 }
 
-public abstract class BranchViewModel
+public abstract class Branch
 {
     public string Name { get; init; }
     public string DisplayName => Name.Replace("/", " / ");
 
-    public string HeadBranchLabel => "HEAD branch";
-    public string LocalBranchWithWorktreeLabel => "Local branch with worktree";
-    public string LocalBranchLabel => "Local branch";
-    public string RemoteBranchLabel => "Remote branch";
+    public abstract string Label { get; }
 
-    public string CreateWorktreeForBranchLabel => $"Create worktree for '{DisplayName}'";
     public string CreateWorktreeFromBranchLabel => $"Create new worktree based on '{DisplayName}'";
-    public string RemoveLabel => "Remove worktree";
+    public ICommand CreateWorktreeFromBranchCommand { get; init; }
+}
+
+public abstract class BranchWithWorktree : Branch
+{
+    public string Path { get; init; }
 
     public string OpenFileExplorerLabel => "Open File Explorer";
+    public ICommand OpenFolderCommand { get; init; }
+
     public string OpenTerminalLabel => "Open Terminal";
+    public ICommand OpenTerminalCommand { get; init; }
+
     public string OpenVisualStudioCodeLabel => "Open Visual Studio Code";
+    public ICommand OpenVisualStudioCodeCommand { get; init; }
+
     public string OpenVisualStudioLabel => "Open Visual Studio";
-}
-
-public sealed class LocalHeadBranchWithWorkTreeViewModel : BranchViewModel
-{
-    public string Path { get; init; }
-
-    public ICommand CreateWorktreeFromBranchCommand { get; init; }
-    public ICommand OpenFolderCommand { get; init; }
-    public ICommand OpenTerminalCommand { get; init; }
-    public ICommand OpenVisualStudioCodeCommand { get; init; }
     public ICommand OpenVisualStudioCommand { get; init; }
 }
 
-public sealed class LocalBranchWithWorktreeViewModel : BranchViewModel
+public sealed class HeadBranchWithWorktree : BranchWithWorktree
 {
-    public string Path { get; init; }
+    public override string Label => "HEAD branch";
+}
 
-    public ICommand CreateWorktreeFromBranchCommand { get; init; }
+public sealed class LocalBranchWithWorktree : BranchWithWorktree
+{
+    public override string Label => "Local branch with worktree";
+
+    public string RemoveLabel => "Remove worktree";
     public ICommand RemoveCommand { get; init; }
-    public ICommand OpenFolderCommand { get; init; }
-    public ICommand OpenTerminalCommand { get; init; }
-    public ICommand OpenVisualStudioCodeCommand { get; init; }
-    public ICommand OpenVisualStudioCommand { get; init; }
 }
 
-public sealed class LocalBranchViewModel : BranchViewModel
+public abstract class BranchWithoutWorktree : Branch
 {
+    public string CreateWorktreeForBranchLabel => $"Create worktree for '{DisplayName}'";
     public ICommand CreateWorktreeForBranchCommand { get; init; }
-    public ICommand CreateWorktreeFromBranchCommand { get; init; }
 }
 
-public sealed class RemoteBranchViewModel : BranchViewModel
+public sealed class LocalBranchWithoutWorktree : BranchWithoutWorktree
 {
-    public ICommand CreateWorktreeForBranchCommand { get; init; }
-    public ICommand CreateWorktreeFromBranchCommand { get; init; }
+    public override string Label => "Local branch";
+}
+
+public sealed class RemoteBranchWithoutWorktree : BranchWithoutWorktree
+{
+    public override string Label => "Remote branch";
 }
 
 public sealed class BranchTemplateSelector : DataTemplateSelector
@@ -87,10 +89,10 @@ public sealed class BranchTemplateSelector : DataTemplateSelector
     {
         return item switch
         {
-            LocalHeadBranchWithWorkTreeViewModel => LocalHeadBranchTemplate,
-            LocalBranchWithWorktreeViewModel => LocalBranchWithWorktreeTemplate,
-            LocalBranchViewModel => LocalBranchTemplate,
-            RemoteBranchViewModel => RemoteBranchTemplate,
+            HeadBranchWithWorktree => LocalHeadBranchTemplate,
+            LocalBranchWithWorktree => LocalBranchWithWorktreeTemplate,
+            LocalBranchWithoutWorktree => LocalBranchTemplate,
+            RemoteBranchWithoutWorktree => RemoteBranchTemplate,
             _ => null
         };
     }
@@ -102,7 +104,6 @@ public partial class RepoViewModel
     private readonly GitApi gitClient;
 
     public RepoInfo RepoInfo { get; }
-
 
     public RepoViewModel(string repoPath)
     {
@@ -118,10 +119,10 @@ public partial class RepoViewModel
         this.gitClient = new GitApi(path);
     }
 
-    private ImmutableList<BranchViewModel> branches;
+    private ImmutableList<Branch> branches;
 
     [ObservableProperty]
-    private ImmutableList<BranchViewModel> filteredBranches;
+    private ImmutableList<Branch> filteredBranches;
 
     private string mostRecentQuery = string.Empty;
 
@@ -133,7 +134,7 @@ public partial class RepoViewModel
     }
 
     [RelayCommand]
-    private async Task Remove(LocalBranchWithWorktreeViewModel worktree)
+    private async Task Remove(LocalBranchWithWorktree worktree)
     {
         try
         {
@@ -173,7 +174,7 @@ public partial class RepoViewModel
     }
 
     [RelayCommand]
-    private async Task OpenFolder(BranchViewModel vm)
+    private async Task OpenFolder(BranchWithWorktree vm)
     {
         try
         {
@@ -188,7 +189,7 @@ public partial class RepoViewModel
     }
 
     [RelayCommand]
-    private async Task OpenTerminal(BranchViewModel vm)
+    private async Task OpenTerminal(BranchWithWorktree vm)
     {
         try
         {
@@ -208,7 +209,7 @@ public partial class RepoViewModel
     }
 
     [RelayCommand]
-    private async Task OpenVisualStudioCode(BranchViewModel vm)
+    private async Task OpenVisualStudioCode(BranchWithWorktree vm)
     {
         try
         {
@@ -231,7 +232,7 @@ public partial class RepoViewModel
     }
 
     [RelayCommand]
-    private async Task OpenVisualStudio(BranchViewModel vm)
+    private async Task OpenVisualStudio(BranchWithWorktree vm)
     {
         try
         {
@@ -250,16 +251,16 @@ public partial class RepoViewModel
     }
 
     [RelayCommand]
-    private async Task CreateWorktreeForBranch(BranchViewModel vm)
+    private async Task CreateWorktreeForBranch(BranchWithoutWorktree vm)
     {
         try
         {
-            if (vm is LocalBranchViewModel)
+            if (vm is LocalBranchWithoutWorktree)
             {
                 await this.gitClient.AddWorktreeForLocalBranch(vm.Name);
                 await this.Refresh();
             }
-            else if (vm is RemoteBranchViewModel)
+            else if (vm is RemoteBranchWithoutWorktree)
             {
                 await this.gitClient.AddWorktreeForRemoteBranch(vm.Name);
                 await this.Refresh();
@@ -272,7 +273,7 @@ public partial class RepoViewModel
     }
 
     [RelayCommand]
-    private async Task CreateWorktreeFromBranch(BranchViewModel vm)
+    private async Task CreateWorktreeFromBranch(Branch vm)
     {
         try
         {
@@ -280,17 +281,17 @@ public partial class RepoViewModel
 
             if (string.IsNullOrWhiteSpace(newBranchName))
             {
-                return;
+                throw new ArgumentException("Branch name should not be empty.");
             }
 
-            if (vm is LocalBranchViewModel or LocalBranchWithWorktreeViewModel or LocalHeadBranchWithWorkTreeViewModel)
-            {
-                await this.gitClient.AddWorktreeForNewBranch(newBranchName, vm.Name);
-                await this.Refresh();
-            }
-            else if (vm is RemoteBranchViewModel)
+            if (vm is RemoteBranchWithoutWorktree)
             {
                 await this.gitClient.AddWorktreeForNewBranch(newBranchName, $"origin/{vm.Name}");
+                await this.Refresh();
+            }
+            else
+            {
+                await this.gitClient.AddWorktreeForNewBranch(newBranchName, vm.Name);
                 await this.Refresh();
             }
         }
