@@ -25,24 +25,38 @@ public abstract class BranchViewModel
 {
     public string Name { get; init; }
     public string DisplayName => Name.Replace("/", " / ");
+
+    public string HeadBranchLabel => "HEAD branch";
+    public string LocalBranchWithWorktreeLabel => "Local branch with worktree";
+    public string LocalBranchLabel => "Local branch";
+    public string RemoteBranchLabel => "Remote branch";
+
+    public string CreateWorktreeForBranchLabel => $"Create worktree for '{DisplayName}'";
+    public string CreateWorktreeFromBranchLabel => $"Create new worktree based on '{DisplayName}'";
+    public string RemoveLabel => "Remove worktree";
+
+    public string OpenFileExplorerLabel => "Open File Explorer";
+    public string OpenTerminalLabel => "Open Terminal";
+    public string OpenVisualStudioCodeLabel => "Open Visual Studio Code";
+    public string OpenVisualStudioLabel => "Open Visual Studio";
 }
 
 public sealed class LocalHeadBranchWithWorkTreeViewModel : BranchViewModel
 {
     public string Path { get; init; }
 
-    public ICommand CreateWorktreeFromBranch { get; init; }
+    public ICommand CreateWorktreeFromBranchCommand { get; init; }
     public ICommand OpenFolderCommand { get; init; }
     public ICommand OpenTerminalCommand { get; init; }
     public ICommand OpenVisualStudioCodeCommand { get; init; }
     public ICommand OpenVisualStudioCommand { get; init; }
 }
 
-public class LocalBranchWithWorktreeViewModel : BranchViewModel
+public sealed class LocalBranchWithWorktreeViewModel : BranchViewModel
 {
     public string Path { get; init; }
 
-    public ICommand CreateWorktreeFromBranch { get; init; }
+    public ICommand CreateWorktreeFromBranchCommand { get; init; }
     public ICommand RemoveCommand { get; init; }
     public ICommand OpenFolderCommand { get; init; }
     public ICommand OpenTerminalCommand { get; init; }
@@ -52,14 +66,14 @@ public class LocalBranchWithWorktreeViewModel : BranchViewModel
 
 public sealed class LocalBranchViewModel : BranchViewModel
 {
-    public ICommand CreateWorktreeForBranch { get; init; }
-    public ICommand CreateWorktreeFromBranch { get; init; }
+    public ICommand CreateWorktreeForBranchCommand { get; init; }
+    public ICommand CreateWorktreeFromBranchCommand { get; init; }
 }
 
 public sealed class RemoteBranchViewModel : BranchViewModel
 {
-    public ICommand CreateWorktreeForBranch { get; init; }
-    public ICommand CreateWorktreeFromBranch { get; init; }
+    public ICommand CreateWorktreeForBranchCommand { get; init; }
+    public ICommand CreateWorktreeFromBranchCommand { get; init; }
 }
 
 public sealed class BranchTemplateSelector : DataTemplateSelector
@@ -150,7 +164,7 @@ public partial class RepoViewModel
             {
                 Name = branches.LocalHead,
                 Path = worktrees[branches.LocalHead],
-                CreateWorktreeFromBranch = this.CreateWorktreeFromBranchCommand,
+                CreateWorktreeFromBranchCommand = this.CreateWorktreeFromBranchCommand,
                 OpenFolderCommand = this.OpenFolderCommand,
                 OpenTerminalCommand = this.OpenTerminalCommand,
                 OpenVisualStudioCodeCommand = this.OpenVisualStudioCodeCommand,
@@ -164,7 +178,7 @@ public partial class RepoViewModel
                 {
                     Name = branch,
                     Path = worktrees[branch],
-                    CreateWorktreeFromBranch = this.CreateWorktreeFromBranchCommand,
+                    CreateWorktreeFromBranchCommand = this.CreateWorktreeFromBranchCommand,
                     RemoveCommand = this.RemoveCommand,
                     OpenFolderCommand = this.OpenFolderCommand,
                     OpenTerminalCommand = this.OpenTerminalCommand,
@@ -178,32 +192,23 @@ public partial class RepoViewModel
                 .Select(branch => new LocalBranchViewModel
                 {
                     Name = branch,
-                    CreateWorktreeForBranch = this.CreateWorktreeForBranchCommand,
-                    CreateWorktreeFromBranch = this.CreateWorktreeFromBranchCommand
+                    CreateWorktreeForBranchCommand = this.CreateWorktreeForBranchCommand,
+                    CreateWorktreeFromBranchCommand = this.CreateWorktreeFromBranchCommand
                 });
-
-            // Remote head
-            var remoteHeadVm = new RemoteBranchViewModel
-            {
-                Name = branches.RemoteHead,
-                CreateWorktreeForBranch = this.CreateWorktreeForBranchCommand,
-                CreateWorktreeFromBranch = this.CreateWorktreeFromBranchCommand
-            };
 
             // Remote branches
             var remoteBranchVms = branches.RemoteBranches
                 .Select(branch => new RemoteBranchViewModel
                 {
                     Name = branch,
-                    CreateWorktreeForBranch = this.CreateWorktreeForBranchCommand,
-                    CreateWorktreeFromBranch = this.CreateWorktreeFromBranchCommand
+                    CreateWorktreeForBranchCommand = this.CreateWorktreeForBranchCommand,
+                    CreateWorktreeFromBranchCommand = this.CreateWorktreeFromBranchCommand
                 });
 
             this.branches = Enumerable.Empty<BranchViewModel>()
                 .Append(localHeadVm)
                 .Concat(worktreeVms)
                 .Concat(localBranchVms)
-                .Append(remoteHeadVm)
                 .Concat(remoteBranchVms)
                 .ToImmutableList();
 

@@ -43,28 +43,28 @@
                             </Grid.ColumnDefinitions>
 
                             <Viewbox Stretch="UniformToFill" Width="15" VerticalAlignment="Center" Margin="10, 0">
-                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#0078D4" />
+                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#0078D4" ToolTipService.ToolTip="{x:Bind HeadBranchLabel}" />
                             </Viewbox>
 
                             <TextBlock Grid.Column="1" Text="{x:Bind DisplayName}" VerticalAlignment="Center" Margin="5, 0" />
 
                             <CommandBar Grid.Column="2" Margin="-5" OverflowButtonVisibility="Collapsed">
-                                <AppBarButton Width="35" Command="{x:Bind CreateWorktreeFromBranch}" CommandParameter="{x:Bind}">
+                                <AppBarButton Width="35" Command="{x:Bind CreateWorktreeFromBranchCommand}" CommandParameter="{x:Bind}" ToolTipService.ToolTip="{x:Bind CreateWorktreeFromBranchLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource CreateWorktreeFromBranchIcon}"/>
                                 </AppBarButton>
                                 <AppBarSeparator />
-                                <AppBarButton Width="35" Command="{x:Bind OpenFolderCommand}" CommandParameter="{x:Bind}">
+                                <AppBarButton Width="35" Command="{x:Bind OpenFolderCommand}" CommandParameter="{x:Bind}" ToolTipService.ToolTip="{x:Bind OpenFileExplorerLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource FileExplorerIcon}"/>
                                 </AppBarButton>
-                                <AppBarButton Width="35" Command="{x:Bind OpenTerminalCommand}" CommandParameter="{x:Bind}">
+                                <AppBarButton Width="35" Command="{x:Bind OpenTerminalCommand}" CommandParameter="{x:Bind}" ToolTipService.ToolTip="{x:Bind OpenTerminalLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource TerminalIcon}"/>
                                 </AppBarButton>
-                                <AppBarButton Width="35" Command="{x:Bind OpenVisualStudioCodeCommand}" CommandParameter="{x:Bind}">
+                                <AppBarButton Width="35" Command="{x:Bind OpenVisualStudioCodeCommand}" CommandParameter="{x:Bind}" ToolTipService.ToolTip="{x:Bind OpenVisualStudioCodeLabel}">
                                     <Viewbox Stretch="UniformToFill">
                                         <PathIcon Data="{StaticResource VisualStudioCodeIcon}" />
                                     </Viewbox>
                                 </AppBarButton>
-                                <AppBarButton Width="35" Command="{x:Bind OpenVisualStudioCommand}" CommandParameter="{x:Bind}">
+                                <AppBarButton Width="35" Command="{x:Bind OpenVisualStudioCommand}" CommandParameter="{x:Bind}" ToolTipService.ToolTip="{x:Bind OpenVisualStudioLabel}">
                                     <Viewbox Stretch="UniformToFill">
                                         <PathIcon Data="{StaticResource VisualStudioIcon}" />
                                     </Viewbox>
@@ -83,32 +83,32 @@
                             </Grid.ColumnDefinitions>
 
                             <Viewbox Stretch="UniformToFill" Width="15" VerticalAlignment="Center" Margin="10, 0">
-                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#00CC6A" />
+                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#00CC6A" ToolTipService.ToolTip="{x:Bind LocalBranchWithWorktreeLabel}" />
                             </Viewbox>
 
                             <TextBlock Grid.Column="1" Text="{x:Bind DisplayName}" VerticalAlignment="Center" Margin="5, 0" />
 
                             <CommandBar Grid.Column="2" Margin="-5" OverflowButtonVisibility="Collapsed">
-                                <AppBarButton Width="35" Command="{x:Bind CreateWorktreeFromBranch}" CommandParameter="{x:Bind}">
+                                <AppBarButton Width="35" Command="{x:Bind CreateWorktreeFromBranchCommand}" CommandParameter="{x:Bind}" ToolTipService.ToolTip="{x:Bind CreateWorktreeFromBranchLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource CreateWorktreeFromBranchIcon}"/>
                                 </AppBarButton>
                                 <AppBarSeparator />
-                                <AppBarButton Width="35" Command="{x:Bind RemoveCommand}" CommandParameter="{x:Bind}">
+                                <AppBarButton Width="35" Command="{x:Bind RemoveCommand}" CommandParameter="{x:Bind}" ToolTipService.ToolTip="{x:Bind RemoveLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource RemoveIcon}"/>
                                 </AppBarButton>
                                 <AppBarSeparator />
-                                <AppBarButton Width="35" Command="{x:Bind OpenFolderCommand}" CommandParameter="{x:Bind}">
+                                <AppBarButton Width="35" Command="{x:Bind OpenFolderCommand}" CommandParameter="{x:Bind}" ToolTipService.ToolTip="{x:Bind OpenFileExplorerLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource FileExplorerIcon}"/>
                                 </AppBarButton>
-                                <AppBarButton Width="35" Command="{x:Bind OpenTerminalCommand}" CommandParameter="{x:Bind}">
+                                <AppBarButton Width="35" Command="{x:Bind OpenTerminalCommand}" CommandParameter="{x:Bind}" ToolTipService.ToolTip="{x:Bind OpenTerminalLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource TerminalIcon}"/>
                                 </AppBarButton>
-                                <AppBarButton Width="35" Command="{x:Bind OpenVisualStudioCodeCommand}" CommandParameter="{x:Bind}">
+                                <AppBarButton Width="35" Command="{x:Bind OpenVisualStudioCodeCommand}" CommandParameter="{x:Bind}" ToolTipService.ToolTip="{x:Bind OpenVisualStudioCodeLabel}">
                                     <Viewbox Stretch="UniformToFill">
                                         <PathIcon Data="{StaticResource VisualStudioCodeIcon}" />
                                     </Viewbox>
                                 </AppBarButton>
-                                <AppBarButton Width="35" Command="{x:Bind OpenVisualStudioCommand}" CommandParameter="{x:Bind}">
+                                <AppBarButton Width="35" Command="{x:Bind OpenVisualStudioCommand}" CommandParameter="{x:Bind}" ToolTipService.ToolTip="{x:Bind OpenVisualStudioLabel}">
                                     <Viewbox Stretch="UniformToFill">
                                         <PathIcon Data="{StaticResource VisualStudioIcon}" />
                                     </Viewbox>
@@ -127,16 +127,16 @@
                             </Grid.ColumnDefinitions>
 
                             <Viewbox Stretch="UniformToFill" Width="15" VerticalAlignment="Center" Margin="10, 0">
-                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#FFB900" />
+                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#FFB900" ToolTipService.ToolTip="{x:Bind LocalBranchLabel}" />
                             </Viewbox>
 
                             <TextBlock Grid.Column="1" Text="{x:Bind DisplayName}" VerticalAlignment="Center" Margin="5, 0" />
 
                             <CommandBar Grid.Column="2" Margin="-5" OverflowButtonVisibility="Collapsed">
-                                <AppBarButton Width="35" Command="{x:Bind CreateWorktreeForBranch}" CommandParameter="{x:Bind}">
+                                <AppBarButton Width="35" Command="{x:Bind CreateWorktreeForBranchCommand}" CommandParameter="{x:Bind}" ToolTipService.ToolTip="{x:Bind CreateWorktreeForBranchLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource CreateWorktreeForBranchIcon}"/>
                                 </AppBarButton>
-                                <AppBarButton Width="35" Command="{x:Bind CreateWorktreeFromBranch}" CommandParameter="{x:Bind}">
+                                <AppBarButton Width="35" Command="{x:Bind CreateWorktreeFromBranchCommand}" CommandParameter="{x:Bind}" ToolTipService.ToolTip="{x:Bind CreateWorktreeFromBranchLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource CreateWorktreeFromBranchIcon}"/>
                                 </AppBarButton>
                             </CommandBar>
@@ -153,16 +153,16 @@
                             </Grid.ColumnDefinitions>
 
                             <Viewbox Stretch="UniformToFill" Width="15" VerticalAlignment="Center" Margin="10, 0">
-                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#FF4343" />
+                                <PathIcon Data="{StaticResource BranchIcon}" Foreground="#FF4343" ToolTipService.ToolTip="{x:Bind RemoteBranchLabel}" />
                             </Viewbox>
 
                             <TextBlock Grid.Column="1" Text="{x:Bind DisplayName}" VerticalAlignment="Center" Margin="5, 0" />
 
                             <CommandBar Grid.Column="2" Margin="-5" OverflowButtonVisibility="Collapsed">
-                                <AppBarButton Width="35" Command="{x:Bind CreateWorktreeForBranch}" CommandParameter="{x:Bind}">
+                                <AppBarButton Width="35" Command="{x:Bind CreateWorktreeForBranchCommand}" CommandParameter="{x:Bind}" ToolTipService.ToolTip="{x:Bind CreateWorktreeForBranchLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource CreateWorktreeForBranchIcon}"/>
                                 </AppBarButton>
-                                <AppBarButton Width="35" Command="{x:Bind CreateWorktreeFromBranch}" CommandParameter="{x:Bind}">
+                                <AppBarButton Width="35" Command="{x:Bind CreateWorktreeFromBranchCommand}" CommandParameter="{x:Bind}" ToolTipService.ToolTip="{x:Bind CreateWorktreeFromBranchLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource CreateWorktreeFromBranchIcon}"/>
                                 </AppBarButton>
                             </CommandBar>
@@ -202,11 +202,11 @@
 
             <TextBox Text="{x:Bind VM.Repo.RepoInfo.Name, Mode=OneWay}" PlaceholderText="Repo" IsEnabled="False" Margin="5, 0" />
 
-            <Button Grid.Column="1" Command="{x:Bind VM.OpenRepoCommand}" Margin="5, 0">
+            <Button Grid.Column="1" Command="{x:Bind VM.OpenRepoCommand}" ToolTipService.ToolTip="Open git repo" Margin="5, 0">
                 <SymbolIcon Symbol="OpenLocal" />
             </Button>
 
-            <Button Grid.Column="2" Command="{x:Bind VM.Repo.RefreshCommand, Mode=OneWay}" Margin="5, 0"
+            <Button Grid.Column="2" Command="{x:Bind VM.Repo.RefreshCommand, Mode=OneWay}" ToolTipService.ToolTip="Refresh" Margin="5, 0"
                     IsEnabled="{x:Bind VM.Repo, Mode=OneWay, Converter={StaticResource NullToBoolConverter}}">
                 <SymbolIcon Symbol="Refresh" />
             </Button>

@@ -9,7 +9,6 @@ public sealed class ListBranchResult
 {
     public required string LocalHead { get; init; }
     public required ImmutableList<string> LocalBranches { get; init; }
-    public required string RemoteHead { get; init; }
     public required ImmutableList<string> RemoteBranches { get; init; }
 }
 
@@ -51,14 +50,15 @@ internal class GitApiHelper
 
         var remoteBranches = trimmedLines
             .Where(line => line.StartsWith(OriginPrefix) is true)
-            .Where(line => line.StartsWith(OriginHead) is false) // filter out special HEAD line
+            .Where(line => line.StartsWith(OriginHead) is false) // Filter out special HEAD line
             .Where(line => line != originHeadBranch)
+            .Select(line => line[OriginPrefix.Length..]) // Remove "origin/" prefix
+            .Where(line => !localBranches.Contains(line))
             .ToImmutableList();
 
         return new()
         {
             LocalHead = localHeadBranch,
-            RemoteHead = originHeadBranch,
             LocalBranches = localBranches,
             RemoteBranches = remoteBranches
         };
