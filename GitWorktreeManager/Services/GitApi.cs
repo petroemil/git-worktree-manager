@@ -16,16 +16,16 @@ public class GitException : Exception
     }
 }
 
-internal class GitApi
+public partial class GitApi
 {
-    private readonly GitApiHelper helper;
+    private readonly Helpers helpers;
 
     public GitApi(string workingDir)
     {
-        this.helper = new GitApiHelper(workingDir, ".worktrees");
+        this.helpers = new Helpers(workingDir, ".worktrees");
     }
 
-    private async Task<ImmutableList<string>> RunCommand(string command)
+    private async Task<string> RunCommand(string command)
     {
         var process = Process.Start(new ProcessStartInfo
         {
@@ -34,14 +34,11 @@ internal class GitApi
             RedirectStandardOutput = true,
             FileName = "git",
             CreateNoWindow = true,
-            WorkingDirectory = this.helper.RootPath,
+            WorkingDirectory = this.helpers.RootPath,
             Arguments = command
         });
 
         var output = await process!.StandardOutput.ReadToEndAsync();
-        var lines = output
-            .Split('\n', StringSplitOptions.RemoveEmptyEntries)
-            .ToImmutableList();
 
         var error = await process!.StandardError.ReadToEndAsync();
 
@@ -56,13 +53,13 @@ internal class GitApi
             };
         }
 
-        return lines;
+        return output;
     }
 
     private async Task RunCommandNoResponse(string command)
         => _ = await RunCommand(command);
 
-    private async Task<TResult> RunCommandProcessResponse<TResult>(string command, Func<ImmutableList<string>, TResult> resultProcessor)
+    private async Task<TResult> RunCommandProcessResponse<TResult>(string command, Func<string, TResult> resultProcessor)
     {
         var result = await RunCommand(command);
         return resultProcessor(result);
@@ -70,19 +67,19 @@ internal class GitApi
 
     public async Task<ListBranchResult> ListBranchesAsync()
     {
-        return await RunCommandProcessResponse<ListBranchResult>(
-            helper.ListBranches_CreateCommand(),
-            helper.ListBranches_ProcessResult);
+        return await RunCommandProcessResponse(
+            helpers.ListBranches_CreateCommand(),
+            helpers.ListBranches_ProcessResult);
     }
 
     /// <summary>
     /// <code>git worktree list</code>
     /// </summary>
-    public async Task<ImmutableDictionary<string, string>> ListWorktrees()
+    public async Task<ImmutableList<Worktree>> ListWorktrees()
     {
         return await RunCommandProcessResponse(
-            helper.ListWorktrees_CreateCommand(),
-            helper.ListWorktrees_ProcessResult);
+            helpers.ListWorktrees_CreateCommand(),
+            helpers.ListWorktrees_ProcessResult);
     }
 
     /// <summary>
@@ -90,7 +87,7 @@ internal class GitApi
     /// </summary>
     public async Task AddWorktreeForLocalBranch(string branch)
     {
-        await RunCommandNoResponse(helper.AddWorktreeForLocalBranch_CreateCommand(branch));
+        await RunCommandNoResponse(helpers.AddWorktreeForLocalBranch_CreateCommand(branch));
     }
 
     /// <summary>
@@ -98,7 +95,7 @@ internal class GitApi
     /// </summary>
     public async Task AddWorktreeForRemoteBranch(string branch)
     {
-        await RunCommandNoResponse(helper.AddWorktreeForRemoteBranch_CreateCommand(branch));
+        await RunCommandNoResponse(helpers.AddWorktreeForRemoteBranch_CreateCommand(branch));
     }
 
     /// <summary>
@@ -106,7 +103,7 @@ internal class GitApi
     /// </summary>
     public async Task AddWorktreeForNewBranch(string branch, string baseBranch)
     {
-        await RunCommandNoResponse(helper.AddWorkTree_CreateCommand(branch, baseBranch));
+        await RunCommandNoResponse(helpers.AddWorkTree_CreateCommand(branch, baseBranch));
     }
 
     /// <summary>
@@ -114,7 +111,7 @@ internal class GitApi
     /// </summary>
     public async Task RemoveWorktree(string branch)
     {
-        await RunCommandNoResponse(helper.RemoveWorktree_CreateCommand(branch));
+        await RunCommandNoResponse(helpers.RemoveWorktree_CreateCommand(branch));
     }
 
     /// <summary>
@@ -122,6 +119,6 @@ internal class GitApi
     /// </summary>
     public async Task Fetch()
     {
-        await RunCommandNoResponse(helper.Fetch_CreateCommand());
+        await RunCommandNoResponse(helpers.Fetch_CreateCommand());
     }
 }

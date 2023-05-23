@@ -4,98 +4,18 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GitWorktreeManager.Behaviors;
 using GitWorktreeManager.Services;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Windows.System;
 
 public class RepoInfo
 {
     public string Name { get; init; }
     public string Path { get; init; }
-}
-
-public abstract class Branch
-{
-    public string Name { get; init; }
-    public string DisplayName => Name.Replace("/", " / ");
-
-    public abstract string Label { get; }
-
-    public string CreateWorktreeFromBranchLabel => $"Create new worktree based on '{DisplayName}'";
-    public ICommand CreateWorktreeFromBranchCommand { get; init; }
-}
-
-public abstract class BranchWithWorktree : Branch
-{
-    public string Path { get; init; }
-
-    public string OpenFileExplorerLabel => "Open File Explorer";
-    public ICommand OpenFolderCommand { get; init; }
-
-    public string OpenTerminalLabel => "Open Terminal";
-    public ICommand OpenTerminalCommand { get; init; }
-
-    public string OpenVisualStudioCodeLabel => "Open Visual Studio Code";
-    public ICommand OpenVisualStudioCodeCommand { get; init; }
-
-    public string OpenVisualStudioLabel => "Open Visual Studio";
-    public ICommand OpenVisualStudioCommand { get; init; }
-}
-
-public sealed class HeadBranchWithWorktree : BranchWithWorktree
-{
-    public override string Label => "HEAD branch";
-}
-
-public sealed class LocalBranchWithWorktree : BranchWithWorktree
-{
-    public override string Label => "Local branch with worktree";
-
-    public string RemoveLabel => "Remove worktree";
-    public ICommand RemoveCommand { get; init; }
-}
-
-public abstract class BranchWithoutWorktree : Branch
-{
-    public string CreateWorktreeForBranchLabel => $"Create worktree for '{DisplayName}'";
-    public ICommand CreateWorktreeForBranchCommand { get; init; }
-}
-
-public sealed class LocalBranchWithoutWorktree : BranchWithoutWorktree
-{
-    public override string Label => "Local branch";
-}
-
-public sealed class RemoteBranchWithoutWorktree : BranchWithoutWorktree
-{
-    public override string Label => "Remote branch";
-}
-
-public sealed class BranchTemplateSelector : DataTemplateSelector
-{
-    public DataTemplate LocalHeadBranchTemplate { get; set; }
-    public DataTemplate LocalBranchWithWorktreeTemplate { get; set; }
-    public DataTemplate LocalBranchTemplate { get; set; }
-    public DataTemplate RemoteBranchTemplate { get; set; }
-
-    protected override DataTemplate SelectTemplateCore(object item)
-    {
-        return item switch
-        {
-            HeadBranchWithWorktree => LocalHeadBranchTemplate,
-            LocalBranchWithWorktree => LocalBranchWithWorktreeTemplate,
-            LocalBranchWithoutWorktree => LocalBranchTemplate,
-            RemoteBranchWithoutWorktree => RemoteBranchTemplate,
-            _ => null
-        };
-    }
 }
 
 [INotifyPropertyChanged]
@@ -130,7 +50,7 @@ public partial class RepoViewModel
     private void QueryChanged(string query)
     {
         this.mostRecentQuery = query;
-        this.FilteredBranches = ViewModelHelpers.FilterBranches(this.branches, query);
+        this.FilteredBranches = Helpers.FilterBranches(this.branches, query);
     }
 
     [RelayCommand]
@@ -156,7 +76,7 @@ public partial class RepoViewModel
             var branches = await this.gitClient.ListBranchesAsync();
             var worktrees = await this.gitClient.ListWorktrees();
 
-            this.branches = ViewModelHelpers.CreateBranchVms(branches, worktrees,
+            this.branches = Helpers.CreateBranchVms(branches, worktrees,
                 this.CreateWorktreeForBranchCommand,
                 this.CreateWorktreeFromBranchCommand,
                 this.RemoveCommand,
@@ -178,7 +98,7 @@ public partial class RepoViewModel
     {
         try
         {
-            var path = ViewModelHelpers.GetFolderPathForBranch(vm);
+            var path = Helpers.GetFolderPathForBranch(vm);
 
             await Launcher.LaunchFolderPathAsync(path);
         }
@@ -193,7 +113,7 @@ public partial class RepoViewModel
     {
         try
         {
-            var path = ViewModelHelpers.GetFolderPathForBranch(vm);
+            var path = Helpers.GetFolderPathForBranch(vm);
 
             Process.Start(new ProcessStartInfo
             {
@@ -213,7 +133,7 @@ public partial class RepoViewModel
     {
         try
         {
-            var path = ViewModelHelpers.GetFolderPathForBranch(vm);
+            var path = Helpers.GetFolderPathForBranch(vm);
 
             Process.Start(new ProcessStartInfo
             {
@@ -236,7 +156,7 @@ public partial class RepoViewModel
     {
         try
         {
-            var path = ViewModelHelpers.GetFolderPathForBranch(vm);
+            var path = Helpers.GetFolderPathForBranch(vm);
 
             var sln = Directory.EnumerateFiles(path, "*.sln").FirstOrDefault();
             if (sln is not null)
