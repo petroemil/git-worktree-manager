@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace GitWorktreeManager.Services;
 
-namespace GitWorktreeManager.Services;
+using System;
+using System.Collections.Generic;
 
 public static class StringExtensions
 {
