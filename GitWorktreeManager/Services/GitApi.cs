@@ -99,12 +99,15 @@ public partial class GitApi
     }
 
     /// <summary>
-    /// <code>git worktree add -b {branch} {path}</code>
+    /// <code>
+    /// git worktree add -b {newBranch} {path} {baseBranch}
+    /// git branch --unset-upstream {newBranch}
+    /// </code>
     /// </summary>
-    public async Task AddWorktreeForNewBranch(string branch, string baseBranch)
+    public async Task AddWorktreeForNewBranch(string newBranch, string baseBranch)
     {
-        await RunCommandNoResponse(helpers.AddWorkTree_CreateCommand(branch, baseBranch));
-        await RunCommandNoResponse(helpers.AddWorkTreeUnsetUpstream_CreateCommand(branch));
+        await RunCommandNoResponse(helpers.AddWorkTree_CreateCommand(newBranch, baseBranch));
+        await RunCommandNoResponse(helpers.AddWorkTreeUnsetUpstream_CreateCommand(newBranch));
     }
 
     /// <summary>
