@@ -32,7 +32,7 @@ public partial class GitApi
         }
 
         public string ListBranches_CreateCommand()
-            => "branch --list -a";
+            => "git branch --list -a";
 
         public ListBranchResult ListBranches_ProcessResult(string result)
         {
@@ -74,7 +74,7 @@ public partial class GitApi
         }
 
         public string ListWorktrees_CreateCommand()
-            => "worktree list --porcelain";
+            => "git worktree list --porcelain";
 
         public ImmutableList<Worktree> ListWorktrees_ProcessResult(string result)
             => result
@@ -92,30 +92,36 @@ public partial class GitApi
         public string AddWorktreeForLocalBranch_CreateCommand(string branch)
         {
             var path = CreateWorktreePath(branch);
-            return $"worktree add \"{path}\" \"{branch}\"";
+            return $"git worktree add \"{path}\" \"{branch}\"";
         }
 
         public string AddWorktreeForRemoteBranch_CreateCommand(string branch)
         {
             var path = CreateWorktreePath(branch);
             var remote = $"origin/{branch}";
-            return $"worktree add --track -b \"{branch}\" \"{path}\" \"{remote}\"";
+            return $"git worktree add --track -b \"{branch}\" \"{path}\" \"{remote}\"";
         }
 
-        public string AddWorkTree_CreateCommand(string newBranch, string baseBranch)
+        public string AddWorkTreeBasedOnLocalBranch_CreateCommand(string newBranch, string baseBranch)
         {
             var path = CreateWorktreePath(newBranch);
-            return $"worktree add -b \"{newBranch}\" \"{path}\" \"{baseBranch}\"";
+            return $"git worktree add -b \"{newBranch}\" \"{path}\" \"{baseBranch}\"";
+        }
+
+        public string AddWorkTreeBasedOnRemoteBranch_CreateCommand(string newBranch, string baseBranch)
+        {
+            var path = CreateWorktreePath(newBranch);
+            return $"git worktree add -b \"{newBranch}\" \"{path}\" origin/\"{baseBranch}\"";
         }
 
         public string AddWorkTreeUnsetUpstream_CreateCommand(string branch) 
-            => $"branch --unset-upstream \"{branch}\"";
+            => $"git branch --unset-upstream \"{branch}\"";
 
         public string RemoveWorktree_CreateCommand(string branch)
-            => $"worktree remove \"{branch}\"";
+            => $"git worktree remove \"{branch}\"";
 
         public string Fetch_CreateCommand()
-            => "fetch";
+            => "git fetch";
 
         private string CreateWorktreePath(string branch)
         {

@@ -206,12 +206,12 @@ public partial class RepoViewModel
 
             if (vm is RemoteBranchWithoutWorktree)
             {
-                await this.gitClient.AddWorktreeForNewBranch(newBranchName, $"origin/{vm.Name}");
+                await this.gitClient.AddWorktreeBasedOnRemoteBranch(newBranchName, vm.Name);
                 await this.Refresh();
             }
             else
             {
-                await this.gitClient.AddWorktreeForNewBranch(newBranchName, vm.Name);
+                await this.gitClient.AddWorktreeBasedOnLocalBranch(newBranchName, vm.Name);
                 await this.Refresh();
             }
         }

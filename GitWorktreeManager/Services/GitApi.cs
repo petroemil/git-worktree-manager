@@ -29,13 +29,13 @@ public partial class GitApi
     {
         var process = Process.Start(new ProcessStartInfo
         {
+            CreateNoWindow = true,
             UseShellExecute = false,
             RedirectStandardError = true,
             RedirectStandardOutput = true,
-            FileName = "git",
-            CreateNoWindow = true,
-            WorkingDirectory = this.helpers.RootPath,
-            Arguments = command
+            FileName = "cmd",
+            Arguments = $"/c {command}",
+            WorkingDirectory = this.helpers.RootPath
         });
 
         var output = await process!.StandardOutput.ReadToEndAsync();
@@ -99,14 +99,22 @@ public partial class GitApi
     }
 
     /// <summary>
+    /// <code>git worktree add -b {newBranch} {path} {baseBranch}</code>
+    /// </summary>
+    public async Task AddWorktreeBasedOnLocalBranch(string newBranch, string baseBranch)
+    {
+        await RunCommandNoResponse(helpers.AddWorkTreeBasedOnLocalBranch_CreateCommand(newBranch, baseBranch));
+    }
+
+    /// <summary>
     /// <code>
-    /// git worktree add -b {newBranch} {path} {baseBranch}
+    /// git worktree add -b {newBranch} {path} {remote}/{baseBranch}
     /// git branch --unset-upstream {newBranch}
     /// </code>
     /// </summary>
-    public async Task AddWorktreeForNewBranch(string newBranch, string baseBranch)
+    public async Task AddWorktreeBasedOnRemoteBranch(string newBranch, string baseBranch)
     {
-        await RunCommandNoResponse(helpers.AddWorkTree_CreateCommand(newBranch, baseBranch));
+        await RunCommandNoResponse(helpers.AddWorkTreeBasedOnRemoteBranch_CreateCommand(newBranch, baseBranch));
         await RunCommandNoResponse(helpers.AddWorkTreeUnsetUpstream_CreateCommand(newBranch));
     }
 
