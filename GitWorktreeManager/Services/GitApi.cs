@@ -104,6 +104,7 @@ public partial class GitApi
     public async Task AddWorktreeForNewBranch(string branch, string baseBranch)
     {
         await RunCommandNoResponse(helpers.AddWorkTree_CreateCommand(branch, baseBranch));
+        await RunCommandNoResponse(helpers.AddWorkTreeUnsetUpstream_CreateCommand(branch));
     }
 
     /// <summary>

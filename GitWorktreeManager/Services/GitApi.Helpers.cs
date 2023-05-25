@@ -108,6 +108,9 @@ public partial class GitApi
             return $"worktree add -b \"{newBranch}\" \"{path}\" \"{baseBranch}\"";
         }
 
+        public string AddWorkTreeUnsetUpstream_CreateCommand(string branch) 
+            => $"branch --unset-upstream \"{branch}\"";
+
         public string RemoveWorktree_CreateCommand(string branch)
             => $"worktree remove \"{branch}\"";
 
