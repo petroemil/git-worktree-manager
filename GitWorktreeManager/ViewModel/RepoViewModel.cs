@@ -82,7 +82,7 @@ public partial class RepoViewModel
                 this.RemoveCommand,
                 this.OpenFolderCommand,
                 this.OpenTerminalCommand,
-                this.openVisualStudioCodeCommand,
+                this.OpenVisualStudioCodeCommand,
                 this.OpenVisualStudioCommand);
 
             QueryChanged(this.mostRecentQuery);
