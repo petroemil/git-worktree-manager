@@ -39,25 +39,17 @@ internal static class DialogHelper
         await dialog.ShowAsync();
     }
 
-    public static async Task<string> ShowNewBranchDialogAsync(string baseBranch)
+    public static async Task<string?> ShowNewBranchDialogAsync(string baseBranch)
     {
-        var content = new NewBranchDialogContent 
+        var dialog = new NewBranchContentDialog(baseBranch);
+
+        if (await dialog.ShowAsync() is ContentDialogResult.Primary)
         {
-            BaseBranchName = $"Based on '{baseBranch}'"
-        };
-
-        var dialog = new ContentDialog
+            return dialog.NewBranch;
+        }
+        else
         {
-            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
-            XamlRoot = MainWindow.Instance.Content.XamlRoot,
-
-            Title = "New branch",
-            Content = content,
-            CloseButtonText = "Ok"
-        };
-
-        await dialog.ShowAsync();
-
-        return content.BranchName;
+            return null;
+        }
     }
 }
