@@ -14,8 +14,8 @@ using Windows.System;
 
 public class RepoInfo
 {
-    public string Name { get; init; }
-    public string Path { get; init; }
+    public required string Name { get; init; }
+    public required string Path { get; init; }
 }
 
 [INotifyPropertyChanged]
@@ -35,6 +35,8 @@ public partial class RepoViewModel
             Path = path,
             Name = name
         };
+
+        MainWindow.Instance.Title = name;
 
         this.gitClient = new GitApi(path);
     }
@@ -201,7 +203,7 @@ public partial class RepoViewModel
 
             if (string.IsNullOrWhiteSpace(newBranchName))
             {
-                throw new ArgumentException("Branch name should not be empty.");
+                return;
             }
 
             if (vm is RemoteBranchWithoutWorktree)

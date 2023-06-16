@@ -190,7 +190,7 @@
 
             <Image Grid.Column="0" Height="25" VerticalAlignment="Center" Margin="10, 10, 10, 10" Source="ms-appx:///Assets/StoreAppList.png" />
 
-            <TextBlock x:Name="AppTitle" Grid.Column="1" Text="Branch Manager" VerticalAlignment="Center" />
+            <TextBlock x:Name="AppTitle" Grid.Column="1" Text="{x:Bind VM.Repo.RepoInfo.Name, Mode=OneWay, FallbackValue='Branch Manager'}" VerticalAlignment="Center" />
         </Grid>
 
         <Grid Grid.Row="1" Margin="5, 0, 5, 5">
@@ -200,7 +200,9 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBox Text="{x:Bind VM.Repo.RepoInfo.Name, Mode=OneWay}" PlaceholderText="Repo" IsEnabled="False" Margin="5, 0" />
+            <TextBox Name="BranchName" PlaceholderText="Find branch" Margin="5, 0"
+                     IsEnabled="{x:Bind VM.Repo, Mode=OneWay, Converter={StaticResource NullToBoolConverter}}"
+                     behaviors:TextChangedCommandBehavior.TextChangedCommand="{x:Bind VM.Repo.QueryChangedCommand, Mode=OneWay}" />
 
             <Button Grid.Column="1" Command="{x:Bind VM.OpenRepoCommand}" ToolTipService.ToolTip="Open git repo" Margin="5, 0">
                 <SymbolIcon Symbol="OpenLocal" />
@@ -221,17 +223,7 @@
             <ContentControl.ContentTemplate>
                 <DataTemplate x:DataType="vm:RepoViewModel">
                     <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-
-                        <Grid Grid.Row="0" Margin="5">
-                            <TextBox Name="BranchName" PlaceholderText="Find branch" Margin="5, 0"
-                                     behaviors:TextChangedCommandBehavior.TextChangedCommand="{x:Bind QueryChangedCommand}" />
-                        </Grid>
-
-                        <ListView Grid.Row="1" Margin="-10, 5, -10, 0"
+                        <ListView Margin="-10, 5, -10, 0"
                                   ItemsSource="{x:Bind FilteredBranches, Mode=OneWay}" 
                                   ItemTemplateSelector="{StaticResource BranchTemplateSelector}">
                             <ListView.ItemContainerStyle>
