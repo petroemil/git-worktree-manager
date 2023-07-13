@@ -120,8 +120,8 @@ public partial class RepoViewModel
             Process.Start(new ProcessStartInfo
             {
                 UseShellExecute = false,
-                FileName = "powershell",
-                WorkingDirectory = path
+                FileName = "wt",
+                Arguments = $"-d {path}"
             });
         }
         catch (Exception e)
