@@ -30,9 +30,9 @@ public partial class RepoViewModel : ObservableObject
 
     public RepoInfo RepoInfo { get; }
 
-    public RepoViewModel(string repoPath)
+    public RepoViewModel(RepoInfo repoInfo)
     {
-        this.RepoInfo = new RepoInfo(repoPath);
+        this.RepoInfo = repoInfo;
         this.gitClient = new GitApi(this.RepoInfo.Path);
 
         MainWindow.Instance.Title = this.RepoInfo.Name;
