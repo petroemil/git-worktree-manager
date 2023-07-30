@@ -16,13 +16,14 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private RepoInfo[] recentlyOpenedRepos;
 
+    public IAsyncRelayCommand<RepoInfo?> OpenRepoCommand => CommandHelper.CreateCommand<RepoInfo?>(OpenRepo);
+
     public MainViewModel()
     {
         this.RecentlyOpenedRepos = AppSettingsHelper.GetRecentlyOpenedRepos();
     }
 
-    [RelayCommand]
-    private async Task OpenRepo(RepoInfo? repoInfo)
+    public async Task OpenRepo(RepoInfo? repoInfo)
     {
         if (repoInfo is null)
         {
@@ -39,8 +40,10 @@ public partial class MainViewModel : ObservableObject
             repoInfo = new RepoInfo(folder.Path);
         }
 
-        this.Repo = new RepoViewModel(repoInfo);
-        await this.Repo.RefreshCommand.ExecuteAsync(null);
+        var repo = new RepoViewModel(repoInfo);
+        await repo.Refresh();
+
+        this.Repo = repo;
 
         AppSettingsHelper.SaveRecentlyOpenedRepo(repoInfo);
     }
