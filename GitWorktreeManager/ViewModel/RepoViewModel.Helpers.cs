@@ -30,11 +30,14 @@ public partial class RepoViewModel
             ICommand openVisualStudioCodeCommand,
             ICommand openVisualStudioCommand)
         {
-            // Work tree for HEAD
+            // Worktree for HEAD
+            var worktreeForLocalHead = worktrees.FirstOrDefault(x => x.Branch == branches.LocalHead)
+                ?? throw new Exception($"Make sure to have '{branches.LocalHead}' checked out in the root of the repo, then hit Refresh.");
+
             var localHeadVm = new HeadBranchWithWorktree
             {
                 Name = branches.LocalHead,
-                Path = worktrees.First(x => x.Branch == branches.LocalHead).Path,
+                Path = worktreeForLocalHead.Path,
                 CreateWorktreeFromBranchCommand = createWorktreeFromBranchCommand,
                 OpenFolderCommand = openFolderCommand,
                 OpenTerminalCommand = openTerminalCommand,
