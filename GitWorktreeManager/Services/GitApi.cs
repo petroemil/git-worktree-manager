@@ -22,7 +22,11 @@ public partial class GitApi
 
     public GitApi(string workingDir)
     {
-        this.helpers = new Helpers(workingDir, ".worktrees");
+        this.helpers = new Helpers
+        {
+            RootPath = workingDir,
+            WorktreeRootRelativePath = ".worktrees"
+        };
     }
 
     private async Task<string> RunCommand(string command)
