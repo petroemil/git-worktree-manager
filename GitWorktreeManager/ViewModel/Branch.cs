@@ -4,30 +4,30 @@ using System.Windows.Input;
 
 public abstract class Branch
 {
-    public string Name { get; init; }
+    public required string Name { get; init; }
     public string DisplayName => Name.Replace("/", " / ");
 
     public abstract string Label { get; }
 
     public string CreateWorktreeFromBranchLabel => $"Create new branch and set up worktree based on '{DisplayName}'";
-    public ICommand CreateWorktreeFromBranchCommand { get; init; }
+    public required ICommand CreateWorktreeFromBranchCommand { get; init; }
 }
 
 public abstract class BranchWithWorktree : Branch
 {
-    public string Path { get; init; }
+    public required string Path { get; init; }
 
     public string OpenFileExplorerLabel => "Open in File Explorer";
-    public ICommand OpenFolderCommand { get; init; }
+    public required ICommand OpenFolderCommand { get; init; }
 
     public string OpenTerminalLabel => "Open in Terminal";
-    public ICommand OpenTerminalCommand { get; init; }
+    public required ICommand OpenTerminalCommand { get; init; }
 
     public string OpenVisualStudioCodeLabel => "Open in Visual Studio Code";
-    public ICommand OpenVisualStudioCodeCommand { get; init; }
+    public required ICommand OpenVisualStudioCodeCommand { get; init; }
 
     public string OpenVisualStudioLabel => "Open in Visual Studio";
-    public ICommand OpenVisualStudioCommand { get; init; }
+    public required ICommand OpenVisualStudioCommand { get; init; }
 }
 
 public sealed class HeadBranchWithWorktree : BranchWithWorktree
@@ -40,13 +40,13 @@ public sealed class LocalBranchWithWorktree : BranchWithWorktree
     public override string Label => "Local branch with worktree";
 
     public string RemoveLabel => "Remove worktree";
-    public ICommand RemoveCommand { get; init; }
+    public required ICommand RemoveCommand { get; init; }
 }
 
 public abstract class BranchWithoutWorktree : Branch
 {
     public string CreateWorktreeForBranchLabel => $"Set up worktree for '{DisplayName}'";
-    public ICommand CreateWorktreeForBranchCommand { get; init; }
+    public required ICommand CreateWorktreeForBranchCommand { get; init; }
 }
 
 public sealed class LocalBranchWithoutWorktree : BranchWithoutWorktree

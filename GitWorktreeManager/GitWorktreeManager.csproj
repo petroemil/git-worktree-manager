@@ -15,6 +15,7 @@
     <PublishTrimmed>false</PublishTrimmed>
     <ApplicationIcon>Assets\Icon.ico</ApplicationIcon>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>Enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

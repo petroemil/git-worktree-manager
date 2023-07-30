@@ -11,7 +11,7 @@ public partial class RepoViewModel
 {
     public static class Helpers
     {
-        public static ImmutableList<Branch> FilterBranches(ImmutableList<Branch> branches, string query)
+        public static ImmutableList<Branch>? FilterBranches(ImmutableList<Branch>? branches, string query)
         {
             return branches?
                 .Where(branch => string.IsNullOrWhiteSpace(query) || branch.Name.Contains(query.Trim(), StringComparison.OrdinalIgnoreCase))

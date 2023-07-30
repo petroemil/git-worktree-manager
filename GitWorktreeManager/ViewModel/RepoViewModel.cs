@@ -14,12 +14,17 @@ using Windows.System;
 
 public class RepoInfo
 {
-    public required string Name { get; init; }
-    public required string Path { get; init; }
+    public string Name { get; }
+    public string Path { get; }
+
+    public RepoInfo(string path)
+    {
+        this.Path = System.IO.Path.GetFullPath(path);
+        this.Name = System.IO.Path.GetFileName(path);
+    }
 }
 
-[INotifyPropertyChanged]
-public partial class RepoViewModel
+public partial class RepoViewModel : ObservableObject
 {
     private readonly GitApi gitClient;
 
@@ -27,24 +32,16 @@ public partial class RepoViewModel
 
     public RepoViewModel(string repoPath)
     {
-        var path = Path.GetFullPath(repoPath);
-        var name = Path.GetFileName(path);
+        this.RepoInfo = new RepoInfo(repoPath);
+        this.gitClient = new GitApi(this.RepoInfo.Path);
 
-        this.RepoInfo = new RepoInfo
-        {
-            Path = path,
-            Name = name
-        };
-
-        MainWindow.Instance.Title = name;
-
-        this.gitClient = new GitApi(path);
+        MainWindow.Instance.Title = this.RepoInfo.Name;
     }
 
-    private ImmutableList<Branch> branches;
+    private ImmutableList<Branch>? branches;
 
     [ObservableProperty]
-    private ImmutableList<Branch> filteredBranches;
+    private ImmutableList<Branch>? filteredBranches;
 
     private string mostRecentQuery = string.Empty;
 

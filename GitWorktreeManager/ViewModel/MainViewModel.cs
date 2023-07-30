@@ -7,11 +7,10 @@ using System;
 using System.Threading.Tasks;
 using Windows.Storage.Pickers;
 
-[INotifyPropertyChanged]
-public partial class MainViewModel
+public partial class MainViewModel : ObservableObject
 {
     [ObservableProperty]
-    private RepoViewModel repo;
+    private RepoViewModel? repo;
 
     [RelayCommand]
     private async Task OpenRepo()
