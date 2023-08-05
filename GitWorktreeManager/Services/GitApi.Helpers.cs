@@ -22,14 +22,8 @@ public partial class GitApi
 {
     public class Helpers
     {
-        public string RootPath { get; }
-        public string WorktreeRootRelativePath { get; }
-
-        public Helpers(string rootPath, string worktreeRootRelativePath)
-        {
-            this.RootPath = rootPath;
-            this.WorktreeRootRelativePath = worktreeRootRelativePath;
-        }
+        public required string RootPath { get; init; }
+        public required string WorktreeRootRelativePath { get; init;  }
 
         public string ListBranches_CreateCommand()
             => "git branch --list -a";

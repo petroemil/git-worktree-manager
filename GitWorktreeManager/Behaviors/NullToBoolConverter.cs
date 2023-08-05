@@ -1,13 +1,7 @@
 ﻿namespace GitWorktreeManager.Behaviors;
 
-using Microsoft.UI.Xaml.Data;
-using System;
-
-internal sealed class NullToBoolConverter : IValueConverter
+internal sealed class NullToBoolConverter : NullConverter<bool>
 {
-    public object Convert(object value, Type targetType, object parameter, string language)
-        => value is not null;
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language)
-        => throw new NotImplementedException();
+    protected override bool NullValue => false;
+    protected override bool NotNullValue => true;
 }

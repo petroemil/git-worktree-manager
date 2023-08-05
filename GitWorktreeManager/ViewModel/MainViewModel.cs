@@ -3,30 +3,48 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GitWorktreeManager.Behaviors;
+using GitWorktreeManager.Services;
 using System;
 using System.Threading.Tasks;
 using Windows.Storage.Pickers;
 
-[INotifyPropertyChanged]
-public partial class MainViewModel
+public partial class MainViewModel : ObservableObject
 {
     [ObservableProperty]
-    private RepoViewModel repo;
+    private RepoViewModel? repo;
 
-    [RelayCommand]
-    private async Task OpenRepo()
+    [ObservableProperty]
+    private RepoInfo[] recentlyOpenedRepos;
+
+    public IAsyncRelayCommand<RepoInfo?> OpenRepoCommand => CommandHelper.CreateCommand<RepoInfo?>(OpenRepo);
+
+    public MainViewModel()
     {
-        var picker = new FolderPicker();
-        picker.InteropInitialize();
+        this.RecentlyOpenedRepos = AppSettingsHelper.GetRecentlyOpenedRepos();
+    }
 
-        var folder = await picker.PickSingleFolderAsync();
-
-        if (folder is null)
+    public async Task OpenRepo(RepoInfo? repoInfo)
+    {
+        if (repoInfo is null)
         {
-            return;
+            var picker = new FolderPicker();
+            picker.InteropInitialize();
+
+            var folder = await picker.PickSingleFolderAsync();
+
+            if (folder is null)
+            {
+                return;
+            }
+
+            repoInfo = new RepoInfo(folder.Path);
         }
 
-        this.Repo = new RepoViewModel(folder.Path);
-        await this.Repo.RefreshCommand.ExecuteAsync(null);
+        var repo = new RepoViewModel(repoInfo);
+        await repo.Refresh();
+
+        this.Repo = repo;
+
+        AppSettingsHelper.SaveRecentlyOpenedRepo(repoInfo);
     }
 }

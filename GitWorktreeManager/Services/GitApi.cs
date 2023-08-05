@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 public class GitException : Exception
 {
-    public string Command { get; init; }
-    public int ExitCode { get; init; }
-    public string Error { get; init; }
+    public required string Command { get; init; }
+    public required int ExitCode { get; init; }
+    public required string Error { get; init; }
 
     public GitException(string message) : base(message)
     {
@@ -22,7 +22,11 @@ public partial class GitApi
 
     public GitApi(string workingDir)
     {
-        this.helpers = new Helpers(workingDir, ".worktrees");
+        this.helpers = new Helpers
+        {
+            RootPath = workingDir,
+            WorktreeRootRelativePath = ".worktrees"
+        };
     }
 
     private async Task<string> RunCommand(string command)
