@@ -58,7 +58,12 @@ public partial class RepoViewModel : ObservableObject
     public void QueryChanged(string query)
     {
         this.mostRecentQuery = query;
-        this.FilteredBranches = Helpers.FilterBranches(this.branches, query);
+
+        var filteredBranches = Helpers.FilterBranches(this.branches, query);
+        if (Enumerable.SequenceEqual(this.FilteredBranches ?? ImmutableList<Branch>.Empty, filteredBranches ?? ImmutableList<Branch>.Empty) is false)
+        {
+            this.FilteredBranches = filteredBranches;
+        }
     }
 
     public async Task Refresh()
