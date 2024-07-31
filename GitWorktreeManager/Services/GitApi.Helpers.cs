@@ -5,20 +5,20 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 
-public sealed class ListBranchResult
+internal sealed class ListBranchResult
 {
     public required string LocalHead { get; init; }
     public required ImmutableList<string> LocalBranches { get; init; }
     public required ImmutableList<string> RemoteBranches { get; init; }
 }
 
-public sealed class Worktree
+internal sealed class Worktree
 {
     public required string Branch { get; init; }
     public required string Path { get; init; }
 }
 
-public partial class GitApi
+internal sealed partial class GitApi
 {
     public class Helpers
     {

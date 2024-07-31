@@ -3,7 +3,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-public sealed class BranchTemplateSelector : DataTemplateSelector
+internal sealed class BranchTemplateSelector : DataTemplateSelector
 {
     public DataTemplate? LocalHeadBranchTemplate { get; set; }
     public DataTemplate? LocalBranchWithWorktreeTemplate { get; set; }

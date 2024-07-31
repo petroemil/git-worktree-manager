@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Input;
 
-public partial class RepoViewModel
+internal sealed partial class RepoViewModel
 {
     public static class Helpers
     {

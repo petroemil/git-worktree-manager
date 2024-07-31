@@ -1,11 +1,11 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿namespace GitWorktreeManager.Behaviors;
+
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using System.Windows.Input;
 
-namespace GitWorktreeManager.Behaviors;
-
-public sealed class ListViewItemClickedCommandBehavior
+internal sealed class ListViewItemClickedCommandBehavior
 {
     public static IRelayCommand GetClickedCommand(DependencyObject target)
         => (IRelayCommand)target.GetValue(ClickedCommandProperty);

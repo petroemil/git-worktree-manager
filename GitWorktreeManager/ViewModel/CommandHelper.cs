@@ -5,7 +5,7 @@ using GitWorktreeManager.Behaviors;
 using System.Threading.Tasks;
 using System;
 
-public static class CommandHelper
+internal static class CommandHelper
 {
     private static async Task CommandWrapper(Func<Task> asyncFunc)
     {

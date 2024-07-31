@@ -2,7 +2,7 @@
 
 using System.Windows.Input;
 
-public abstract class Branch
+internal abstract class Branch
 {
     public required string Name { get; init; }
     public string DisplayName => Name.Replace("/", " / ");
@@ -13,7 +13,7 @@ public abstract class Branch
     public required ICommand CreateWorktreeFromBranchCommand { get; init; }
 }
 
-public abstract class BranchWithWorktree : Branch
+internal abstract class BranchWithWorktree : Branch
 {
     public required string Path { get; init; }
 
@@ -30,12 +30,12 @@ public abstract class BranchWithWorktree : Branch
     public required ICommand OpenVisualStudioCommand { get; init; }
 }
 
-public sealed class HeadBranchWithWorktree : BranchWithWorktree
+internal sealed class HeadBranchWithWorktree : BranchWithWorktree
 {
     public override string Label => "HEAD branch";
 }
 
-public sealed class LocalBranchWithWorktree : BranchWithWorktree
+internal sealed class LocalBranchWithWorktree : BranchWithWorktree
 {
     public override string Label => "Local branch with worktree";
 
@@ -43,18 +43,18 @@ public sealed class LocalBranchWithWorktree : BranchWithWorktree
     public required ICommand RemoveCommand { get; init; }
 }
 
-public abstract class BranchWithoutWorktree : Branch
+internal abstract class BranchWithoutWorktree : Branch
 {
     public string CreateWorktreeForBranchLabel => $"Set up worktree for '{DisplayName}'";
     public required ICommand CreateWorktreeForBranchCommand { get; init; }
 }
 
-public sealed class LocalBranchWithoutWorktree : BranchWithoutWorktree
+internal sealed class LocalBranchWithoutWorktree : BranchWithoutWorktree
 {
     public override string Label => "Local branch";
 }
 
-public sealed class RemoteBranchWithoutWorktree : BranchWithoutWorktree
+internal sealed class RemoteBranchWithoutWorktree : BranchWithoutWorktree
 {
     public override string Label => "Remote branch";
 }

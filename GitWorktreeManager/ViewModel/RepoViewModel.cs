@@ -12,7 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.System;
 
-public class RepoInfo
+internal sealed class RepoInfo
 {
     public string Name { get; }
     public string Path { get; }
@@ -24,7 +24,7 @@ public class RepoInfo
     }
 }
 
-public partial class RepoViewModel : ObservableObject
+internal sealed partial class RepoViewModel : ObservableObject
 {
     private readonly GitApi gitClient;
 
