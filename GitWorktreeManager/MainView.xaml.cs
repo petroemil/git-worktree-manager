@@ -3,7 +3,7 @@
 using GitWorktreeManager.ViewModel;
 using Microsoft.UI.Xaml.Controls;
 
-public sealed partial class MainView : UserControl
+internal sealed partial class MainView : UserControl
 {
     public MainViewModel VM { get; } = new();
 

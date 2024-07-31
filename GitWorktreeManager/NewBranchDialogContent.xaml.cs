@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Input;
 using System;
 using Windows.System;
 
-public sealed partial class NewBranchDialogContent : UserControl
+internal sealed partial class NewBranchDialogContent : UserControl
 {
     public string? BaseBranchName { get; set; }
     
