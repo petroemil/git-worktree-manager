@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using System.Windows.Input;
 
-internal sealed class ListViewItemClickedCommandBehavior
+internal static class ListViewItemClickedCommandBehavior
 {
     public static IRelayCommand GetClickedCommand(DependencyObject target)
         => (IRelayCommand)target.GetValue(ClickedCommandProperty);
@@ -28,5 +28,8 @@ internal sealed class ListViewItemClickedCommandBehavior
         }
 
         listView.ItemClick += (s, e) => command.Execute(e.ClickedItem);
+        
+        listView.IsEnabled = command.CanExecute(null);
+        command.CanExecuteChanged += (s, e) => listView.IsEnabled = command.CanExecute(null);
     }
 }

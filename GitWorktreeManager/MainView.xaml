@@ -231,7 +231,7 @@
                 <Button Content="Open git repo" Style="{StaticResource AccentButtonStyle}" Command="{x:Bind VM.OpenRepoCommand}" HorizontalAlignment="Center" />
             </StackPanel>
 
-            <ListView Grid.Row="1" Margin="-15, 15" ItemsSource="{x:Bind VM.RecentlyOpenedRepos}" IsItemClickEnabled="True" SelectionMode="None"
+            <ListView x:Name="RecentlyOpenedReposListView" Grid.Row="1" Margin="-15, 15" ItemsSource="{x:Bind VM.RecentlyOpenedRepos}" IsItemClickEnabled="True" SelectionMode="None"
                       HorizontalAlignment="Stretch" VerticalAlignment="Bottom" ItemContainerStyle="{StaticResource ListViewItemContainerStyle}"
                       behaviors:ListViewItemClickedCommandBehavior.ClickedCommand="{x:Bind VM.OpenRepoCommand}">
                 <ListView.ItemTemplate>
