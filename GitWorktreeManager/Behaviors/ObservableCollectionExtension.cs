@@ -11,34 +11,35 @@ internal static class ObservableCollectionExtension
         var oldItems = source.ToList();
         var newItems = newCollection.ToList();
 
-        // Items to remove
-        var toRemove = oldItems.Except(newItems).ToList();
-        foreach (var item in toRemove)
+        if (oldItems.Count > 0)
         {
-            source.Remove(item);
+            // Remove items that are not in the new list
+            var toRemove = oldItems.Except(newItems).ToList();
+            foreach (var item in toRemove)
+            {
+                source.Remove(item);
+            }
+
+            // Reorder the common items so the source matches the order of the new collection
+            // This will be a no-op if both collections are ordered
+            var commonItemsInNewOrder = oldItems.Union(newItems).ToList();
+            for (int i = 0; i < commonItemsInNewOrder.Count; i++)
+            {
+                var newItem = commonItemsInNewOrder[i];
+                var oldIndex = oldItems.IndexOf(newItem);
+                if (oldIndex != i && oldIndex >= 0)
+                {
+                    source.Move(oldIndex, i);
+                }
+            }
         }
 
-        // Items to add
+        // Insert new items in order
         var toAdd = newItems.Except(oldItems).ToList();
         foreach (var item in toAdd)
         {
-            source.Add(item);
-        }
-
-        // Items to update
-        var toUpdate = oldItems.Union(newItems).ToList();
-        // TODO: Call Update() on old items by passing in the new item
-
-        // Items to reorder
-        for (int i = 0; i < newItems.Count; i++)
-        {
-            var newItem = newItems[i];
-            var oldIndex = source.IndexOf(newItem);
-            if (oldIndex != i && oldIndex >= 0)
-            {
-                source.RemoveAt(oldIndex);
-                source.Insert(i, newItem);
-            }
+            var index = newItems.IndexOf(item);
+            source.Insert(index, item);
         }
     }
 }
