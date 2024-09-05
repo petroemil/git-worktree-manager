@@ -1,10 +1,7 @@
 {
   "profiles": {
-    "GitWorktreeManager (Package)": {
+    "GitWorktreeManager": {
       "commandName": "MsixPackage"
-    },
-    "GitWorktreeManager (Unpackaged)": {
-      "commandName": "Project"
     }
   }
 }
