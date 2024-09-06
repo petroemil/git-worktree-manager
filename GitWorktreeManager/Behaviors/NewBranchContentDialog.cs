@@ -5,7 +5,7 @@ using System;
 using System.Threading.Tasks;
 using Windows.System;
 
-public class NewBranchContentDialog : ContentDialog
+internal sealed class NewBranchContentDialog : ContentDialog
 {
     private readonly NewBranchDialogContent content;
 

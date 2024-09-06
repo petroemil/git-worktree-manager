@@ -6,7 +6,7 @@ using System.Linq;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 
-public static class AppSettingsHelper
+internal static class AppSettingsHelper
 {
     private static IPropertySet AppSettings => ApplicationData.Current.LocalSettings.Values;
 

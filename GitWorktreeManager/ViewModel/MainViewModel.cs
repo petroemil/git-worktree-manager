@@ -8,7 +8,7 @@ using System;
 using System.Threading.Tasks;
 using Windows.Storage.Pickers;
 
-public partial class MainViewModel : ObservableObject
+internal partial class MainViewModel : ObservableObject
 {
     [ObservableProperty]
     private RepoViewModel? repo;

@@ -1,22 +1,21 @@
-﻿using Microsoft.UI.Xaml.Data;
+﻿namespace GitWorktreeManager.Behaviors;
+
+using Microsoft.UI.Xaml.Data;
 using System;
 
-namespace GitWorktreeManager.Behaviors
+internal abstract class NullConverter<T> : IValueConverter
 {
-    internal abstract class NullConverter<T> : IValueConverter
+    protected abstract T? NullValue { get; }
+    protected abstract T? NotNullValue { get; }
+
+    public object? Convert(object value, Type targetType, object parameter, string language)
     {
-        protected abstract T? NullValue { get; }
-        protected abstract T? NotNullValue { get; }
+        var isNull = value is null;
+        var isInverted = parameter is "Invert";
 
-        public object? Convert(object value, Type targetType, object parameter, string language)
-        {
-            var isNull = value is null;
-            var isInverted = parameter is "Invert";
-
-            return isNull ^ isInverted ? NullValue : NotNullValue;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language) 
-            => throw new NotImplementedException();
+        return isNull ^ isInverted ? NullValue : NotNullValue;
     }
+
+    public object ConvertBack(object value, Type targetType, object parameter, string language) 
+        => throw new NotImplementedException();
 }

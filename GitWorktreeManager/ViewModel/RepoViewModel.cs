@@ -6,13 +6,14 @@ using GitWorktreeManager.Behaviors;
 using GitWorktreeManager.Services;
 using System;
 using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.System;
 
-public class RepoInfo
+internal sealed class RepoInfo
 {
     public string Name { get; }
     public string Path { get; }
@@ -24,7 +25,7 @@ public class RepoInfo
     }
 }
 
-public partial class RepoViewModel : ObservableObject
+internal sealed partial class RepoViewModel : ObservableObject
 {
     private readonly GitApi gitClient;
 
@@ -32,8 +33,7 @@ public partial class RepoViewModel : ObservableObject
 
     private ImmutableList<Branch>? branches;
 
-    [ObservableProperty]
-    private ImmutableList<Branch>? filteredBranches;
+    public ObservableCollection<Branch> FilteredBranches { get; } = [];
 
     private string mostRecentQuery = string.Empty;
 
@@ -60,9 +60,10 @@ public partial class RepoViewModel : ObservableObject
         this.mostRecentQuery = query;
 
         var filteredBranches = Helpers.FilterBranches(this.branches, query);
-        if (Enumerable.SequenceEqual(this.FilteredBranches ?? ImmutableList<Branch>.Empty, filteredBranches ?? ImmutableList<Branch>.Empty) is false)
+
+        if (filteredBranches is not null)
         {
-            this.FilteredBranches = filteredBranches;
+            this.FilteredBranches.Update(filteredBranches);
         }
     }
 

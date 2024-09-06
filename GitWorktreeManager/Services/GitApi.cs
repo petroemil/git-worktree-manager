@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-public class GitException : Exception
+internal sealed class GitException : Exception
 {
     public required string Command { get; init; }
     public required int ExitCode { get; init; }
@@ -16,7 +16,7 @@ public class GitException : Exception
     }
 }
 
-public partial class GitApi
+internal sealed partial class GitApi
 {
     private readonly Helpers helpers;
 

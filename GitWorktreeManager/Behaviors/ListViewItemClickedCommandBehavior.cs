@@ -1,11 +1,11 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿namespace GitWorktreeManager.Behaviors;
+
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using System.Windows.Input;
 
-namespace GitWorktreeManager.Behaviors;
-
-public sealed class ListViewItemClickedCommandBehavior
+internal static class ListViewItemClickedCommandBehavior
 {
     public static IRelayCommand GetClickedCommand(DependencyObject target)
         => (IRelayCommand)target.GetValue(ClickedCommandProperty);
@@ -28,5 +28,8 @@ public sealed class ListViewItemClickedCommandBehavior
         }
 
         listView.ItemClick += (s, e) => command.Execute(e.ClickedItem);
+        
+        listView.IsEnabled = command.CanExecute(null);
+        command.CanExecuteChanged += (s, e) => listView.IsEnabled = command.CanExecute(null);
     }
 }
