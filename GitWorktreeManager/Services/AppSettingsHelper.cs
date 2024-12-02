@@ -12,8 +12,8 @@ internal static class AppSettingsHelper
 
     private static string[] RecentlyOpenedRepos
     {
-        get => AppSettings[nameof(RecentlyOpenedRepos)] as string[] ?? [];
-        set => AppSettings[nameof(RecentlyOpenedRepos)] = value;
+        get => (AppSettings[nameof(RecentlyOpenedRepos)] as string)?.Split(",", StringSplitOptions.RemoveEmptyEntries) ?? [];
+        set => AppSettings[nameof(RecentlyOpenedRepos)] = string.Join(",", value);
     }
 
     public static RepoInfo[] GetRecentlyOpenedRepos()
