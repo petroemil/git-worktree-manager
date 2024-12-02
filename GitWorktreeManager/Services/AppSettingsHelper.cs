@@ -12,9 +12,7 @@ internal static class AppSettingsHelper
 
     private static string[] RecentlyOpenedRepos
     {
-        get => AppSettings.TryGetValue(nameof(RecentlyOpenedRepos), out var value) && value is string[] array
-            ? array
-            : Array.Empty<string>();
+        get => AppSettings[nameof(RecentlyOpenedRepos)] as string[] ?? [];
         set => AppSettings[nameof(RecentlyOpenedRepos)] = value;
     }
 
