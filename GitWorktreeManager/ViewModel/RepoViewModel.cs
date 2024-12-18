@@ -39,13 +39,6 @@ internal sealed partial class RepoViewModel : ObservableObject
 
     public IAsyncRelayCommand RefreshCommand => CommandHelper.CreateCommand(Refresh);
     public IAsyncRelayCommand<string> QueryChangedCommand => CommandHelper.CreateCommand<string>(QueryChanged);
-    public IAsyncRelayCommand<BranchWithoutWorktree> CreateWorktreeForBranchCommand => CommandHelper.CreateCommand<BranchWithoutWorktree>(CreateWorktreeForBranch);
-    public IAsyncRelayCommand<Branch> CreateWorktreeFromBranchCommand => CommandHelper.CreateCommand<Branch>(CreateWorktreeFromBranch);
-    public IAsyncRelayCommand<LocalBranchWithWorktree> RemoveCommand => CommandHelper.CreateCommand<LocalBranchWithWorktree>(Remove);
-    public IAsyncRelayCommand<BranchWithWorktree> OpenFolderCommand => CommandHelper.CreateCommand<BranchWithWorktree>(OpenFolder);
-    public IAsyncRelayCommand<BranchWithWorktree> OpenTerminalCommand => CommandHelper.CreateCommand<BranchWithWorktree>(OpenTerminal);
-    public IAsyncRelayCommand<BranchWithWorktree> OpenVisualStudioCodeCommand => CommandHelper.CreateCommand<BranchWithWorktree>(OpenVisualStudioCode);
-    public IAsyncRelayCommand<BranchWithWorktree> OpenVisualStudioCommand => CommandHelper.CreateCommand<BranchWithWorktree>(OpenVisualStudio);
 
     public RepoViewModel(RepoInfo repoInfo)
     {
@@ -74,13 +67,13 @@ internal sealed partial class RepoViewModel : ObservableObject
         var branches = await this.gitClient.ListBranchesAsync();
 
         this.branches = Helpers.CreateBranchVms(branches,
-            this.CreateWorktreeForBranchCommand,
-            this.CreateWorktreeFromBranchCommand,
-            this.RemoveCommand,
-            this.OpenFolderCommand,
-            this.OpenTerminalCommand,
-            this.OpenVisualStudioCodeCommand,
-            this.OpenVisualStudioCommand);
+            this.CreateWorktreeForBranch,
+            this.CreateWorktreeFromBranch,
+            this.Remove,
+            this.OpenFolder,
+            this.OpenTerminal,
+            this.OpenVisualStudioCode,
+            this.OpenVisualStudio);
 
         QueryChanged(this.mostRecentQuery);
     }
@@ -133,7 +126,9 @@ internal sealed partial class RepoViewModel : ObservableObject
         await Launcher.LaunchFolderPathAsync(path);
     }
 
-    public void OpenTerminal(BranchWithWorktree vm)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+    public async Task OpenTerminal(BranchWithWorktree vm)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         var path = Helpers.GetFolderPathForBranch(vm);
 
@@ -145,7 +140,9 @@ internal sealed partial class RepoViewModel : ObservableObject
         });
     }
 
-    public void OpenVisualStudioCode(BranchWithWorktree vm)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+    public async Task OpenVisualStudioCode(BranchWithWorktree vm)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         var path = Helpers.GetFolderPathForBranch(vm);
 

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using System.Windows.Input;
+using System.Threading.Tasks;
 
 internal sealed partial class RepoViewModel
 {
@@ -21,13 +21,13 @@ internal sealed partial class RepoViewModel
 
         public static ImmutableList<Branch> CreateBranchVms(
             ListBranchResult branches,
-            ICommand createWorktreeForBranchCommand,
-            ICommand createWorktreeFromBranchCommand,
-            ICommand removeCommand,
-            ICommand openFolderCommand,
-            ICommand openTerminalCommand,
-            ICommand openVisualStudioCodeCommand,
-            ICommand openVisualStudioCommand)
+            Func<BranchWithoutWorktree, Task> createWorktreeForBranchFunc,
+            Func<Branch, Task> createWorktreeFromBranchFunc,
+            Func<LocalBranchWithWorktree, Task> removeFunc,
+            Func<BranchWithWorktree, Task> openFolderFunc,
+            Func<BranchWithWorktree, Task> openTerminalFunc,
+            Func<BranchWithWorktree, Task> openVisualStudioCodeFunc,
+            Func<BranchWithWorktree, Task> openVisualStudioFunc)
         {
             var localHeadVm = new HeadBranchWithWorktree
             {
@@ -35,11 +35,11 @@ internal sealed partial class RepoViewModel
                 Path = branches.LocalHead.WorktreePath,
                 Ahead = branches.LocalHead.Ahead,
                 Behind = branches.LocalHead.Behind,
-                CreateWorktreeFromBranchCommand = createWorktreeFromBranchCommand,
-                OpenFolderCommand = openFolderCommand,
-                OpenTerminalCommand = openTerminalCommand,
-                OpenVisualStudioCodeCommand = openVisualStudioCodeCommand,
-                OpenVisualStudioCommand = openVisualStudioCommand
+                CreateWorktreeFromBranchCommand = CommandHelper.CreateCommand(createWorktreeFromBranchFunc),
+                OpenFolderCommand = CommandHelper.CreateCommand(openFolderFunc),
+                OpenTerminalCommand = CommandHelper.CreateCommand(openTerminalFunc),
+                OpenVisualStudioCodeCommand = CommandHelper.CreateCommand(openVisualStudioCodeFunc),
+                OpenVisualStudioCommand = CommandHelper.CreateCommand(openVisualStudioFunc)
             };
 
             // Local branches with worktree
@@ -53,12 +53,12 @@ internal sealed partial class RepoViewModel
                     Path = branch.WorktreePath,
                     Ahead = branch.Ahead,
                     Behind = branch.Behind,
-                    CreateWorktreeFromBranchCommand = createWorktreeFromBranchCommand,
-                    RemoveCommand = removeCommand,
-                    OpenFolderCommand = openFolderCommand,
-                    OpenTerminalCommand = openTerminalCommand,
-                    OpenVisualStudioCodeCommand = openVisualStudioCodeCommand,
-                    OpenVisualStudioCommand = openVisualStudioCommand
+                    CreateWorktreeFromBranchCommand = CommandHelper.CreateCommand(createWorktreeFromBranchFunc),
+                    RemoveCommand = CommandHelper.CreateCommand(removeFunc),
+                    OpenFolderCommand = CommandHelper.CreateCommand(openFolderFunc),
+                    OpenTerminalCommand = CommandHelper.CreateCommand(openTerminalFunc),
+                    OpenVisualStudioCodeCommand = CommandHelper.CreateCommand(openVisualStudioCodeFunc),
+                    OpenVisualStudioCommand = CommandHelper.CreateCommand(openVisualStudioFunc)
                 });
 
             // Local branches without worktree
@@ -69,8 +69,8 @@ internal sealed partial class RepoViewModel
                     Name = branch.Name,
                     Ahead = branch.Ahead,
                     Behind = branch.Behind,
-                    CreateWorktreeForBranchCommand = createWorktreeForBranchCommand,
-                    CreateWorktreeFromBranchCommand = createWorktreeFromBranchCommand
+                    CreateWorktreeForBranchCommand = CommandHelper.CreateCommand(createWorktreeForBranchFunc),
+                    CreateWorktreeFromBranchCommand = CommandHelper.CreateCommand(createWorktreeFromBranchFunc)
                 });
 
             // Remote branches
@@ -80,8 +80,8 @@ internal sealed partial class RepoViewModel
                     Name = branch.Name,
                     Ahead = branch.Ahead,
                     Behind = branch.Behind,
-                    CreateWorktreeForBranchCommand = createWorktreeForBranchCommand,
-                    CreateWorktreeFromBranchCommand = createWorktreeFromBranchCommand
+                    CreateWorktreeForBranchCommand = CommandHelper.CreateCommand(createWorktreeForBranchFunc),
+                    CreateWorktreeFromBranchCommand = CommandHelper.CreateCommand(createWorktreeFromBranchFunc)
                 });
 
             return Enumerable.Empty<Branch>()
