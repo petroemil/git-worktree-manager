@@ -4,12 +4,25 @@ using System;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 internal sealed class ListBranchResult
 {
-    public required string LocalHead { get; init; }
-    public required ImmutableList<string> LocalBranches { get; init; }
-    public required ImmutableList<string> RemoteBranches { get; init; }
+    public required BranchWithWorktree LocalHead { get; init; }
+    public required ImmutableList<Branch> LocalBranches { get; init; }
+    public required ImmutableList<Branch> RemoteBranches { get; init; }
+}
+
+internal class Branch
+{
+    public required string Name { get; init; }
+    public required uint Ahead { get; init; }
+    public required uint Behind { get; init; }
+}
+
+internal sealed class BranchWithWorktree : Branch
+{
+    public required string WorktreePath { get; init; }
 }
 
 internal sealed class Worktree
@@ -23,45 +36,94 @@ internal sealed partial class GitApi
     public class Helpers
     {
         public required string RootPath { get; init; }
-        public required string WorktreeRootRelativePath { get; init;  }
+        public required string WorktreeRootRelativePath { get; init; }
 
         public string ListBranches_CreateCommand()
-            => "git branch --list -a";
+            => "git branch -a --format=%(refname)#%(symref)#%(upstream:track,nobracket)#%(worktreepath)";
 
         public ListBranchResult ListBranches_ProcessResult(string result)
         {
-            const string RemotesPrefix = "remotes/";
-            const string OriginPrefix = "origin/";
-            const string OriginHead = "origin/HEAD";
+            const string LocalPrefix = "refs/heads/";
+            const string RemotesPrefix = "refs/remotes/origin/";
+            const string OriginHead = "refs/remotes/origin/HEAD";
 
-            var trimmedLines = result
+            var branches = result
                 .ReadLines()
-                .Select(line => line[2..]) // Trim first 2 characters
-                .Select(line => line.Replace(RemotesPrefix, string.Empty)) // Remove "remotes/" prefix
+                .Select<string, (string refName, string? symRef, (uint ahead, uint behind) upstreamTrack, string? worktreePath)?>(l =>
+                {
+                    var regex = new Regex("^(?<refname>[^#]+)#(?<symref>[^#]*)#(?:(?:ahead (?<ahead>\\d+))(?:, )?)?(?:(?:behind (?<behind>\\d+)))?#(?<worktreepath>[^#]*)$");
+
+                    if (regex.Match(l) is Match match)
+                    {
+                        var refName = match.Groups["refname"].Value;
+                        var symRef = match.Groups.TryGetValue("symref", out var symRefGroup) && symRefGroup.Success ? symRefGroup.Value : null;
+                        var worktreePath = match.Groups.TryGetValue("worktreepath", out var worktreePathGroup) && worktreePathGroup.Success ? worktreePathGroup.Value : null;
+                        var ahead = match.Groups.TryGetValue("ahead", out var aheadGroup) && aheadGroup.Success ? uint.Parse(aheadGroup.Value) : 0;
+                        var behind = match.Groups.TryGetValue("behind", out var behindGroup) && behindGroup.Success ? uint.Parse(behindGroup.Value) : 0;
+
+                        return (refName, symRef, (ahead, behind), worktreePath);
+                    }
+
+                    return null;
+                })
+                .Where(x => x is not null)
+                .Select(x => x!.Value)
                 .ToImmutableList();
 
-            var originHeadLine = trimmedLines
-                .First(line => line.StartsWith(OriginHead));
+            var originHeadBranchName = branches
+                .Where(b => b.refName.Equals(OriginHead, StringComparison.InvariantCultureIgnoreCase) is true)
+                .Select(b => b.symRef![RemotesPrefix.Length..])
+                .First();
 
-            var originHeadBranch = originHeadLine.Split("->", StringSplitOptions.TrimEntries)[1];
-            var localHeadBranch = originHeadBranch[OriginPrefix.Length..];
+            var originHeadBranch = branches
+                .Where(b => b.refName.Equals(OriginHead, StringComparison.InvariantCultureIgnoreCase) is false)
+                .Where(b => b.refName.Equals(LocalPrefix + originHeadBranchName, StringComparison.InvariantCultureIgnoreCase))
+                .Select(b => new BranchWithWorktree
+                {
+                    Name = b.refName[LocalPrefix.Length..],
+                    WorktreePath = b.worktreePath!,
+                    Ahead = b.upstreamTrack.ahead,
+                    Behind = b.upstreamTrack.behind
+                })
+                .First();
 
-            var localBranches = trimmedLines
-                .Where(line => line.StartsWith(OriginPrefix) is false)
-                .Where(line => line != localHeadBranch)
+            var localBranches = branches
+                .Where(b => b.refName.Equals(OriginHead, StringComparison.InvariantCultureIgnoreCase) is false)
+                .Where(b => b.refName.StartsWith(LocalPrefix, StringComparison.InvariantCultureIgnoreCase))
+                .Select(b => !string.IsNullOrEmpty(b.worktreePath)
+                    ? new BranchWithWorktree
+                    {
+                        Name = b.refName[LocalPrefix.Length..],
+                        WorktreePath = b.worktreePath,
+                        Ahead = b.upstreamTrack.ahead,
+                        Behind = b.upstreamTrack.behind
+                    }
+                    : new Branch
+                    {
+                        Name = b.refName[LocalPrefix.Length..],
+                        Ahead = b.upstreamTrack.ahead,
+                        Behind = b.upstreamTrack.behind
+                    })
+                .Where(b => b.Name != originHeadBranchName)
                 .ToImmutableList();
 
-            var remoteBranches = trimmedLines
-                .Where(line => line.StartsWith(OriginPrefix) is true)
-                .Where(line => line.StartsWith(OriginHead) is false) // Filter out special HEAD line
-                .Where(line => line != originHeadBranch)
-                .Select(line => line[OriginPrefix.Length..]) // Remove "origin/" prefix
-                .Where(line => !localBranches.Contains(line))
+            var localBranchNames = localBranches.Select(b => b.Name).ToImmutableHashSet();
+            var remoteBranches = branches
+                .Where(b => b.refName.Equals(OriginHead, StringComparison.InvariantCultureIgnoreCase) is false)
+                .Where(b => b.refName.StartsWith(RemotesPrefix, StringComparison.InvariantCultureIgnoreCase))
+                .Select(b => new Branch
+                {
+                    Name = b.refName[RemotesPrefix.Length..],
+                    Ahead = b.upstreamTrack.ahead,
+                    Behind = b.upstreamTrack.behind
+                })
+                .Where(b => b.Name != originHeadBranchName)
+                .Where(b => localBranchNames.Contains(b.Name) is false)
                 .ToImmutableList();
 
-            return new()
+            return new ListBranchResult
             {
-                LocalHead = localHeadBranch,
+                LocalHead = originHeadBranch,
                 LocalBranches = localBranches,
                 RemoteBranches = remoteBranches
             };
@@ -108,7 +170,7 @@ internal sealed partial class GitApi
             return $"git worktree add -b \"{newBranch}\" \"{path}\" origin/\"{baseBranch}\"";
         }
 
-        public string AddWorkTreeUnsetUpstream_CreateCommand(string branch) 
+        public string AddWorkTreeUnsetUpstream_CreateCommand(string branch)
             => $"git branch --unset-upstream \"{branch}\"";
 
         public string RemoveWorktree_CreateCommand(string branch)

@@ -70,10 +70,10 @@ internal sealed partial class RepoViewModel : ObservableObject
     public async Task Refresh()
     {
         await this.gitClient.Fetch();
-        var branches = await this.gitClient.ListBranchesAsync();
-        var worktrees = await this.gitClient.ListWorktrees();
 
-        this.branches = Helpers.CreateBranchVms(branches, worktrees,
+        var branches = await this.gitClient.ListBranchesAsync();
+
+        this.branches = Helpers.CreateBranchVms(branches,
             this.CreateWorktreeForBranchCommand,
             this.CreateWorktreeFromBranchCommand,
             this.RemoveCommand,
