@@ -33,6 +33,8 @@ internal sealed partial class RepoViewModel
             {
                 Name = branches.LocalHead.Name,
                 Path = branches.LocalHead.WorktreePath,
+                Ahead = branches.LocalHead.Ahead,
+                Behind = branches.LocalHead.Behind,
                 CreateWorktreeFromBranchCommand = createWorktreeFromBranchCommand,
                 OpenFolderCommand = openFolderCommand,
                 OpenTerminalCommand = openTerminalCommand,
@@ -49,6 +51,8 @@ internal sealed partial class RepoViewModel
                 {
                     Name = branch.Name,
                     Path = branch.WorktreePath,
+                    Ahead = branch.Ahead,
+                    Behind = branch.Behind,
                     CreateWorktreeFromBranchCommand = createWorktreeFromBranchCommand,
                     RemoveCommand = removeCommand,
                     OpenFolderCommand = openFolderCommand,
@@ -63,6 +67,8 @@ internal sealed partial class RepoViewModel
                 .Select(branch => new LocalBranchWithoutWorktree
                 {
                     Name = branch.Name,
+                    Ahead = branch.Ahead,
+                    Behind = branch.Behind,
                     CreateWorktreeForBranchCommand = createWorktreeForBranchCommand,
                     CreateWorktreeFromBranchCommand = createWorktreeFromBranchCommand
                 });
@@ -72,6 +78,8 @@ internal sealed partial class RepoViewModel
                 .Select(branch => new RemoteBranchWithoutWorktree
                 {
                     Name = branch.Name,
+                    Ahead = branch.Ahead,
+                    Behind = branch.Behind,
                     CreateWorktreeForBranchCommand = createWorktreeForBranchCommand,
                     CreateWorktreeFromBranchCommand = createWorktreeFromBranchCommand
                 });

@@ -13,6 +13,12 @@ internal abstract class Branch
 
     public string CreateWorktreeFromBranchLabel => $"Create new branch and set up worktree based on '{DisplayName}'";
     public required ICommand CreateWorktreeFromBranchCommand { get; init; }
+
+    public required uint Ahead { get; init; }
+    public required uint Behind { get; init; }
+
+    public string AheadBehindCommitsLabel => $"{Ahead} outgoing, {Behind} incoming commits";
+    public string AheadBehindCommitsDisplay => $"{Ahead}/{Behind}";
 }
 
 internal abstract class BranchWithWorktree : Branch
