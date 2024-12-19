@@ -27,10 +27,15 @@ internal sealed class BranchWithWorktree : Branch
 
 internal sealed partial class GitApi
 {
-    public class Helpers
+    public partial class Helpers
     {
         public required string RootPath { get; init; }
         public required string WorktreeRootRelativePath { get; init; }
+
+        [GeneratedRegex("^(?<refname>[^#]+)#(?<symref>[^#]*)#(?:(?:ahead (?<ahead>\\d+))(?:, )?)?(?:(?:behind (?<behind>\\d+)))?#(?<worktreepath>[^#]*)$")]
+        private static partial Regex GetListBranchesRegex();
+
+        private static readonly Regex listBarnchesRegex = GetListBranchesRegex();
 
         public string ListBranches_CreateCommand()
             => "git branch -a --format=%(refname)#%(symref)#%(upstream:track,nobracket)#%(worktreepath)";
@@ -45,9 +50,7 @@ internal sealed partial class GitApi
                 .ReadLines()
                 .Select<string, (string refName, string? symRef, (uint ahead, uint behind) upstreamTrack, string? worktreePath)?>(l =>
                 {
-                    var regex = new Regex("^(?<refname>[^#]+)#(?<symref>[^#]*)#(?:(?:ahead (?<ahead>\\d+))(?:, )?)?(?:(?:behind (?<behind>\\d+)))?#(?<worktreepath>[^#]*)$");
-
-                    if (regex.Match(l) is Match match)
+                    if (listBarnchesRegex.Match(l) is Match match)
                     {
                         var refName = match.Groups["refname"].Value;
                         var symRef = match.Groups.TryGetValue("symref", out var symRefGroup) && symRefGroup.Success ? symRefGroup.Value : null;
