@@ -1,7 +1,6 @@
 ﻿namespace GitWorktreeManager.Services;
 
 using System;
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -69,7 +68,7 @@ internal sealed partial class GitApi
         return resultProcessor(result);
     }
 
-    public async Task<ListBranchResult> ListBranchesAsync()
+    public async Task<ListBranchesResult> ListBranchesAsync()
     {
         return await RunCommandProcessResponse(
             helpers.ListBranches_CreateCommand(),

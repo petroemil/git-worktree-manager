@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-internal sealed class ListBranchResult
+internal sealed class ListBranchesResult
 {
     public required BranchWithWorktree LocalHead { get; init; }
     public required ImmutableList<Branch> LocalBranches { get; init; }
@@ -35,7 +35,7 @@ internal sealed partial class GitApi
         public string ListBranches_CreateCommand()
             => "git branch -a --format=%(refname)#%(symref)#%(upstream:track,nobracket)#%(worktreepath)";
 
-        public ListBranchResult ListBranches_ProcessResult(string result)
+        public ListBranchesResult ListBranches_ProcessResult(string result)
         {
             const string LocalPrefix = "refs/heads/";
             const string RemotesPrefix = "refs/remotes/origin/";
@@ -115,7 +115,7 @@ internal sealed partial class GitApi
                 .Where(b => localBranchNames.Contains(b.Name) is false)
                 .ToImmutableList();
 
-            return new ListBranchResult
+            return new ListBranchesResult
             {
                 LocalHead = originHeadBranch,
                 LocalBranches = localBranches,

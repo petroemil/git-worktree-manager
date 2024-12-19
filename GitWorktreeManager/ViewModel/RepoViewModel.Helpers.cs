@@ -20,7 +20,7 @@ internal sealed partial class RepoViewModel
         }
 
         public static ImmutableList<Branch> CreateBranchVms(
-            ListBranchResult branches,
+            ListBranchesResult branches,
             Func<BranchWithoutWorktree, Task> createWorktreeForBranchFunc,
             Func<Branch, Task> createWorktreeFromBranchFunc,
             Func<LocalBranchWithWorktree, Task> removeFunc,
