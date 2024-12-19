@@ -11,7 +11,7 @@ internal sealed partial class RepoViewModel
 {
     public static class Helpers
     {
-        public static ImmutableList<Branch>? FilterBranches(ImmutableList<Branch>? branches, string query)
+        public static ImmutableList<BranchViewModel>? FilterBranches(ImmutableList<BranchViewModel>? branches, string query)
         {
             return branches?
                 .Where(branch => string.IsNullOrWhiteSpace(query) || branch.Name.Contains(query.Trim(), StringComparison.OrdinalIgnoreCase))
@@ -19,17 +19,17 @@ internal sealed partial class RepoViewModel
                 .ToImmutableList();
         }
 
-        public static ImmutableList<Branch> CreateBranchVms(
+        public static ImmutableList<BranchViewModel> CreateBranchVms(
             ListBranchesResult branches,
-            Func<BranchWithoutWorktree, Task> createWorktreeForBranchFunc,
-            Func<Branch, Task> createWorktreeFromBranchFunc,
-            Func<LocalBranchWithWorktree, Task> removeFunc,
-            Func<BranchWithWorktree, Task> openFolderFunc,
-            Func<BranchWithWorktree, Task> openTerminalFunc,
-            Func<BranchWithWorktree, Task> openVisualStudioCodeFunc,
-            Func<BranchWithWorktree, Task> openVisualStudioFunc)
+            Func<BranchWithoutWorktreeViewModel, Task> createWorktreeForBranchFunc,
+            Func<BranchViewModel, Task> createWorktreeFromBranchFunc,
+            Func<LocalBranchWithWorktreeViewModel, Task> removeFunc,
+            Func<BranchWithWorktreeViewModel, Task> openFolderFunc,
+            Func<BranchWithWorktreeViewModel, Task> openTerminalFunc,
+            Func<BranchWithWorktreeViewModel, Task> openVisualStudioCodeFunc,
+            Func<BranchWithWorktreeViewModel, Task> openVisualStudioFunc)
         {
-            var localHeadVm = new HeadBranchWithWorktree
+            var localHeadVm = new HeadBranchWithWorktreeViewModel
             {
                 Name = branches.LocalHead.Name,
                 Path = branches.LocalHead.WorktreePath,
@@ -47,7 +47,7 @@ internal sealed partial class RepoViewModel
                 .Select(branch => branch as Services.BranchWithWorktree)
                 .Where(branch => branch is not null)
                 .Select(branch => branch!)
-                .Select(branch => new LocalBranchWithWorktree
+                .Select(branch => new LocalBranchWithWorktreeViewModel
                 {
                     Name = branch.Name,
                     Path = branch.WorktreePath,
@@ -64,7 +64,7 @@ internal sealed partial class RepoViewModel
             // Local branches without worktree
             var localBranchVms = branches.LocalBranches
                 .Where(branch => branch is not Services.BranchWithWorktree)
-                .Select(branch => new LocalBranchWithoutWorktree
+                .Select(branch => new LocalBranchWithoutWorktreeViewModel
                 {
                     Name = branch.Name,
                     Ahead = branch.Ahead,
@@ -75,7 +75,7 @@ internal sealed partial class RepoViewModel
 
             // Remote branches
             var remoteBranchVms = branches.RemoteBranches
-                .Select(branch => new RemoteBranchWithoutWorktree
+                .Select(branch => new RemoteBranchWithoutWorktreeViewModel
                 {
                     Name = branch.Name,
                     Ahead = branch.Ahead,
@@ -84,7 +84,7 @@ internal sealed partial class RepoViewModel
                     CreateWorktreeFromBranchCommand = CommandHelper.CreateCommand(createWorktreeFromBranchFunc)
                 });
 
-            return Enumerable.Empty<Branch>()
+            return Enumerable.Empty<BranchViewModel>()
                 .Append(localHeadVm)
                 .Concat(worktreeVms)
                 .Concat(localBranchVms)
@@ -92,7 +92,7 @@ internal sealed partial class RepoViewModel
                 .ToImmutableList();
         }
 
-        public static string GetFolderPathForBranch(BranchWithWorktree branch)
+        public static string GetFolderPathForBranch(BranchWithWorktreeViewModel branch)
         {
             return Path.GetFullPath(branch.Path);
         }

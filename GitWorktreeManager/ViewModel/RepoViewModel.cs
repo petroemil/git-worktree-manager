@@ -31,9 +31,9 @@ internal sealed partial class RepoViewModel : ObservableObject
 
     public RepoInfo RepoInfo { get; }
 
-    private ImmutableList<Branch>? branches;
+    private ImmutableList<BranchViewModel>? branches;
 
-    public ObservableCollection<Branch> FilteredBranches { get; } = [];
+    public ObservableCollection<BranchViewModel> FilteredBranches { get; } = [];
 
     private string mostRecentQuery = string.Empty;
 
@@ -78,21 +78,21 @@ internal sealed partial class RepoViewModel : ObservableObject
         QueryChanged(this.mostRecentQuery);
     }
 
-    public async Task CreateWorktreeForBranch(BranchWithoutWorktree vm)
+    public async Task CreateWorktreeForBranch(BranchWithoutWorktreeViewModel vm)
     {
-        if (vm is LocalBranchWithoutWorktree)
+        if (vm is LocalBranchWithoutWorktreeViewModel)
         {
             await this.gitClient.AddWorktreeForLocalBranch(vm.Name);
             await this.Refresh();
         }
-        else if (vm is RemoteBranchWithoutWorktree)
+        else if (vm is RemoteBranchWithoutWorktreeViewModel)
         {
             await this.gitClient.AddWorktreeForRemoteBranch(vm.Name);
             await this.Refresh();
         }
     }
 
-    public async Task CreateWorktreeFromBranch(Branch vm)
+    public async Task CreateWorktreeFromBranch(BranchViewModel vm)
     {
         var newBranchName = await DialogHelper.ShowNewBranchDialogAsync(vm.Name);
 
@@ -101,7 +101,7 @@ internal sealed partial class RepoViewModel : ObservableObject
             return;
         }
 
-        if (vm is RemoteBranchWithoutWorktree)
+        if (vm is RemoteBranchWithoutWorktreeViewModel)
         {
             await this.gitClient.AddWorktreeBasedOnRemoteBranch(newBranchName, vm.Name);
             await this.Refresh();
@@ -113,13 +113,13 @@ internal sealed partial class RepoViewModel : ObservableObject
         }
     }
 
-    public async Task Remove(LocalBranchWithWorktree worktree)
+    public async Task Remove(LocalBranchWithWorktreeViewModel worktree)
     {
         await this.gitClient.RemoveWorktree(worktree.Path);
         await this.Refresh();
     }
 
-    public async Task OpenFolder(BranchWithWorktree vm)
+    public async Task OpenFolder(BranchWithWorktreeViewModel vm)
     {
         var path = Helpers.GetFolderPathForBranch(vm);
 
@@ -127,7 +127,7 @@ internal sealed partial class RepoViewModel : ObservableObject
     }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-    public async Task OpenTerminal(BranchWithWorktree vm)
+    public async Task OpenTerminal(BranchWithWorktreeViewModel vm)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         var path = Helpers.GetFolderPathForBranch(vm);
@@ -141,7 +141,7 @@ internal sealed partial class RepoViewModel : ObservableObject
     }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-    public async Task OpenVisualStudioCode(BranchWithWorktree vm)
+    public async Task OpenVisualStudioCode(BranchWithWorktreeViewModel vm)
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
     {
         var path = Helpers.GetFolderPathForBranch(vm);
@@ -157,7 +157,7 @@ internal sealed partial class RepoViewModel : ObservableObject
         });
     }
 
-    public async Task OpenVisualStudio(BranchWithWorktree vm)
+    public async Task OpenVisualStudio(BranchWithWorktreeViewModel vm)
     {
         var path = Helpers.GetFolderPathForBranch(vm);
 

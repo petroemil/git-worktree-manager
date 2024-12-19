@@ -14,10 +14,10 @@ internal sealed partial class BranchTemplateSelector : DataTemplateSelector
     {
         return item switch
         {
-            HeadBranchWithWorktree => LocalHeadBranchTemplate,
-            LocalBranchWithWorktree => LocalBranchWithWorktreeTemplate,
-            LocalBranchWithoutWorktree => LocalBranchTemplate,
-            RemoteBranchWithoutWorktree => RemoteBranchTemplate,
+            HeadBranchWithWorktreeViewModel => LocalHeadBranchTemplate,
+            LocalBranchWithWorktreeViewModel => LocalBranchWithWorktreeTemplate,
+            LocalBranchWithoutWorktreeViewModel => LocalBranchTemplate,
+            RemoteBranchWithoutWorktreeViewModel => RemoteBranchTemplate,
             _ => null
         };
     }

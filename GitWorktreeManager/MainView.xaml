@@ -67,7 +67,7 @@
 
             <vm:BranchTemplateSelector x:Key="BranchTemplateSelector">
                 <vm:BranchTemplateSelector.LocalHeadBranchTemplate>
-                    <DataTemplate x:DataType="vm:HeadBranchWithWorktree">
+                    <DataTemplate x:DataType="vm:HeadBranchWithWorktreeViewModel">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -153,7 +153,7 @@
                     </DataTemplate>
                 </vm:BranchTemplateSelector.LocalHeadBranchTemplate>
                 <vm:BranchTemplateSelector.LocalBranchWithWorktreeTemplate>
-                    <DataTemplate x:DataType="vm:LocalBranchWithWorktree">
+                    <DataTemplate x:DataType="vm:LocalBranchWithWorktreeViewModel">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -248,7 +248,7 @@
                     </DataTemplate>
                 </vm:BranchTemplateSelector.LocalBranchWithWorktreeTemplate>
                 <vm:BranchTemplateSelector.LocalBranchTemplate>
-                    <DataTemplate x:DataType="vm:LocalBranchWithoutWorktree">
+                    <DataTemplate x:DataType="vm:LocalBranchWithoutWorktreeViewModel">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -305,7 +305,7 @@
                     </DataTemplate>
                 </vm:BranchTemplateSelector.LocalBranchTemplate>
                 <vm:BranchTemplateSelector.RemoteBranchTemplate>
-                    <DataTemplate x:DataType="vm:RemoteBranchWithoutWorktree">
+                    <DataTemplate x:DataType="vm:RemoteBranchWithoutWorktreeViewModel">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
