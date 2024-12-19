@@ -25,12 +25,6 @@ internal sealed class BranchWithWorktree : Branch
     public required string WorktreePath { get; init; }
 }
 
-internal sealed class Worktree
-{
-    public required string Branch { get; init; }
-    public required string Path { get; init; }
-}
-
 internal sealed partial class GitApi
 {
     public class Helpers
@@ -128,22 +122,6 @@ internal sealed partial class GitApi
                 RemoteBranches = remoteBranches
             };
         }
-
-        public string ListWorktrees_CreateCommand()
-            => "git worktree list --porcelain";
-
-        public ImmutableList<Worktree> ListWorktrees_ProcessResult(string result)
-            => result
-            .ReadLines()
-            .Chunk(3)
-            .Select(x =>
-            {
-                var path = x[0]["worktree ".Length..];
-                var branch = x[2]["branch refs/heads/".Length..];
-
-                return new Worktree { Branch = branch, Path = path };
-            })
-            .ToImmutableList();
 
         public string AddWorktreeForLocalBranch_CreateCommand(string branch)
         {

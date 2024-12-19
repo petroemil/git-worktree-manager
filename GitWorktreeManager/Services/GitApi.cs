@@ -77,16 +77,6 @@ internal sealed partial class GitApi
     }
 
     /// <summary>
-    /// <code>git worktree list</code>
-    /// </summary>
-    public async Task<ImmutableList<Worktree>> ListWorktrees()
-    {
-        return await RunCommandProcessResponse(
-            helpers.ListWorktrees_CreateCommand(),
-            helpers.ListWorktrees_ProcessResult);
-    }
-
-    /// <summary>
     /// <code>git worktree add {path} {branch}</code>
     /// </summary>
     public async Task AddWorktreeForLocalBranch(string branch)
