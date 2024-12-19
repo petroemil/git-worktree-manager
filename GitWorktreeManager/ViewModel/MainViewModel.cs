@@ -2,14 +2,13 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using GitWorktreeManager.Behaviors;
 using GitWorktreeManager.Services;
-using System;
 using System.Threading.Tasks;
-using Windows.Storage.Pickers;
 
 internal partial class MainViewModel : ObservableObject
 {
+    private readonly IDialogService dialogService;
+
     [ObservableProperty]
     private RepoViewModel? repo;
 
@@ -20,6 +19,7 @@ internal partial class MainViewModel : ObservableObject
 
     public MainViewModel()
     {
+        this.dialogService = new DialogService();
         this.RecentlyOpenedRepos = AppSettingsHelper.GetRecentlyOpenedRepos();
     }
 
@@ -27,20 +27,17 @@ internal partial class MainViewModel : ObservableObject
     {
         if (repoInfo is null)
         {
-            var picker = new FolderPicker();
-            picker.InteropInitialize();
+            var path = await this.dialogService.OpenFolderAsync();
 
-            var folder = await picker.PickSingleFolderAsync();
-
-            if (folder is null)
+            if (path is null)
             {
                 return;
             }
 
-            repoInfo = new RepoInfo(folder.Path);
+            repoInfo = new RepoInfo(path);
         }
 
-        var repo = new RepoViewModel(repoInfo);
+        var repo = new RepoViewModel(repoInfo, new RepoService(repoInfo.Path), this.dialogService);
         await repo.Refresh();
 
         this.Repo = repo;

@@ -1,8 +1,8 @@
 ﻿namespace GitWorktreeManager.ViewModel;
 
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
-using System.Windows.Input;
 
 internal abstract class BranchViewModel : IEquatable<BranchViewModel?>
 {
@@ -12,7 +12,7 @@ internal abstract class BranchViewModel : IEquatable<BranchViewModel?>
     public abstract string Label { get; }
 
     public string CreateWorktreeFromBranchLabel => $"Create new branch and set up worktree based on '{DisplayName}'";
-    public required ICommand CreateWorktreeFromBranchCommand { get; init; }
+    public required IAsyncRelayCommand<BranchViewModel> CreateWorktreeFromBranchCommand { get; init; }
 
     public required uint Ahead { get; init; }
     public required uint Behind { get; init; }
@@ -44,16 +44,16 @@ internal abstract class BranchWithWorktreeViewModel : BranchViewModel, IEquatabl
     public required string Path { get; init; }
 
     public string OpenFileExplorerLabel => "Open in File Explorer";
-    public required ICommand OpenFolderCommand { get; init; }
+    public required IAsyncRelayCommand<BranchWithWorktreeViewModel> OpenFolderCommand { get; init; }
 
     public string OpenTerminalLabel => "Open in Terminal";
-    public required ICommand OpenTerminalCommand { get; init; }
+    public required IAsyncRelayCommand<BranchWithWorktreeViewModel> OpenTerminalCommand { get; init; }
 
     public string OpenVisualStudioCodeLabel => "Open in Visual Studio Code";
-    public required ICommand OpenVisualStudioCodeCommand { get; init; }
+    public required IAsyncRelayCommand<BranchWithWorktreeViewModel> OpenVisualStudioCodeCommand { get; init; }
 
     public string OpenVisualStudioLabel => "Open in Visual Studio";
-    public required ICommand OpenVisualStudioCommand { get; init; }
+    public required IAsyncRelayCommand<BranchWithWorktreeViewModel> OpenVisualStudioCommand { get; init; }
 
     public override bool Equals(object? obj)
         => this.Equals(obj as BranchWithWorktreeViewModel);
@@ -96,7 +96,7 @@ internal sealed class LocalBranchWithWorktreeViewModel : BranchWithWorktreeViewM
     public override string Label => "Local branch with worktree";
 
     public string RemoveLabel => "Remove worktree";
-    public required ICommand RemoveCommand { get; init; }
+    public required IAsyncRelayCommand<LocalBranchWithWorktreeViewModel> RemoveCommand { get; init; }
 
     public override bool Equals(object? obj)
         => this.Equals(obj as LocalBranchWithWorktreeViewModel);
@@ -117,7 +117,7 @@ internal sealed class LocalBranchWithWorktreeViewModel : BranchWithWorktreeViewM
 internal abstract class BranchWithoutWorktreeViewModel : BranchViewModel, IEquatable<BranchWithoutWorktreeViewModel?>
 {
     public string CreateWorktreeForBranchLabel => $"Set up worktree for '{DisplayName}'";
-    public required ICommand CreateWorktreeForBranchCommand { get; init; }
+    public required IAsyncRelayCommand<BranchWithoutWorktreeViewModel> CreateWorktreeForBranchCommand { get; init; }
 
     public override bool Equals(object? obj) 
         => this.Equals(obj as BranchWithoutWorktreeViewModel);

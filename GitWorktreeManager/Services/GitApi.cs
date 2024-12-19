@@ -68,6 +68,9 @@ internal sealed partial class GitApi
         return resultProcessor(result);
     }
 
+    /// <summary>
+    /// <code>git branch -a --format=%(refname)#%(symref)#%(upstream:track,nobracket)#%(worktreepath)</code>
+    /// </summary>
     public async Task<ListBranchesResult> ListBranchesAsync()
     {
         return await RunCommandProcessResponse(
