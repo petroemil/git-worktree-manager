@@ -3,7 +3,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GitWorktreeManager.Behaviors;
-using GitWorktreeManager.Services;
+using GitWorktreeManager.Services.Abstractions;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;

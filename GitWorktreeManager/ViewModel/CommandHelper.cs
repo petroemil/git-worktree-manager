@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Threading.Tasks;
 using System;
 using GitWorktreeManager.Services;
+using GitWorktreeManager.Services.Abstractions;
 
 internal static class CommandHelper
 {

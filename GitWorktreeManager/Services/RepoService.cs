@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GitWorktreeManager.Services.Abstractions;
+using System;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -86,5 +88,10 @@ internal sealed class RepoService : IRepoService
         {
             await Launcher.LaunchUriAsync(new Uri(sln));
         }
+    }
+
+    public async Task<ImmutableList<string>> ListVisualStudioSolutionFiles(string path)
+    {
+        return Directory.EnumerateFiles(path, "*.sln").ToImmutableList();
     }
 }

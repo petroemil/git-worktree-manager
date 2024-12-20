@@ -3,6 +3,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GitWorktreeManager.Services;
+using GitWorktreeManager.Services.Abstractions;
 using System.Threading.Tasks;
 
 internal partial class MainViewModel : ObservableObject

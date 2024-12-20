@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace GitWorktreeManager.Services;
+namespace GitWorktreeManager.Services.Abstractions;
 
 internal interface IRepoService
 {

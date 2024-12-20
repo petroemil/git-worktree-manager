@@ -47,7 +47,7 @@ internal sealed partial class GitApi
             const string OriginHead = "refs/remotes/origin/HEAD";
 
             var branches = result
-                .ReadLines()
+                .Split('\n', StringSplitOptions.RemoveEmptyEntries)
                 .Select<string, (string refName, string? symRef, (uint ahead, uint behind) upstreamTrack, string? worktreePath)?>(l =>
                 {
                     if (listBarnchesRegex.Match(l) is Match match)

@@ -1,6 +1,7 @@
 ﻿namespace GitWorktreeManager.Services;
 
 using GitWorktreeManager.Behaviors;
+using GitWorktreeManager.Services.Abstractions;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Threading.Tasks;
