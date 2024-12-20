@@ -15,14 +15,14 @@ internal abstract class BranchViewModel : IEquatable<BranchViewModel?>
     public abstract string Label { get; }
 
     public required string Name { get; init; }
-    public string DisplayName => Name.Replace("/", " / ");
+    public string DisplayName => this.Name.Replace("/", " / ");
 
-    public string AheadBehindCommitsLabel => $"{Ahead} outgoing, {Behind} incoming commits";
-    public string AheadBehindCommitsDisplay => $"{Ahead}/{Behind}";
+    public string AheadBehindCommitsLabel => $"{this.Ahead} outgoing, {this.Behind} incoming commits";
+    public string AheadBehindCommitsDisplay => $"{this.Ahead}/{this.Behind}";
     public required uint Ahead { get; init; }
     public required uint Behind { get; init; }
 
-    public string CreateWorktreeFromBranchLabel => $"Create new branch and set up worktree based on '{DisplayName}'";
+    public string CreateWorktreeFromBranchLabel => $"Create new branch and set up worktree based on '{this.DisplayName}'";
     public IAsyncRelayCommand CreateWorktreeFromBranchCommand { get; }
 
     public BranchViewModel(RepoViewModel repoVm, IRepoService repoService, IDialogService dialogService)
@@ -57,7 +57,7 @@ internal abstract class BranchViewModel : IEquatable<BranchViewModel?>
             && this.Behind == other.Behind;
 
     public override int GetHashCode()
-        => HashCode.Combine(Name, Ahead, Behind);
+        => HashCode.Combine(this.Name, this.Ahead, this.Behind);
 
     public static bool operator ==(BranchViewModel? left, BranchViewModel? right)
         => EqualityComparer<BranchViewModel>.Default.Equals(left, right);
@@ -189,7 +189,7 @@ internal sealed class LocalBranchWithWorktreeViewModel : BranchWithWorktreeViewM
 
 internal abstract class BranchWithoutWorktreeViewModel : BranchViewModel, IEquatable<BranchWithoutWorktreeViewModel?>
 {
-    public string CreateWorktreeForBranchLabel => $"Set up worktree for '{DisplayName}'";
+    public string CreateWorktreeForBranchLabel => $"Set up worktree for '{this.DisplayName}'";
     public IAsyncRelayCommand CreateWorktreeForBranchCommand { get; }
 
     public BranchWithoutWorktreeViewModel(RepoViewModel repoVm, IRepoService repoService, IDialogService dialogService)
