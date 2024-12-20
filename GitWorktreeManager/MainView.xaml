@@ -65,8 +65,8 @@
                 </Setter>
             </Style>
 
-            <vm:BranchTemplateSelector x:Key="BranchTemplateSelector">
-                <vm:BranchTemplateSelector.LocalHeadBranchTemplate>
+            <behaviors:BranchTemplateSelector x:Key="BranchTemplateSelector">
+                <behaviors:BranchTemplateSelector.LocalHeadBranchTemplate>
                     <DataTemplate x:DataType="vm:HeadBranchWithWorktreeViewModel">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -151,8 +151,8 @@
                             </CommandBar>
                         </Grid>
                     </DataTemplate>
-                </vm:BranchTemplateSelector.LocalHeadBranchTemplate>
-                <vm:BranchTemplateSelector.LocalBranchWithWorktreeTemplate>
+                </behaviors:BranchTemplateSelector.LocalHeadBranchTemplate>
+                <behaviors:BranchTemplateSelector.LocalBranchWithWorktreeTemplate>
                     <DataTemplate x:DataType="vm:LocalBranchWithWorktreeViewModel">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -246,8 +246,8 @@
                             </CommandBar>
                         </Grid>
                     </DataTemplate>
-                </vm:BranchTemplateSelector.LocalBranchWithWorktreeTemplate>
-                <vm:BranchTemplateSelector.LocalBranchTemplate>
+                </behaviors:BranchTemplateSelector.LocalBranchWithWorktreeTemplate>
+                <behaviors:BranchTemplateSelector.LocalBranchTemplate>
                     <DataTemplate x:DataType="vm:LocalBranchWithoutWorktreeViewModel">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -303,8 +303,8 @@
                             </CommandBar>
                         </Grid>
                     </DataTemplate>
-                </vm:BranchTemplateSelector.LocalBranchTemplate>
-                <vm:BranchTemplateSelector.RemoteBranchTemplate>
+                </behaviors:BranchTemplateSelector.LocalBranchTemplate>
+                <behaviors:BranchTemplateSelector.RemoteBranchTemplate>
                     <DataTemplate x:DataType="vm:RemoteBranchWithoutWorktreeViewModel">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -351,8 +351,8 @@
                             </CommandBar>
                         </Grid>
                     </DataTemplate>
-                </vm:BranchTemplateSelector.RemoteBranchTemplate>
-            </vm:BranchTemplateSelector>
+                </behaviors:BranchTemplateSelector.RemoteBranchTemplate>
+            </behaviors:BranchTemplateSelector>
 
         </ResourceDictionary>
     </UserControl.Resources>
