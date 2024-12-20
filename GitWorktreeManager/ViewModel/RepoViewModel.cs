@@ -39,7 +39,7 @@ internal sealed partial class RepoViewModel : ObservableObject
         MainWindow.Instance.Title = this.RepoInfo.Name;
     }
 
-    public void QueryChanged(string query)
+    private void QueryChanged(string query)
     {
         this.mostRecentQuery = query;
 
@@ -61,80 +61,8 @@ internal sealed partial class RepoViewModel : ObservableObject
     {
         var branches = await this.repoService.ListBranchesAsync();
 
-        this.branches = Helpers.CreateBranchVms(branches,
-            this.CreateWorktreeForBranch,
-            this.CreateWorktreeFromBranch,
-            this.Remove,
-            this.OpenFolder,
-            this.OpenTerminal,
-            this.OpenVisualStudioCode,
-            this.OpenVisualStudio);
+        this.branches = Helpers.CreateBranchVms(branches, this, this.repoService, this.dialogService);
 
         QueryChanged(this.mostRecentQuery);
-    }
-
-    public async Task CreateWorktreeForBranch(BranchWithoutWorktreeViewModel vm)
-    {
-        if (vm is LocalBranchWithoutWorktreeViewModel)
-        {
-            await this.repoService.AddWorktreeForLocalBranch(vm.Name);
-            await this.Refresh();
-        }
-        else if (vm is RemoteBranchWithoutWorktreeViewModel)
-        {
-            await this.repoService.AddWorktreeForRemoteBranch(vm.Name);
-            await this.Refresh();
-        }
-    }
-
-    public async Task CreateWorktreeFromBranch(BranchViewModel vm)
-    {
-        var newBranchName = await this.dialogService.ShowNewBranchDialogAsync(vm.Name);
-
-        if (string.IsNullOrWhiteSpace(newBranchName))
-        {
-            return;
-        }
-
-        if (vm is RemoteBranchWithoutWorktreeViewModel)
-        {
-            await this.repoService.AddWorktreeBasedOnRemoteBranch(newBranchName, vm.Name);
-            await this.Refresh();
-        }
-        else
-        {
-            await this.repoService.AddWorktreeBasedOnLocalBranch(newBranchName, vm.Name);
-            await this.Refresh();
-        }
-    }
-
-    public async Task Remove(LocalBranchWithWorktreeViewModel worktree)
-    {
-        await this.repoService.RemoveWorktree(worktree.Path);
-        await this.Refresh();
-    }
-
-    public async Task OpenFolder(BranchWithWorktreeViewModel vm)
-    {
-        var path = Helpers.GetFolderPathForBranch(vm);
-        await this.repoService.OpenFolder(path);
-    }
-
-    public async Task OpenTerminal(BranchWithWorktreeViewModel vm)
-    {
-        var path = Helpers.GetFolderPathForBranch(vm);
-        await this.repoService.OpenTerminal(path);
-    }
-
-    public async Task OpenVisualStudioCode(BranchWithWorktreeViewModel vm)
-    {
-        var path = Helpers.GetFolderPathForBranch(vm);
-        await this.repoService.OpenVisualStudioCode(path);
-    }
-
-    public async Task OpenVisualStudio(BranchWithWorktreeViewModel vm)
-    {
-        var path = Helpers.GetFolderPathForBranch(vm);
-        await this.repoService.OpenVisualStudio(path);
     }
 }

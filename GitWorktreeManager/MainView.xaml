@@ -106,7 +106,6 @@
                                 <AppBarButton
                                     Width="35"
                                     Command="{x:Bind CreateWorktreeFromBranchCommand}"
-                                    CommandParameter="{x:Bind}"
                                     LabelPosition="Collapsed"
                                     ToolTipService.ToolTip="{x:Bind CreateWorktreeFromBranchLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource CreateWorktreeFromBranchIcon}" />
@@ -115,7 +114,6 @@
                                 <AppBarButton
                                     Width="35"
                                     Command="{x:Bind OpenFolderCommand}"
-                                    CommandParameter="{x:Bind}"
                                     LabelPosition="Collapsed"
                                     ToolTipService.ToolTip="{x:Bind OpenFileExplorerLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource FileExplorerIcon}" />
@@ -123,7 +121,6 @@
                                 <AppBarButton
                                     Width="35"
                                     Command="{x:Bind OpenTerminalCommand}"
-                                    CommandParameter="{x:Bind}"
                                     LabelPosition="Collapsed"
                                     ToolTipService.ToolTip="{x:Bind OpenTerminalLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource TerminalIcon}" />
@@ -131,7 +128,6 @@
                                 <AppBarButton
                                     Width="35"
                                     Command="{x:Bind OpenVisualStudioCodeCommand}"
-                                    CommandParameter="{x:Bind}"
                                     LabelPosition="Collapsed"
                                     ToolTipService.ToolTip="{x:Bind OpenVisualStudioCodeLabel}">
                                     <Viewbox Stretch="UniformToFill">
@@ -141,7 +137,6 @@
                                 <AppBarButton
                                     Width="35"
                                     Command="{x:Bind OpenVisualStudioCommand}"
-                                    CommandParameter="{x:Bind}"
                                     LabelPosition="Collapsed"
                                     ToolTipService.ToolTip="{x:Bind OpenVisualStudioLabel}">
                                     <Viewbox Stretch="UniformToFill">
@@ -192,7 +187,6 @@
                                 <AppBarButton
                                     Width="35"
                                     Command="{x:Bind CreateWorktreeFromBranchCommand}"
-                                    CommandParameter="{x:Bind}"
                                     LabelPosition="Collapsed"
                                     ToolTipService.ToolTip="{x:Bind CreateWorktreeFromBranchLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource CreateWorktreeFromBranchIcon}" />
@@ -201,7 +195,6 @@
                                 <AppBarButton
                                     Width="35"
                                     Command="{x:Bind RemoveCommand}"
-                                    CommandParameter="{x:Bind}"
                                     LabelPosition="Collapsed"
                                     ToolTipService.ToolTip="{x:Bind RemoveLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource RemoveIcon}" />
@@ -210,7 +203,6 @@
                                 <AppBarButton
                                     Width="35"
                                     Command="{x:Bind OpenFolderCommand}"
-                                    CommandParameter="{x:Bind}"
                                     LabelPosition="Collapsed"
                                     ToolTipService.ToolTip="{x:Bind OpenFileExplorerLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource FileExplorerIcon}" />
@@ -218,7 +210,6 @@
                                 <AppBarButton
                                     Width="35"
                                     Command="{x:Bind OpenTerminalCommand}"
-                                    CommandParameter="{x:Bind}"
                                     LabelPosition="Collapsed"
                                     ToolTipService.ToolTip="{x:Bind OpenTerminalLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource TerminalIcon}" />
@@ -226,7 +217,6 @@
                                 <AppBarButton
                                     Width="35"
                                     Command="{x:Bind OpenVisualStudioCodeCommand}"
-                                    CommandParameter="{x:Bind}"
                                     LabelPosition="Collapsed"
                                     ToolTipService.ToolTip="{x:Bind OpenVisualStudioCodeLabel}">
                                     <Viewbox Stretch="UniformToFill">
@@ -236,7 +226,6 @@
                                 <AppBarButton
                                     Width="35"
                                     Command="{x:Bind OpenVisualStudioCommand}"
-                                    CommandParameter="{x:Bind}"
                                     LabelPosition="Collapsed"
                                     ToolTipService.ToolTip="{x:Bind OpenVisualStudioLabel}">
                                     <Viewbox Stretch="UniformToFill">
@@ -287,7 +276,6 @@
                                 <AppBarButton
                                     Width="35"
                                     Command="{x:Bind CreateWorktreeForBranchCommand}"
-                                    CommandParameter="{x:Bind}"
                                     LabelPosition="Collapsed"
                                     ToolTipService.ToolTip="{x:Bind CreateWorktreeForBranchLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource CreateWorktreeForBranchIcon}" />
@@ -295,7 +283,6 @@
                                 <AppBarButton
                                     Width="35"
                                     Command="{x:Bind CreateWorktreeFromBranchCommand}"
-                                    CommandParameter="{x:Bind}"
                                     LabelPosition="Collapsed"
                                     ToolTipService.ToolTip="{x:Bind CreateWorktreeFromBranchLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource CreateWorktreeFromBranchIcon}" />
@@ -337,14 +324,12 @@
                                 <AppBarButton
                                     Width="35"
                                     Command="{x:Bind CreateWorktreeForBranchCommand}"
-                                    CommandParameter="{x:Bind}"
                                     ToolTipService.ToolTip="{x:Bind CreateWorktreeForBranchLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource CreateWorktreeForBranchIcon}" />
                                 </AppBarButton>
                                 <AppBarButton
                                     Width="35"
                                     Command="{x:Bind CreateWorktreeFromBranchCommand}"
-                                    CommandParameter="{x:Bind}"
                                     ToolTipService.ToolTip="{x:Bind CreateWorktreeFromBranchLabel}">
                                     <FontIcon FontFamily="Segoe Fluent Icons" Glyph="{StaticResource CreateWorktreeFromBranchIcon}" />
                                 </AppBarButton>
