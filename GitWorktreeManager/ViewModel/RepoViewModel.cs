@@ -27,7 +27,7 @@ internal sealed partial class RepoViewModel : ObservableObject
 
     private string mostRecentQuery = string.Empty;
 
-    public IAsyncRelayCommand RefreshCommand => CommandHelper.CreateCommand(Refresh);
+    public IAsyncRelayCommand RefreshCommand => CommandHelper.CreateCommand(RefreshWithFetch);
     public IAsyncRelayCommand<string> QueryChangedCommand => CommandHelper.CreateCommand<string>(QueryChanged);
 
     public RepoViewModel(RepoInfo repoInfo, IRepoService repoService, IDialogService dialogService)
@@ -51,10 +51,14 @@ internal sealed partial class RepoViewModel : ObservableObject
         }
     }
 
-    public async Task Refresh()
+    public async Task RefreshWithFetch()
     {
         await this.repoService.Fetch();
+        await this.Refresh();
+    }
 
+    public async Task Refresh()
+    {
         var branches = await this.repoService.ListBranchesAsync();
 
         this.branches = Helpers.CreateBranchVms(branches,

@@ -8,13 +8,12 @@ internal static class ObservableCollectionExtension
 {
     public static void Update<T>(this ObservableCollection<T> source, IEnumerable<T> newCollection)
     {
-        var oldItems = source.ToList();
         var newItems = newCollection.ToList();
 
-        if (oldItems.Count > 0)
+        if (source.Count > 0)
         {
             // Remove items that are not in the new list
-            var toRemove = oldItems.Except(newItems).ToList();
+            var toRemove = source.Except(newItems).ToList();
             foreach (var item in toRemove)
             {
                 source.Remove(item);
@@ -22,11 +21,11 @@ internal static class ObservableCollectionExtension
 
             // Reorder the common items so the source matches the order of the new collection
             // This will be a no-op if both collections are ordered
-            var commonItemsInNewOrder = oldItems.Union(newItems).ToList();
+            var commonItemsInNewOrder = source.Intersect(newItems).ToList();
             for (int i = 0; i < commonItemsInNewOrder.Count; i++)
             {
                 var newItem = commonItemsInNewOrder[i];
-                var oldIndex = oldItems.IndexOf(newItem);
+                var oldIndex = source.IndexOf(newItem);
                 if (oldIndex != i && oldIndex >= 0)
                 {
                     source.Move(oldIndex, i);
@@ -35,7 +34,7 @@ internal static class ObservableCollectionExtension
         }
 
         // Insert new items in order
-        var toAdd = newItems.Except(oldItems).ToList();
+        var toAdd = newItems.Except(source).ToList();
         foreach (var item in toAdd)
         {
             var index = newItems.IndexOf(item);
