@@ -55,7 +55,7 @@ internal sealed class RepoService : IRepoService
 
     public async Task OpenFolder(string path)
     {
-        await Launcher.LaunchFolderPathAsync(path);
+        await Launcher.LaunchFolderPathAsync(Path.GetFullPath(path));
     }
 
     public async Task OpenTerminal(string path)
@@ -64,7 +64,7 @@ internal sealed class RepoService : IRepoService
         {
             UseShellExecute = false,
             FileName = "wt",
-            Arguments = $"-d {path}"
+            Arguments = $"-d {Path.GetFullPath(path)}"
         });
     }
 
@@ -77,13 +77,13 @@ internal sealed class RepoService : IRepoService
             WindowStyle = ProcessWindowStyle.Hidden,
             FileName = "code",
             Arguments = ".",
-            WorkingDirectory = path
+            WorkingDirectory = Path.GetFullPath(path)
         });
     }
 
     public async Task OpenVisualStudio(string path)
     {
-        var sln = Directory.EnumerateFiles(path, "*.sln").FirstOrDefault();
+        var sln = Directory.EnumerateFiles(Path.GetFullPath(path), "*.sln").FirstOrDefault();
         if (sln is not null)
         {
             await Launcher.LaunchUriAsync(new Uri(sln));
@@ -92,6 +92,6 @@ internal sealed class RepoService : IRepoService
 
     public async Task<ImmutableList<string>> ListVisualStudioSolutionFiles(string path)
     {
-        return Directory.EnumerateFiles(path, "*.sln").ToImmutableList();
+        return Directory.EnumerateFiles(Path.GetFullPath(path), "*.sln").ToImmutableList();
     }
 }
