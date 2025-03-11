@@ -228,6 +228,7 @@ internal sealed class LocalBranchWithoutWorktreeViewModel : BranchWithoutWorktre
     protected override async Task CreateWorktreeForBranch()
     {
         await this.repoService.AddWorktreeForLocalBranch(this.Name);
+        await this.repoVm.Refresh();
     }
 
     public override bool Equals(object? obj)
@@ -258,6 +259,7 @@ internal sealed class RemoteBranchWithoutWorktreeViewModel : BranchWithoutWorktr
     protected override async Task CreateWorktreeForBranch()
     {
         await this.repoService.AddWorktreeForRemoteBranch(this.Name);
+        await this.repoVm.Refresh();
     }
 
     protected override async Task CreateWorktreeFromBranch()
