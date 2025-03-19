@@ -349,29 +349,14 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Grid
-            x:Name="AppTitleBar"
+        <TitleBar
+            Title="{x:Bind VM.Repo.RepoInfo.Name, Mode=OneWay, FallbackValue='Branch Manager'}"
             Grid.Row="0"
-            Height="40"
             Margin="-10,-10,-10,10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-
-            <Image
-                Grid.Column="0"
-                Height="25"
-                Margin="10,10,10,10"
-                VerticalAlignment="Center"
-                Source="ms-appx:///Assets/StoreAppList.png" />
-
-            <TextBlock
-                x:Name="AppTitle"
-                Grid.Column="1"
-                VerticalAlignment="Center"
-                Text="{x:Bind VM.Repo.RepoInfo.Name, Mode=OneWay, FallbackValue='Branch Manager'}" />
-        </Grid>
+            <TitleBar.IconSource>
+                <ImageIconSource ImageSource="ms-appx:///Assets/StoreStoreLogo.png" />
+            </TitleBar.IconSource>
+        </TitleBar>
 
         <Grid Grid.Row="1" Visibility="{x:Bind VM.Repo, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Invert}">
 
