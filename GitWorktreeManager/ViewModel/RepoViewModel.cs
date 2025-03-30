@@ -3,59 +3,43 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GitWorktreeManager.Behaviors;
-using GitWorktreeManager.Services;
-using System;
+using GitWorktreeManager.Services.Abstractions;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using Windows.System;
 
-internal sealed class RepoInfo
+internal sealed class RepoInfo(string path)
 {
-    public string Name { get; }
-    public string Path { get; }
-
-    public RepoInfo(string path)
-    {
-        this.Path = System.IO.Path.GetFullPath(path);
-        this.Name = System.IO.Path.GetFileName(path);
-    }
+    public string Name { get; } = System.IO.Path.GetFileName(path);
+    public string Path { get; } = System.IO.Path.GetFullPath(path);
 }
 
 internal sealed partial class RepoViewModel : ObservableObject
 {
-    private readonly GitApi gitClient;
+    private readonly IRepoService repoService;
+    private readonly IDialogService dialogService;
 
     public RepoInfo RepoInfo { get; }
 
-    private ImmutableList<Branch>? branches;
+    private ImmutableList<BranchViewModel>? branches;
 
-    public ObservableCollection<Branch> FilteredBranches { get; } = [];
+    public ObservableCollection<BranchViewModel> FilteredBranches { get; } = [];
 
     private string mostRecentQuery = string.Empty;
 
-    public IAsyncRelayCommand RefreshCommand => CommandHelper.CreateCommand(Refresh);
+    public IAsyncRelayCommand RefreshCommand => CommandHelper.CreateCommand(RefreshWithFetch);
     public IAsyncRelayCommand<string> QueryChangedCommand => CommandHelper.CreateCommand<string>(QueryChanged);
-    public IAsyncRelayCommand<BranchWithoutWorktree> CreateWorktreeForBranchCommand => CommandHelper.CreateCommand<BranchWithoutWorktree>(CreateWorktreeForBranch);
-    public IAsyncRelayCommand<Branch> CreateWorktreeFromBranchCommand => CommandHelper.CreateCommand<Branch>(CreateWorktreeFromBranch);
-    public IAsyncRelayCommand<LocalBranchWithWorktree> RemoveCommand => CommandHelper.CreateCommand<LocalBranchWithWorktree>(Remove);
-    public IAsyncRelayCommand<BranchWithWorktree> OpenFolderCommand => CommandHelper.CreateCommand<BranchWithWorktree>(OpenFolder);
-    public IAsyncRelayCommand<BranchWithWorktree> OpenTerminalCommand => CommandHelper.CreateCommand<BranchWithWorktree>(OpenTerminal);
-    public IAsyncRelayCommand<BranchWithWorktree> OpenVisualStudioCodeCommand => CommandHelper.CreateCommand<BranchWithWorktree>(OpenVisualStudioCode);
-    public IAsyncRelayCommand<BranchWithWorktree> OpenVisualStudioCommand => CommandHelper.CreateCommand<BranchWithWorktree>(OpenVisualStudio);
 
-    public RepoViewModel(RepoInfo repoInfo)
-    {
+    public RepoViewModel(RepoInfo repoInfo, IRepoService repoService, IDialogService dialogService)
+    {   
         this.RepoInfo = repoInfo;
-        this.gitClient = new GitApi(this.RepoInfo.Path);
+        this.repoService = repoService;
+        this.dialogService = dialogService;
 
         MainWindow.Instance.Title = this.RepoInfo.Name;
     }
 
-    public void QueryChanged(string query)
+    private void QueryChanged(string query)
     {
         this.mostRecentQuery = query;
 
@@ -67,107 +51,18 @@ internal sealed partial class RepoViewModel : ObservableObject
         }
     }
 
-    public async Task Refresh()
+    public async Task RefreshWithFetch()
     {
-        await this.gitClient.Fetch();
-        var branches = await this.gitClient.ListBranchesAsync();
-        var worktrees = await this.gitClient.ListWorktrees();
-
-        this.branches = Helpers.CreateBranchVms(branches, worktrees,
-            this.CreateWorktreeForBranchCommand,
-            this.CreateWorktreeFromBranchCommand,
-            this.RemoveCommand,
-            this.OpenFolderCommand,
-            this.OpenTerminalCommand,
-            this.OpenVisualStudioCodeCommand,
-            this.OpenVisualStudioCommand);
-
-        QueryChanged(this.mostRecentQuery);
-    }
-
-    public async Task CreateWorktreeForBranch(BranchWithoutWorktree vm)
-    {
-        if (vm is LocalBranchWithoutWorktree)
-        {
-            await this.gitClient.AddWorktreeForLocalBranch(vm.Name);
-            await this.Refresh();
-        }
-        else if (vm is RemoteBranchWithoutWorktree)
-        {
-            await this.gitClient.AddWorktreeForRemoteBranch(vm.Name);
-            await this.Refresh();
-        }
-    }
-
-    public async Task CreateWorktreeFromBranch(Branch vm)
-    {
-        var newBranchName = await DialogHelper.ShowNewBranchDialogAsync(vm.Name);
-
-        if (string.IsNullOrWhiteSpace(newBranchName))
-        {
-            return;
-        }
-
-        if (vm is RemoteBranchWithoutWorktree)
-        {
-            await this.gitClient.AddWorktreeBasedOnRemoteBranch(newBranchName, vm.Name);
-            await this.Refresh();
-        }
-        else
-        {
-            await this.gitClient.AddWorktreeBasedOnLocalBranch(newBranchName, vm.Name);
-            await this.Refresh();
-        }
-    }
-
-    public async Task Remove(LocalBranchWithWorktree worktree)
-    {
-        await this.gitClient.RemoveWorktree(worktree.Path);
+        await this.repoService.Fetch();
         await this.Refresh();
     }
 
-    public async Task OpenFolder(BranchWithWorktree vm)
+    public async Task Refresh()
     {
-        var path = Helpers.GetFolderPathForBranch(vm);
+        var branches = await this.repoService.ListBranchesAsync();
 
-        await Launcher.LaunchFolderPathAsync(path);
-    }
+        this.branches = Helpers.CreateBranchVms(branches, this, this.repoService, this.dialogService);
 
-    public void OpenTerminal(BranchWithWorktree vm)
-    {
-        var path = Helpers.GetFolderPathForBranch(vm);
-
-        Process.Start(new ProcessStartInfo
-        {
-            UseShellExecute = false,
-            FileName = "wt",
-            Arguments = $"-d {path}"
-        });
-    }
-
-    public void OpenVisualStudioCode(BranchWithWorktree vm)
-    {
-        var path = Helpers.GetFolderPathForBranch(vm);
-
-        Process.Start(new ProcessStartInfo
-        {
-            UseShellExecute = true,
-            CreateNoWindow = true,
-            WindowStyle = ProcessWindowStyle.Hidden,
-            FileName = "code",
-            Arguments = ".",
-            WorkingDirectory = path
-        });
-    }
-
-    public async Task OpenVisualStudio(BranchWithWorktree vm)
-    {
-        var path = Helpers.GetFolderPathForBranch(vm);
-
-        var sln = Directory.EnumerateFiles(path, "*.sln").FirstOrDefault();
-        if (sln is not null)
-        {
-            await Launcher.LaunchUriAsync(new Uri(sln));
-        }
+        QueryChanged(this.mostRecentQuery);
     }
 }

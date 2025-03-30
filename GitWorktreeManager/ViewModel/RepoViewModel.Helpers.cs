@@ -1,17 +1,17 @@
 ﻿namespace GitWorktreeManager.ViewModel;
 
 using GitWorktreeManager.Services;
+using GitWorktreeManager.Services.Abstractions;
 using System;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using System.Windows.Input;
 
 internal sealed partial class RepoViewModel
 {
     public static class Helpers
     {
-        public static ImmutableList<Branch>? FilterBranches(ImmutableList<Branch>? branches, string query)
+        public static ImmutableList<BranchViewModel>? FilterBranches(ImmutableList<BranchViewModel>? branches, string query)
         {
             return branches?
                 .Where(branch => string.IsNullOrWhiteSpace(query) || branch.Name.Contains(query.Trim(), StringComparison.OrdinalIgnoreCase))
@@ -19,67 +19,49 @@ internal sealed partial class RepoViewModel
                 .ToImmutableList();
         }
 
-        public static ImmutableList<Branch> CreateBranchVms(
-            ListBranchResult branches,
-            ImmutableList<Worktree> worktrees,
-            ICommand createWorktreeForBranchCommand,
-            ICommand createWorktreeFromBranchCommand,
-            ICommand removeCommand,
-            ICommand openFolderCommand,
-            ICommand openTerminalCommand,
-            ICommand openVisualStudioCodeCommand,
-            ICommand openVisualStudioCommand)
+        public static ImmutableList<BranchViewModel> CreateBranchVms(ListBranchesResult branches, RepoViewModel repoVm, IRepoService repoService, IDialogService dialogService)
         {
-            // Worktree for HEAD
-            var worktreeForLocalHead = worktrees.FirstOrDefault(x => x.Branch == branches.LocalHead)
-                ?? throw new Exception($"Make sure to have '{branches.LocalHead}' checked out in the root of the repo, then hit Refresh.");
-
-            var localHeadVm = new HeadBranchWithWorktree
+            var localHeadVm = new HeadBranchWithWorktreeViewModel(repoVm, repoService, dialogService)
             {
-                Name = branches.LocalHead,
-                Path = worktreeForLocalHead.Path,
-                CreateWorktreeFromBranchCommand = createWorktreeFromBranchCommand,
-                OpenFolderCommand = openFolderCommand,
-                OpenTerminalCommand = openTerminalCommand,
-                OpenVisualStudioCodeCommand = openVisualStudioCodeCommand,
-                OpenVisualStudioCommand = openVisualStudioCommand
+                Name = branches.LocalHead.Name,
+                Path = branches.LocalHead.WorktreePath,
+                Ahead = branches.LocalHead.Ahead,
+                Behind = branches.LocalHead.Behind
             };
 
             // Local branches with worktree
             var worktreeVms = branches.LocalBranches
-                .Where(branch => worktrees.Any(x => x.Branch == branch) is true)
-                .Select(branch => new LocalBranchWithWorktree
+                .Select(branch => branch as Services.BranchWithWorktree)
+                .Where(branch => branch is not null)
+                .Select(branch => branch!)
+                .Select(branch => new LocalBranchWithWorktreeViewModel(repoVm, repoService, dialogService)
                 {
-                    Name = branch,
-                    Path = worktrees.First(x => x.Branch == branch).Path,
-                    CreateWorktreeFromBranchCommand = createWorktreeFromBranchCommand,
-                    RemoveCommand = removeCommand,
-                    OpenFolderCommand = openFolderCommand,
-                    OpenTerminalCommand = openTerminalCommand,
-                    OpenVisualStudioCodeCommand = openVisualStudioCodeCommand,
-                    OpenVisualStudioCommand = openVisualStudioCommand
+                    Name = branch.Name,
+                    Path = branch.WorktreePath,
+                    Ahead = branch.Ahead,
+                    Behind = branch.Behind
                 });
 
             // Local branches without worktree
             var localBranchVms = branches.LocalBranches
-                .Where(branch => worktrees.Any(x => x.Branch == branch) is false)
-                .Select(branch => new LocalBranchWithoutWorktree
+                .Where(branch => branch is not Services.BranchWithWorktree)
+                .Select(branch => new LocalBranchWithoutWorktreeViewModel(repoVm, repoService, dialogService)
                 {
-                    Name = branch,
-                    CreateWorktreeForBranchCommand = createWorktreeForBranchCommand,
-                    CreateWorktreeFromBranchCommand = createWorktreeFromBranchCommand
+                    Name = branch.Name,
+                    Ahead = branch.Ahead,
+                    Behind = branch.Behind
                 });
 
             // Remote branches
             var remoteBranchVms = branches.RemoteBranches
-                .Select(branch => new RemoteBranchWithoutWorktree
+                .Select(branch => new RemoteBranchWithoutWorktreeViewModel(repoVm, repoService, dialogService)
                 {
-                    Name = branch,
-                    CreateWorktreeForBranchCommand = createWorktreeForBranchCommand,
-                    CreateWorktreeFromBranchCommand = createWorktreeFromBranchCommand
+                    Name = branch.Name,
+                    Ahead = branch.Ahead,
+                    Behind = branch.Behind
                 });
 
-            return Enumerable.Empty<Branch>()
+            return Enumerable.Empty<BranchViewModel>()
                 .Append(localHeadVm)
                 .Concat(worktreeVms)
                 .Concat(localBranchVms)
@@ -87,7 +69,7 @@ internal sealed partial class RepoViewModel
                 .ToImmutableList();
         }
 
-        public static string GetFolderPathForBranch(BranchWithWorktree branch)
+        public static string GetFolderPathForBranch(BranchWithWorktreeViewModel branch)
         {
             return Path.GetFullPath(branch.Path);
         }

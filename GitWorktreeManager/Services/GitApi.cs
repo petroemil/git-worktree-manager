@@ -1,7 +1,6 @@
 ﻿namespace GitWorktreeManager.Services;
 
 using System;
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -69,21 +68,14 @@ internal sealed partial class GitApi
         return resultProcessor(result);
     }
 
-    public async Task<ListBranchResult> ListBranchesAsync()
+    /// <summary>
+    /// <code>git branch -a --format=%(refname)#%(symref)#%(upstream:track,nobracket)#%(worktreepath)</code>
+    /// </summary>
+    public async Task<ListBranchesResult> ListBranchesAsync()
     {
         return await RunCommandProcessResponse(
             helpers.ListBranches_CreateCommand(),
             helpers.ListBranches_ProcessResult);
-    }
-
-    /// <summary>
-    /// <code>git worktree list</code>
-    /// </summary>
-    public async Task<ImmutableList<Worktree>> ListWorktrees()
-    {
-        return await RunCommandProcessResponse(
-            helpers.ListWorktrees_CreateCommand(),
-            helpers.ListWorktrees_ProcessResult);
     }
 
     /// <summary>

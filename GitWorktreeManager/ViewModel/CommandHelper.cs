@@ -1,12 +1,15 @@
 ﻿namespace GitWorktreeManager.ViewModel;
 
 using CommunityToolkit.Mvvm.Input;
-using GitWorktreeManager.Behaviors;
 using System.Threading.Tasks;
 using System;
+using GitWorktreeManager.Services;
+using GitWorktreeManager.Services.Abstractions;
 
 internal static class CommandHelper
 {
+    private static readonly IDialogService dialogService = new DialogService();
+
     private static async Task CommandWrapper(Func<Task> asyncFunc)
     {
         try
@@ -15,7 +18,7 @@ internal static class CommandHelper
         }
         catch (Exception e)
         {
-            await DialogHelper.ShowErrorAsync(e);
+            await dialogService.ShowErrorAsync(e);
         }
     }
 
@@ -27,7 +30,7 @@ internal static class CommandHelper
         }
         catch (Exception e)
         {
-            await DialogHelper.ShowErrorAsync(e);
+            await dialogService.ShowErrorAsync(e);
         }
     }
 

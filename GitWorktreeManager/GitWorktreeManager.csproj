@@ -13,7 +13,7 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <ApplicationIcon>Assets\Icon.ico</ApplicationIcon>
     <Nullable>Enable</Nullable>
-
+    <NoWarn>CS1998</NoWarn>
     <!--
       WinUI 3 doesn't need support for 'INotifyPropertyChanging', so we can disable it.
       This avoids all generated code for it and provides a small performance improvement.
@@ -31,9 +31,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.2.0" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.241114003" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250310001" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
