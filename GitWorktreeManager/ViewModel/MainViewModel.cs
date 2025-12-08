@@ -40,7 +40,7 @@ internal partial class MainViewModel
         }
 
         var repo = new RepoViewModel(repoInfo, new RepoService(repoInfo.Path), this.dialogService);
-        await repo.RefreshWithFetch();
+        _ = repo.RefreshWithFetch();
 
         this.Repos.Add(repo);
         this.SelectedRepo = repo;
