@@ -1,6 +1,7 @@
 ﻿namespace GitWorktreeManager;
 
 using GitWorktreeManager.ViewModel;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 internal sealed partial class MainView : UserControl
@@ -10,11 +11,11 @@ internal sealed partial class MainView : UserControl
     public MainView()
     {
         this.InitializeComponent();
+        this.Loaded += OnLoaded;
+    }
 
-        // This should be an attached property but for some weird reason I can't make it work, so hack it is for the time being.
-        this.RecentlyOpenedReposListView.IsEnabledChanged += (_, _) =>
-        {
-            this.RecentlyOpenedReposListView.Opacity = this.RecentlyOpenedReposListView.IsEnabled ? 1 : 0.75;
-        };
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        MainWindow.Instance.SetTitleBar(this.TitleBarDragRegion);
     }
 }

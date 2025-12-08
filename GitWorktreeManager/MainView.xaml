@@ -65,6 +65,53 @@
                 </Setter>
             </Style>
 
+            <DataTemplate x:Key="RepoTemplate" x:DataType="vm:RepoViewModel">
+                <Grid Background="{ThemeResource SolidBackgroundFillColorTertiaryBrush}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Margin="5,10,5,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox
+                            Name="BranchName"
+                            Margin="5,0"
+                            behaviors:TextChangedCommandBehavior.TextChangedCommand="{x:Bind QueryChangedCommand, Mode=OneWay}"
+                            PlaceholderText="Find branch" />
+
+                        <Button
+                            Grid.Column="1"
+                            Margin="5,0"
+                            Command="{x:Bind RefreshCommand, Mode=OneWay}"
+                            ToolTipService.ToolTip="Refresh">
+                            <SymbolIcon Symbol="Refresh" />
+                        </Button>
+
+                    </Grid>
+
+                    <RefreshContainer
+                        Grid.Row="1"
+                        Margin="-10,5,-10,0"
+                        behaviors:PullToRefreshCommandBehavior.RefreshCommand="{x:Bind RefreshCommand}">
+                        <ListView
+                            IsItemClickEnabled="True"
+                            ItemContainerStyle="{StaticResource ListViewItemContainerStyle}"
+                            ItemTemplateSelector="{StaticResource BranchTemplateSelector}"
+                            ItemsSource="{x:Bind FilteredBranches, Mode=OneWay}"
+                            SelectionMode="None">
+                            <ListView.ItemContainerTransitions>
+                                <AddDeleteThemeTransition />
+                            </ListView.ItemContainerTransitions>
+                        </ListView>
+                    </RefreshContainer>
+                </Grid>
+            </DataTemplate>
+
             <behaviors:BranchTemplateSelector x:Key="BranchTemplateSelector">
                 <behaviors:BranchTemplateSelector.LocalHeadBranchTemplate>
                     <DataTemplate x:DataType="vm:HeadBranchWithWorktreeViewModel">
@@ -342,130 +389,29 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Margin="10,10,10,0">
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-
-        <TitleBar
-            Title="{x:Bind VM.Repo.RepoInfo.Name, Mode=OneWay, FallbackValue='Branch Manager'}"
-            Grid.Row="0"
-            Margin="-10,-10,-10,10">
-            <TitleBar.IconSource>
-                <ImageIconSource ImageSource="ms-appx:///Assets/StoreStoreLogo.png" />
-            </TitleBar.IconSource>
-        </TitleBar>
-
-        <Grid Grid.Row="1" Visibility="{x:Bind VM.Repo, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Invert}">
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <StackPanel
-                Grid.Row="0"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-                <FontIcon
-                    Margin="20"
-                    HorizontalAlignment="Center"
-                    FontSize="200"
-                    Glyph="{StaticResource OpenFolderIcon}"
-                    Opacity="0.1" />
-                <Button
-                    HorizontalAlignment="Center"
-                    Command="{x:Bind VM.OpenRepoCommand}"
-                    Content="Open git repo"
-                    Style="{StaticResource AccentButtonStyle}" />
-            </StackPanel>
-
-            <ListView
-                x:Name="RecentlyOpenedReposListView"
-                Grid.Row="1"
-                Margin="-15,15"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Bottom"
-                behaviors:ListViewItemClickedCommandBehavior.ClickedCommand="{x:Bind VM.OpenRepoCommand}"
-                IsItemClickEnabled="True"
-                ItemContainerStyle="{StaticResource ListViewItemContainerStyle}"
-                ItemsSource="{x:Bind VM.RecentlyOpenedRepos}"
-                SelectionMode="None">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="vm:RepoInfo">
-                        <StackPanel Orientation="Horizontal">
-                            <FontIcon Margin="10,0" Glyph="{StaticResource HistoryIcon}" />
-                            <TextBlock
-                                Margin="10"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Text="{x:Bind Name}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Grid>
-
-        <ContentControl
-            Grid.Row="1"
+    <Grid>
+        <TabView
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
             VerticalContentAlignment="Stretch"
-            Content="{x:Bind VM.Repo, Mode=OneWay}"
-            Visibility="{x:Bind VM.Repo, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}">
-            <ContentControl.ContentTransitions>
-                <EntranceThemeTransition />
-            </ContentControl.ContentTransitions>
-            <ContentControl.ContentTemplate>
+            AddTabButtonCommand="{x:Bind VM.OpenRepoCommand}"
+            SelectedItem="{x:Bind VM.SelectedRepo, Mode=TwoWay}"
+            TabItemsSource="{x:Bind VM.Repos}">
+            <TabView.TabItemTemplate>
                 <DataTemplate x:DataType="vm:RepoViewModel">
-                    <Grid>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-
-                        <Grid Grid.Row="0" Margin="5,0,5,5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <TextBox
-                                Name="BranchName"
-                                Margin="5,0"
-                                behaviors:TextChangedCommandBehavior.TextChangedCommand="{x:Bind QueryChangedCommand, Mode=OneWay}"
-                                PlaceholderText="Find branch" />
-
-                            <Button
-                                Grid.Column="1"
-                                Margin="5,0"
-                                Command="{x:Bind RefreshCommand, Mode=OneWay}"
-                                ToolTipService.ToolTip="Refresh">
-                                <SymbolIcon Symbol="Refresh" />
-                            </Button>
-
-                        </Grid>
-
-                        <RefreshContainer
-                            Grid.Row="1"
-                            Margin="-10,5,-10,0"
-                            behaviors:PullToRefreshCommandBehavior.RefreshCommand="{x:Bind RefreshCommand}">
-                            <ListView
-                                IsItemClickEnabled="True"
-                                ItemContainerStyle="{StaticResource ListViewItemContainerStyle}"
-                                ItemTemplateSelector="{StaticResource BranchTemplateSelector}"
-                                ItemsSource="{x:Bind FilteredBranches, Mode=OneWay}"
-                                SelectionMode="None">
-                                <ListView.ItemContainerTransitions>
-                                    <AddDeleteThemeTransition />
-                                </ListView.ItemContainerTransitions>
-                            </ListView>
-                        </RefreshContainer>
-                    </Grid>
+                    <TabViewItem
+                        Content="{x:Bind}"
+                        ContentTemplate="{StaticResource RepoTemplate}"
+                        Header="{x:Bind RepoInfo.Name}" />
                 </DataTemplate>
-            </ContentControl.ContentTemplate>
-        </ContentControl>
+            </TabView.TabItemTemplate>
+            <TabView.TabStripHeader>
+                <ImageIcon Source="ms-appx:///Assets/StoreStoreLogo.png" Margin="10" Width="16" />
+            </TabView.TabStripHeader>
+            <TabView.TabStripFooter>
+                <Border x:Name="TitleBarDragRegion" MinWidth="150" />
+            </TabView.TabStripFooter>
+        </TabView>
     </Grid>
 </UserControl>

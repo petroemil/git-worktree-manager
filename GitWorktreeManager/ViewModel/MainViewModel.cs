@@ -4,24 +4,25 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GitWorktreeManager.Services;
 using GitWorktreeManager.Services.Abstractions;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
-internal partial class MainViewModel : ObservableObject
+[ObservableObject]
+internal partial class MainViewModel
 {
     private readonly IDialogService dialogService;
 
-    [ObservableProperty]
-    private RepoViewModel? repo;
+    public ObservableCollection<RepoViewModel> Repos { get; } = [];
 
     [ObservableProperty]
-    private RepoInfo[] recentlyOpenedRepos;
+    public partial RepoViewModel? SelectedRepo { get; set; }
 
     public IAsyncRelayCommand<RepoInfo?> OpenRepoCommand => CommandHelper.CreateCommand<RepoInfo?>(OpenRepo);
 
     public MainViewModel()
     {
         this.dialogService = new DialogService();
-        this.RecentlyOpenedRepos = AppSettingsHelper.GetRecentlyOpenedRepos();
+        //this.RecentlyOpenedRepos = AppSettingsHelper.GetRecentlyOpenedRepos();
     }
 
     public async Task OpenRepo(RepoInfo? repoInfo)
@@ -41,8 +42,9 @@ internal partial class MainViewModel : ObservableObject
         var repo = new RepoViewModel(repoInfo, new RepoService(repoInfo.Path), this.dialogService);
         await repo.RefreshWithFetch();
 
-        this.Repo = repo;
+        this.Repos.Add(repo);
+        this.SelectedRepo = repo;
 
-        AppSettingsHelper.SaveRecentlyOpenedRepo(repoInfo);
+        //AppSettingsHelper.SaveRecentlyOpenedRepo(repoInfo);
     }
 }

@@ -13,10 +13,10 @@ internal sealed partial class MainWindow : Window
     {
         this.InitializeComponent();
 
-        this.SystemBackdrop = new MicaBackdrop();
+        this.SystemBackdrop = new DesktopAcrylicBackdrop();
+        this.ExtendsContentIntoTitleBar = true;
 
-        this.SetTransparentTitlebar();
         this.SetAppIcon();
-        this.SetSize(750, 1000);
+        this.SetSize(1000, 1500);
     }
 }
