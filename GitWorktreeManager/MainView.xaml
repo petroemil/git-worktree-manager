@@ -397,7 +397,8 @@
             VerticalContentAlignment="Stretch"
             AddTabButtonCommand="{x:Bind VM.OpenRepoCommand}"
             SelectedItem="{x:Bind VM.SelectedRepo, Mode=TwoWay}"
-            TabItemsSource="{x:Bind VM.Repos}">
+            TabItemsSource="{x:Bind VM.Repos}"
+            TabWidthMode="SizeToContent">
             <TabView.TabItemTemplate>
                 <DataTemplate x:DataType="vm:RepoViewModel">
                     <TabViewItem
@@ -407,7 +408,10 @@
                 </DataTemplate>
             </TabView.TabItemTemplate>
             <TabView.TabStripHeader>
-                <ImageIcon Source="ms-appx:///Assets/StoreStoreLogo.png" Margin="10" Width="16" />
+                <ImageIcon
+                    Width="16"
+                    Margin="10"
+                    Source="ms-appx:///Assets/StoreStoreLogo.png" />
             </TabView.TabStripHeader>
             <TabView.TabStripFooter>
                 <Border x:Name="TitleBarDragRegion" MinWidth="150" />
