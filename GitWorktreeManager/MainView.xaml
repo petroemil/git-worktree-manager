@@ -390,6 +390,10 @@
     </UserControl.Resources>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <TabView
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
@@ -401,10 +405,7 @@
             TabWidthMode="SizeToContent">
             <TabView.TabItemTemplate>
                 <DataTemplate x:DataType="vm:RepoViewModel">
-                    <TabViewItem
-                        Content="{x:Bind}"
-                        ContentTemplate="{StaticResource RepoTemplate}"
-                        Header="{x:Bind RepoInfo.Name}" />
+                    <TabViewItem Header="{x:Bind RepoInfo.Name}" />
                 </DataTemplate>
             </TabView.TabItemTemplate>
             <TabView.TabStripHeader>
@@ -417,5 +418,15 @@
                 <Border x:Name="TitleBarDragRegion" MinWidth="150" />
             </TabView.TabStripFooter>
         </TabView>
+        <Border Grid.Row="1" Background="{ThemeResource SolidBackgroundFillColorTertiaryBrush}">
+            <ContentControl
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                Content="{x:Bind VM.SelectedRepo, Mode=OneWay}"
+                ContentTemplate="{StaticResource RepoTemplate}"
+                Visibility="{x:Bind VM.SelectedRepo, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}" />
+        </Border>
     </Grid>
 </UserControl>
