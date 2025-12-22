@@ -35,8 +35,6 @@ internal sealed partial class RepoViewModel : ObservableObject
         this.RepoInfo = repoInfo;
         this.repoService = repoService;
         this.dialogService = dialogService;
-
-        MainWindow.Instance.Title = this.RepoInfo.Name;
     }
 
     private void QueryChanged(string query)

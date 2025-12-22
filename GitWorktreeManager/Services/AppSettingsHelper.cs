@@ -3,6 +3,7 @@
 using GitWorktreeManager.ViewModel;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 
@@ -16,19 +17,18 @@ internal static class AppSettingsHelper
         set => AppSettings[nameof(RecentlyOpenedRepos)] = string.Join(",", value);
     }
 
-    public static RepoInfo[] GetRecentlyOpenedRepos()
+    public static async Task<RepoInfo[]> GetRecentlyOpenedRepos()
     {
-        return RecentlyOpenedRepos
-            .Select(x => new RepoInfo(x))
-            .ToArray();
+        return await Task.Run(() => RecentlyOpenedRepos
+            .Select(static x => new RepoInfo(x))
+            .ToArray());
+
     }
 
-    public static void SaveRecentlyOpenedRepo(RepoInfo repoInfo)
+    public static async Task SaveRecentlyOpenedRepos(RepoInfo[] repos)
     {
-        RecentlyOpenedRepos = RecentlyOpenedRepos
-            .Prepend(repoInfo.Path)
-            .Take(5)
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToArray();
+        await Task.Run(() => RecentlyOpenedRepos = repos
+            .Select(static x => x.Path)
+            .ToArray());
     }
 }

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using GitWorktreeManager.Services;
 using GitWorktreeManager.Services.Abstractions;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 [ObservableObject]
@@ -22,7 +23,20 @@ internal partial class MainViewModel
     public MainViewModel()
     {
         this.dialogService = new DialogService();
-        //this.RecentlyOpenedRepos = AppSettingsHelper.GetRecentlyOpenedRepos();
+    }
+
+    public async Task Initialize()
+    {
+        var recentlyOpenedRepos = await Task.Run(() => AppSettingsHelper.GetRecentlyOpenedRepos());
+        foreach (var repoInfo in recentlyOpenedRepos)
+        {
+            var repo = new RepoViewModel(repoInfo, new RepoService(repoInfo.Path), this.dialogService);
+            _ = repo.RefreshWithFetch();
+
+            this.Repos.Add(repo);
+        }
+
+        this.SelectedRepo = this.Repos.LastOrDefault();
     }
 
     public async Task OpenRepo(RepoInfo? repoInfo)
@@ -45,6 +59,6 @@ internal partial class MainViewModel
         this.Repos.Add(repo);
         this.SelectedRepo = repo;
 
-        //AppSettingsHelper.SaveRecentlyOpenedRepo(repoInfo);
+        await AppSettingsHelper.SaveRecentlyOpenedRepos(this.Repos.Select(static r => r.RepoInfo).ToArray());
     }
 }

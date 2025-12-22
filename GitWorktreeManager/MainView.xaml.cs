@@ -17,5 +17,6 @@ internal sealed partial class MainView : UserControl
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         MainWindow.Instance.SetTitleBar(this.TitleBarDragRegion);
+        _ = VM.Initialize();
     }
 }
