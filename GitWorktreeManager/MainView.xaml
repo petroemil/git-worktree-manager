@@ -5,7 +5,8 @@
     xmlns:behaviors="using:GitWorktreeManager.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="using:GitWorktreeManager.ViewModel"
+    xmlns:vm="using:GitWorktreeManager.ViewModel" 
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -24,6 +25,7 @@
 
             <behaviors:NullToBoolConverter x:Key="NullToBoolConverter" />
             <behaviors:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            <behaviors:NonRecyclingDataTemplateResolver x:Key="NonRecyclingDataTemplateResolver" DataTemplate="{StaticResource RepoTemplate}" />
 
             <x:String x:Key="OpenFolderIcon">&#xE8B7;</x:String>
             <x:String x:Key="HistoryIcon">&#xE81C;</x:String>
@@ -417,6 +419,9 @@
             <TabView.TabStripFooter>
                 <Border x:Name="TitleBarDragRegion" MinWidth="150" />
             </TabView.TabStripFooter>
+            <i:Interaction.Behaviors>
+                <behaviors:TabViewCloseTabCommandBehavior CloseCommand="{x:Bind VM.CloseRepoCommand}" />
+            </i:Interaction.Behaviors>
         </TabView>
         <Border Grid.Row="1" Background="{ThemeResource SolidBackgroundFillColorTertiaryBrush}">
             <ContentControl
@@ -424,8 +429,7 @@
                 VerticalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Stretch"
-                Content="{x:Bind VM.SelectedRepo, Mode=OneWay}"
-                ContentTemplate="{StaticResource RepoTemplate}"
+                Content="{x:Bind VM.SelectedRepo, Mode=OneWay, Converter={StaticResource NonRecyclingDataTemplateResolver}}"
                 Visibility="{x:Bind VM.SelectedRepo, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}" />
         </Border>
     </Grid>
