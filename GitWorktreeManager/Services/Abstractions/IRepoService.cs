@@ -1,11 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace GitWorktreeManager.Services.Abstractions;
 
 internal interface IRepoService
 {
     /// <inheritdoc cref="GitApi.Fetch" />
-    Task Fetch();
+    Task Fetch(TimeSpan? timeout = null);
 
     /// <inheritdoc cref="GitApi.ListBranchesAsync" />
     Task<ListBranchesResult> ListBranchesAsync();

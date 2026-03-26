@@ -8,8 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-[ObservableObject]
-internal partial class MainViewModel
+internal partial class MainViewModel : ObservableObject
 {
     private readonly IDialogService dialogService;
 
@@ -18,11 +17,13 @@ internal partial class MainViewModel
     [ObservableProperty]
     public partial RepoViewModel? SelectedRepo { get; set; }
 
-    public IAsyncRelayCommand<RepoInfo?> OpenRepoCommand => CommandHelper.CreateCommand<RepoInfo?>(OpenRepo);
+    public IAsyncRelayCommand<RepoInfo?> OpenRepoCommand { get; }
 
     public MainViewModel()
     {
         this.dialogService = new DialogService();
+
+        this.OpenRepoCommand = CommandHelper.CreateCommand<RepoInfo?>(OpenRepo);
     }
 
     public async Task Initialize()
@@ -31,7 +32,7 @@ internal partial class MainViewModel
         foreach (var repoInfo in recentlyOpenedRepos)
         {
             var repo = new RepoViewModel(repoInfo, new RepoService(repoInfo.Path), this.dialogService);
-            _ = repo.RefreshWithFetch();
+            repo.RefreshCommand.Execute(null);
 
             this.Repos.Add(repo);
         }
@@ -54,7 +55,7 @@ internal partial class MainViewModel
         }
 
         var repo = new RepoViewModel(repoInfo, new RepoService(repoInfo.Path), this.dialogService);
-        _ = repo.RefreshWithFetch();
+        repo.RefreshCommand.Execute(null);
 
         this.Repos.Add(repo);
         this.SelectedRepo = repo;

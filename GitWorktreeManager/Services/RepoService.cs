@@ -18,9 +18,9 @@ internal sealed class RepoService : IRepoService
         this.gitApi = new(workingDir);
     }
 
-    public async Task Fetch()
+    public async Task Fetch(TimeSpan? timeout = null)
     {
-        await this.gitApi.Fetch();
+        await this.gitApi.Fetch(timeout);
     }
 
     public async Task AddWorktreeBasedOnLocalBranch(string newBranch, string baseBranch)

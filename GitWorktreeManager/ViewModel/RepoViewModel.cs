@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GitWorktreeManager.Behaviors;
 using GitWorktreeManager.Services.Abstractions;
+using System;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -27,14 +28,17 @@ internal sealed partial class RepoViewModel : ObservableObject
 
     private string mostRecentQuery = string.Empty;
 
-    public IAsyncRelayCommand RefreshCommand => CommandHelper.CreateCommand(RefreshWithFetch);
-    public IAsyncRelayCommand<string> QueryChangedCommand => CommandHelper.CreateCommand<string>(QueryChanged);
+    public IAsyncRelayCommand RefreshCommand { get; }
+    public IAsyncRelayCommand<string> QueryChangedCommand { get; }
 
     public RepoViewModel(RepoInfo repoInfo, IRepoService repoService, IDialogService dialogService)
-    {   
+    {
         this.RepoInfo = repoInfo;
         this.repoService = repoService;
         this.dialogService = dialogService;
+
+        this.RefreshCommand = CommandHelper.CreateCommand(RefreshWithFetch);
+        this.QueryChangedCommand = CommandHelper.CreateCommand<string>(QueryChanged);
     }
 
     private void QueryChanged(string query)
@@ -49,9 +53,10 @@ internal sealed partial class RepoViewModel : ObservableObject
         }
     }
 
-    public async Task RefreshWithFetch()
+    private async Task RefreshWithFetch()
     {
-        await this.repoService.Fetch();
+        await this.Refresh();
+        await this.repoService.Fetch(TimeSpan.FromSeconds(10));
         await this.Refresh();
     }
 
