@@ -31,14 +31,17 @@ internal sealed partial class RepoViewModel : ObservableObject
     public IAsyncRelayCommand RefreshCommand { get; }
     public IAsyncRelayCommand<string> QueryChangedCommand { get; }
 
+    [ObservableProperty]
+    public partial ErrorInfo? Error { get; private set; }
+
     public RepoViewModel(RepoInfo repoInfo, IRepoService repoService, IDialogService dialogService)
     {
         this.RepoInfo = repoInfo;
         this.repoService = repoService;
         this.dialogService = dialogService;
 
-        this.RefreshCommand = CommandHelper.CreateCommand(RefreshWithFetch);
-        this.QueryChangedCommand = CommandHelper.CreateCommand<string>(QueryChanged);
+        this.RefreshCommand = CreateCommand(RefreshWithFetch);
+        this.QueryChangedCommand = CreateCommand<string>(QueryChanged);
     }
 
     private void QueryChanged(string query)
@@ -67,5 +70,11 @@ internal sealed partial class RepoViewModel : ObservableObject
         this.branches = Helpers.CreateBranchVms(branches, this, this.repoService, this.dialogService);
 
         QueryChanged(this.mostRecentQuery);
+    }
+
+    [RelayCommand]
+    private void DismissError()
+    {
+        this.Error = null;
     }
 }
