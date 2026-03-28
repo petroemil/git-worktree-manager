@@ -17,6 +17,6 @@ internal sealed partial class MainWindow : Window
 
         this.SetTransparentTitlebar();
         this.SetAppIcon();
-        this.SetSize(750, 1000);
+        this.SetSize(1000, 1500);
     }
 }

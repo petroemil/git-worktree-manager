@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.System;
 
@@ -18,9 +19,9 @@ internal sealed class RepoService : IRepoService
         this.gitApi = new(workingDir);
     }
 
-    public async Task Fetch()
+    public async Task Fetch(CancellationToken cancellationToken)
     {
-        await this.gitApi.Fetch();
+        await this.gitApi.Fetch(cancellationToken);
     }
 
     public async Task AddWorktreeBasedOnLocalBranch(string newBranch, string baseBranch)

@@ -11,10 +11,10 @@ internal partial class MainViewModel : ObservableObject
     private readonly IDialogService dialogService;
 
     [ObservableProperty]
-    private RepoViewModel? repo;
+    public partial RepoViewModel? Repo { get; private set; }
 
     [ObservableProperty]
-    private RepoInfo[] recentlyOpenedRepos;
+    public partial RepoInfo[] RecentlyOpenedRepos { get; private set; }
 
     public IAsyncRelayCommand<RepoInfo?> OpenRepoCommand => CommandHelper.CreateCommand<RepoInfo?>(OpenRepo);
 
@@ -39,7 +39,7 @@ internal partial class MainViewModel : ObservableObject
         }
 
         var repo = new RepoViewModel(repoInfo, new RepoService(repoInfo.Path), this.dialogService);
-        await repo.RefreshWithFetch();
+        repo.RefreshCommand.Execute(null);
 
         this.Repo = repo;
 

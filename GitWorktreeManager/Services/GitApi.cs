@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 internal sealed class GitException : Exception
@@ -28,9 +29,9 @@ internal sealed partial class GitApi
         };
     }
 
-    private async Task<string> RunCommand(string command)
+    private async Task<string> RunCommand(string command, CancellationToken cancellationToken = default)
     {
-        var process = Process.Start(new ProcessStartInfo
+        using var process = Process.Start(new ProcessStartInfo
         {
             CreateNoWindow = true,
             UseShellExecute = false,
@@ -41,11 +42,11 @@ internal sealed partial class GitApi
             WorkingDirectory = this.helpers.RootPath
         });
 
-        var output = await process!.StandardOutput.ReadToEndAsync();
+        var output = await process!.StandardOutput.ReadToEndAsync(cancellationToken);
 
-        var error = await process!.StandardError.ReadToEndAsync();
+        var error = await process!.StandardError.ReadToEndAsync(cancellationToken);
 
-        await process.WaitForExitAsync();
+        await process.WaitForExitAsync(cancellationToken);
         if (process.ExitCode is not 0)
         {
             throw new GitException($"Git command terminated with error code: {process.ExitCode}")
@@ -59,8 +60,8 @@ internal sealed partial class GitApi
         return output;
     }
 
-    private async Task RunCommandNoResponse(string command)
-        => _ = await RunCommand(command);
+    private async Task RunCommandNoResponse(string command, CancellationToken cancellationToken = default)
+        => _ = await RunCommand(command, cancellationToken);
 
     private async Task<TResult> RunCommandProcessResponse<TResult>(string command, Func<string, TResult> resultProcessor)
     {
@@ -125,8 +126,8 @@ internal sealed partial class GitApi
     /// <summary>
     /// <code>git fetch</code>
     /// </summary>
-    public async Task Fetch()
+    public async Task Fetch(CancellationToken cancellationToken)
     {
-        await RunCommandNoResponse(helpers.Fetch_CreateCommand());
+        await RunCommandNoResponse(helpers.Fetch_CreateCommand(), cancellationToken);
     }
 }
