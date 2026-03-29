@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 internal partial class MainViewModel : ObservableObject
 {
+    public static MainViewModel Instance => field ?? new();
+
     private readonly IDialogService dialogService;
 
     [ObservableProperty]
@@ -18,7 +20,7 @@ internal partial class MainViewModel : ObservableObject
 
     public IAsyncRelayCommand<RepoInfo?> OpenRepoCommand => CommandHelper.CreateCommand<RepoInfo?>(OpenRepo);
 
-    public MainViewModel()
+    private MainViewModel()
     {
         this.dialogService = new DialogService();
         this.RecentlyOpenedRepos = AppSettingsHelper.GetRecentlyOpenedRepos();
