@@ -479,6 +479,31 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+
+            <Border
+                Grid.Row="1"
+                Margin="0,0,0,10"
+                VerticalAlignment="Bottom"
+                Background="{ThemeResource SystemFillColorCriticalBackgroundBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="5"
+                Visibility="{x:Bind VM.Error, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}">
+                <Grid>
+                    <StackPanel Margin="10" Spacing="10">
+                        <TextBlock FontWeight="Bold" Text="{x:Bind VM.Error.Title, Mode=OneWay}" />
+                        <TextBlock Text="{x:Bind VM.Error.Description, Mode=OneWay}" TextWrapping="WrapWholeWords" />
+                    </StackPanel>
+                    <Button
+                        Margin="5"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Command="{x:Bind VM.DismissErrorCommand}"
+                        Style="{StaticResource SubtleButtonStyle}">
+                        <SymbolIcon Symbol="Clear" />
+                    </Button>
+                </Grid>
+            </Border>
         </Grid>
 
         <ContentControl

@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Media;
 
 internal sealed partial class MainWindow : Window
 {
-    public static MainWindow Instance => field ??= new MainWindow { Title = "Branch Manager" };
+    public static MainWindow Instance => field ??= new() { Title = "Branch Manager" };
 
     private MainWindow()
     {

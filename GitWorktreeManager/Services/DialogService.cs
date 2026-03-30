@@ -9,38 +9,6 @@ using Windows.Storage.Pickers;
 
 internal class DialogService : IDialogService
 {
-    public async Task ShowErrorAsync(Exception exception)
-    {
-        static async Task ShowAsync(string title, string details)
-        {
-            var dialog = new ContentDialog
-            {
-                // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
-                XamlRoot = MainWindow.Instance.Content.XamlRoot,
-
-                Title = title,
-                Content = details,
-                CloseButtonText = "Ok"
-            };
-
-            await dialog.ShowAsync();
-        }
-
-        if (exception is GitException gitException)
-        {
-            await ShowAsync(
-                $"Git Error ({gitException.ExitCode})", 
-                $"git {gitException.Command}"
-                + Environment.NewLine
-                + Environment.NewLine
-                + gitException.Error);
-        }
-        else
-        {
-            await ShowAsync(exception.GetType().Name, exception.Message);
-        }
-    }
-
     public async Task<string?> ShowNewBranchDialogAsync(string baseBranch)
     {
         var dialog = new NewBranchContentDialog(baseBranch);
