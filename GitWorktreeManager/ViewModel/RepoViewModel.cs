@@ -66,7 +66,7 @@ internal sealed partial class RepoViewModel : ObservableObject
         }
     }
 
-    private async Task RefreshWithFetch()
+    public async Task RefreshWithFetch()
     {
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
 

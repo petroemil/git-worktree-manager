@@ -41,7 +41,7 @@ internal partial class MainViewModel : ObservableObject
         }
 
         var repo = new RepoViewModel(repoInfo, new RepoService(repoInfo.Path), this.dialogService);
-        repo.RefreshCommand.Execute(null);
+        await repo.RefreshWithFetch();
 
         this.Repo = repo;
 
