@@ -90,9 +90,4 @@ internal sealed class RepoService : IRepoService
             await Launcher.LaunchUriAsync(new Uri(sln));
         }
     }
-
-    public async Task<ImmutableList<string>> ListVisualStudioSolutionFiles(string path)
-    {
-        return Directory.EnumerateFiles(Path.GetFullPath(path), "*.sln").ToImmutableList();
-    }
 }
