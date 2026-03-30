@@ -84,7 +84,10 @@ internal sealed class RepoService : IRepoService
 
     public async Task OpenVisualStudio(string path)
     {
-        var sln = Directory.EnumerateFiles(Path.GetFullPath(path), "*.sln").FirstOrDefault();
+        var sln = Directory.EnumerateFiles(Path.GetFullPath(path)).FirstOrDefault(path => 
+            path.EndsWith(".sln", StringComparison.OrdinalIgnoreCase)
+            || path.EndsWith(".slnx", StringComparison.OrdinalIgnoreCase));
+
         if (sln is not null)
         {
             await Launcher.LaunchUriAsync(new Uri(sln));
