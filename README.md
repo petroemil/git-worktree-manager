@@ -10,4 +10,4 @@ Git worktree allows checking out branches into their own folders instead of chec
 
 With this easy-to-use app you can
 - Create a worktree for or based on any local or remote branch
-- Quickly open the branch's root folder in Explorer, Terminal, Visual Studio Code or open the `.sln` file in Visual Studio
+- Quickly open the branch's root folder in Explorer, Terminal, Visual Studio Code or open the `.sln` / `.slnx` file in Visual Studio
