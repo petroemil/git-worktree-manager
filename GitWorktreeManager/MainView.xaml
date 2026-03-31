@@ -423,7 +423,7 @@
         </Grid.RowDefinitions>
 
         <TitleBar
-            Title="{x:Bind VM.Repo.RepoInfo.Name, Mode=OneWay, FallbackValue='Branch Manager'}"
+            Title="{x:Bind VM.Repo.RepoInfo.Name, Mode=OneWay, FallbackValue='Git Worktree Manager'}"
             Grid.Row="0"
             Margin="-10,-10,-10,10">
             <TitleBar.IconSource>
