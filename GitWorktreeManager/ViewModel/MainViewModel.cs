@@ -6,7 +6,7 @@ using GitWorktreeManager.Services;
 using GitWorktreeManager.Services.Abstractions;
 using System.Threading.Tasks;
 
-internal sealed partial class MainViewModel : ObservableObject
+internal sealed partial class MainViewModel : ViewModelBase
 {
     public static MainViewModel Instance => field ??= new();
 
@@ -18,9 +18,6 @@ internal sealed partial class MainViewModel : ObservableObject
     [ObservableProperty]
     public partial RepoViewModel? Repo { get; private set; }
 
-    [ObservableProperty]
-    public partial ErrorInfo? Error { get; private set; }
-
     public IAsyncRelayCommand<RepoInfo?> OpenRepoCommand { get; }
 
     private MainViewModel()
@@ -29,12 +26,6 @@ internal sealed partial class MainViewModel : ObservableObject
         this.RecentlyOpenedRepos = AppSettingsHelper.GetRecentlyOpenedRepos();
 
         this.OpenRepoCommand = CreateCommand<RepoInfo?>(OpenRepo);
-    }
-
-    [RelayCommand]
-    private void DismissError()
-    {
-        this.Error = null;
     }
 
     public async Task OpenRepo(RepoInfo? repoInfo)

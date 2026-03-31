@@ -1,6 +1,5 @@
 ﻿namespace GitWorktreeManager.ViewModel;
 
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GitWorktreeManager.Behaviors;
 using GitWorktreeManager.Services.Abstractions;
@@ -22,7 +21,7 @@ internal sealed class ErrorInfo
     public required string Description { get; init; }
 }
 
-internal sealed partial class RepoViewModel : ObservableObject
+internal sealed partial class RepoViewModel : ViewModelBase
 {
     private readonly IRepoService repoService;
     private readonly IDialogService dialogService;
@@ -38,9 +37,6 @@ internal sealed partial class RepoViewModel : ObservableObject
     public IAsyncRelayCommand RefreshCommand { get; }
 
     public IAsyncRelayCommand<string> QueryChangedCommand { get; }
-
-    [ObservableProperty]
-    public partial ErrorInfo? Error { get; private set; }
 
     public RepoViewModel(RepoInfo repoInfo, IRepoService repoService, IDialogService dialogService)
     {   
@@ -82,11 +78,5 @@ internal sealed partial class RepoViewModel : ObservableObject
         this.branches = Helpers.CreateBranchVms(branches, this, this.repoService, this.dialogService);
 
         QueryChanged(this.mostRecentQuery);
-    }
-
-    [RelayCommand]
-    private void DismissError()
-    {
-        this.Error = null;
     }
 }
