@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.System;
 
@@ -18,9 +19,9 @@ internal sealed class RepoService : IRepoService
         this.gitApi = new(workingDir);
     }
 
-    public async Task Fetch()
+    public async Task Fetch(CancellationToken cancellationToken)
     {
-        await this.gitApi.Fetch();
+        await this.gitApi.Fetch(cancellationToken);
     }
 
     public async Task AddWorktreeBasedOnLocalBranch(string newBranch, string baseBranch)
@@ -83,15 +84,13 @@ internal sealed class RepoService : IRepoService
 
     public async Task OpenVisualStudio(string path)
     {
-        var sln = Directory.EnumerateFiles(Path.GetFullPath(path), "*.sln").FirstOrDefault();
+        var sln = Directory.EnumerateFiles(Path.GetFullPath(path)).FirstOrDefault(path => 
+            path.EndsWith(".sln", StringComparison.OrdinalIgnoreCase)
+            || path.EndsWith(".slnx", StringComparison.OrdinalIgnoreCase));
+
         if (sln is not null)
         {
             await Launcher.LaunchUriAsync(new Uri(sln));
         }
-    }
-
-    public async Task<ImmutableList<string>> ListVisualStudioSolutionFiles(string path)
-    {
-        return Directory.EnumerateFiles(Path.GetFullPath(path), "*.sln").ToImmutableList();
     }
 }

@@ -31,7 +31,7 @@ internal abstract class BranchViewModel : IEquatable<BranchViewModel?>
         this.repoService = repoService;
         this.dialogService = dialogService;
 
-        this.CreateWorktreeFromBranchCommand = CommandHelper.CreateCommand(this.CreateWorktreeFromBranch);
+        this.CreateWorktreeFromBranchCommand = repoVm.CreateCommand(this.CreateWorktreeFromBranch);
     }
 
     protected virtual async Task CreateWorktreeFromBranch()
@@ -85,10 +85,10 @@ internal abstract class BranchWithWorktreeViewModel : BranchViewModel, IEquatabl
     protected BranchWithWorktreeViewModel(RepoViewModel repoVm, IRepoService repoService, IDialogService dialogService)
         : base(repoVm, repoService, dialogService)
     {
-        this.OpenFolderCommand = CommandHelper.CreateCommand(this.OpenFolder);
-        this.OpenTerminalCommand = CommandHelper.CreateCommand(this.OpenTerminal);
-        this.OpenVisualStudioCodeCommand = CommandHelper.CreateCommand(this.OpenVisualStudioCode);
-        this.OpenVisualStudioCommand = CommandHelper.CreateCommand(this.OpenVisualStudio);
+        this.OpenFolderCommand = repoVm.CreateCommand(this.OpenFolder);
+        this.OpenTerminalCommand = repoVm.CreateCommand(this.OpenTerminal);
+        this.OpenVisualStudioCodeCommand = repoVm.CreateCommand(this.OpenVisualStudioCode);
+        this.OpenVisualStudioCommand = repoVm.CreateCommand(this.OpenVisualStudio);
     }
 
     private async Task OpenFolder()
@@ -162,7 +162,7 @@ internal sealed class LocalBranchWithWorktreeViewModel : BranchWithWorktreeViewM
     public LocalBranchWithWorktreeViewModel(RepoViewModel repoVm, IRepoService repoService, IDialogService dialogService)
     : base(repoVm, repoService, dialogService)
     {
-        this.RemoveCommand = CommandHelper.CreateCommand(this.Remove);
+        this.RemoveCommand = repoVm.CreateCommand(this.Remove);
     }
 
     private async Task Remove()
@@ -195,7 +195,7 @@ internal abstract class BranchWithoutWorktreeViewModel : BranchViewModel, IEquat
     public BranchWithoutWorktreeViewModel(RepoViewModel repoVm, IRepoService repoService, IDialogService dialogService)
         : base(repoVm, repoService, dialogService)
     {
-        CreateWorktreeForBranchCommand = CommandHelper.CreateCommand(this.CreateWorktreeForBranch);
+        CreateWorktreeForBranchCommand = repoVm.CreateCommand(this.CreateWorktreeForBranch);
     }
 
     protected abstract Task CreateWorktreeForBranch();

@@ -1,11 +1,12 @@
 ﻿namespace GitWorktreeManager.ViewModel;
 
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GitWorktreeManager.Behaviors;
 using GitWorktreeManager.Services.Abstractions;
+using System;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 
 internal sealed class RepoInfo(string path)
@@ -14,7 +15,13 @@ internal sealed class RepoInfo(string path)
     public string Path { get; } = System.IO.Path.GetFullPath(path);
 }
 
-internal sealed partial class RepoViewModel : ObservableObject
+internal sealed class ErrorInfo
+{
+    public required string Title { get; init; }
+    public required string Description { get; init; }
+}
+
+internal sealed partial class RepoViewModel : ViewModelBase
 {
     private readonly IRepoService repoService;
     private readonly IDialogService dialogService;
@@ -27,14 +34,18 @@ internal sealed partial class RepoViewModel : ObservableObject
 
     private string mostRecentQuery = string.Empty;
 
-    public IAsyncRelayCommand RefreshCommand => CommandHelper.CreateCommand(RefreshWithFetch);
-    public IAsyncRelayCommand<string> QueryChangedCommand => CommandHelper.CreateCommand<string>(QueryChanged);
+    public IAsyncRelayCommand RefreshCommand { get; }
+
+    public IAsyncRelayCommand<string> QueryChangedCommand { get; }
 
     public RepoViewModel(RepoInfo repoInfo, IRepoService repoService, IDialogService dialogService)
     {   
         this.RepoInfo = repoInfo;
         this.repoService = repoService;
         this.dialogService = dialogService;
+
+        this.RefreshCommand = CreateCommand(RefreshWithFetch);
+        this.QueryChangedCommand = CreateCommand<string>(QueryChanged);
 
         MainWindow.Instance.Title = this.RepoInfo.Name;
     }
@@ -53,7 +64,10 @@ internal sealed partial class RepoViewModel : ObservableObject
 
     public async Task RefreshWithFetch()
     {
-        await this.repoService.Fetch();
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+
+        await this.Refresh();
+        await this.repoService.Fetch(cts.Token);
         await this.Refresh();
     }
 

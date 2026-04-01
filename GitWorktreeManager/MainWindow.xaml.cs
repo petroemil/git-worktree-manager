@@ -6,8 +6,7 @@ using Microsoft.UI.Xaml.Media;
 
 internal sealed partial class MainWindow : Window
 {
-    private static MainWindow? instance;
-    public static MainWindow Instance => instance ??= new MainWindow { Title = "Branch Manager" };
+    public static MainWindow Instance => field ??= new() { Title = "Git Worktree Manager" };
 
     private MainWindow()
     {
@@ -17,6 +16,6 @@ internal sealed partial class MainWindow : Window
 
         this.SetTransparentTitlebar();
         this.SetAppIcon();
-        this.SetSize(750, 1000);
+        this.SetSize(1000, 1500);
     }
 }
