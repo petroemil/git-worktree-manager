@@ -162,9 +162,12 @@ internal sealed partial class GitApi
 
         private string CreateWorktreePath(string branch)
         {
-            var tempPath = Path.Combine(this.RootPath, this.WorktreeRootRelativePath, branch);
-            var path = Path.GetFullPath(tempPath);
-            return path;
+            var repositoryPath = Path.TrimEndingDirectorySeparator(Path.GetFullPath(this.RootPath));
+            var repositoryParentPath = Directory.GetParent(repositoryPath)?.FullName
+                ?? throw new InvalidOperationException($"The repository path '{repositoryPath}' does not have a parent directory.");
+            var repositoryName = Path.GetFileName(repositoryPath);
+
+            return Path.Combine(repositoryParentPath, this.WorktreeRootRelativePath, repositoryName, branch);
         }
     }
 }
