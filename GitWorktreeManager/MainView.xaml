@@ -22,6 +22,7 @@
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 
+            <behaviors:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <behaviors:NullToBoolConverter x:Key="NullToBoolConverter" />
             <behaviors:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
 
@@ -85,13 +86,23 @@
                             behaviors:TextChangedCommandBehavior.TextChangedCommand="{x:Bind QueryChangedCommand, Mode=OneWay}"
                             PlaceholderText="Find branch" />
 
-                        <Button
-                            Grid.Column="1"
-                            Margin="5,0"
-                            Command="{x:Bind RefreshCommand, Mode=OneWay}"
-                            ToolTipService.ToolTip="Refresh">
-                            <SymbolIcon Symbol="Refresh" />
-                        </Button>
+                        <Grid Grid.Column="1">
+                            <Button
+                                Margin="5,0"
+                                Command="{x:Bind RefreshCommand, Mode=OneWay}"
+                                ToolTipService.ToolTip="Refresh"
+                                Visibility="{x:Bind RefreshCommand.IsRunning, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Invert}">
+                                <SymbolIcon Symbol="Refresh" />
+                            </Button>
+
+                            <Button
+                                Margin="5,0"
+                                Command="{x:Bind StopRefreshCommand, Mode=OneWay}"
+                                ToolTipService.ToolTip="Stop"
+                                Visibility="{x:Bind RefreshCommand.IsRunning, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <SymbolIcon Symbol="Cancel" />
+                            </Button>
+                        </Grid>
 
                     </Grid>
 

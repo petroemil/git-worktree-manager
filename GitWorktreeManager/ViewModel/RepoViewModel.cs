@@ -3,7 +3,6 @@
 using CommunityToolkit.Mvvm.Input;
 using GitWorktreeManager.Behaviors;
 using GitWorktreeManager.Services.Abstractions;
-using System;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Threading;
@@ -36,6 +35,8 @@ internal sealed partial class RepoViewModel : ViewModelBase
 
     public IAsyncRelayCommand RefreshCommand { get; }
 
+    public IRelayCommand StopRefreshCommand { get; }
+
     public IAsyncRelayCommand<string> QueryChangedCommand { get; }
 
     public RepoViewModel(RepoInfo repoInfo, IRepoService repoService, IDialogService dialogService)
@@ -45,6 +46,7 @@ internal sealed partial class RepoViewModel : ViewModelBase
         this.dialogService = dialogService;
 
         this.RefreshCommand = CreateCommand(RefreshWithFetch);
+        this.StopRefreshCommand = new RelayCommand(this.RefreshCommand.Cancel);
         this.QueryChangedCommand = CreateCommand<string>(QueryChanged);
 
         MainWindow.Instance.Title = this.RepoInfo.Name;
@@ -62,12 +64,10 @@ internal sealed partial class RepoViewModel : ViewModelBase
         }
     }
 
-    public async Task RefreshWithFetch()
+    public async Task RefreshWithFetch(CancellationToken cancellationToken)
     {
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-
         await this.Refresh();
-        await this.repoService.Fetch(cts.Token);
+        await this.repoService.Fetch(cancellationToken);
         await this.Refresh();
     }
 

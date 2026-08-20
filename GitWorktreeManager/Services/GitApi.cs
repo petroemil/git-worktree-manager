@@ -31,22 +31,42 @@ internal sealed partial class GitApi
 
     private async Task<string> RunCommand(string command, CancellationToken cancellationToken = default)
     {
-        using var process = Process.Start(new ProcessStartInfo
-        {
-            CreateNoWindow = true,
-            UseShellExecute = false,
-            RedirectStandardError = true,
-            RedirectStandardOutput = true,
-            FileName = "cmd",
-            Arguments = $"/c {command}",
-            WorkingDirectory = this.helpers.RootPath
-        });
+        using var process = Process.Start(
+            new ProcessStartInfo
+            {
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                FileName = "cmd",
+                Arguments = $"/c {command}",
+                WorkingDirectory = this.helpers.RootPath
+            })
+            ?? throw new InvalidOperationException("Failed to start git.");
 
-        var output = await process!.StandardOutput.ReadToEndAsync(cancellationToken);
+        using var cancellationRegistration = cancellationToken.Register(
+            static state =>
+            {
+                var process = (Process)state!;
 
-        var error = await process!.StandardError.ReadToEndAsync(cancellationToken);
+                try
+                {
+                    process.Kill(entireProcessTree: true);
+                }
+                catch (InvalidOperationException)
+                {
+                    // The process completed before cancellation reached it.
+                }
+            },
+            process);
+
+        var output = await process.StandardOutput.ReadToEndAsync(cancellationToken);
+
+        var error = await process.StandardError.ReadToEndAsync(cancellationToken);
 
         await process.WaitForExitAsync(cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
+
         if (process.ExitCode is not 0)
         {
             throw new GitException($"Git command terminated with error code: {process.ExitCode}")

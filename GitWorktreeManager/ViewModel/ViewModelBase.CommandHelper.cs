@@ -3,6 +3,7 @@
 using CommunityToolkit.Mvvm.Input;
 using GitWorktreeManager.Services;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 partial class ViewModelBase
@@ -12,6 +13,9 @@ partial class ViewModelBase
 		try
 		{
 			await asyncFunc();
+		}
+		catch (OperationCanceledException)
+		{
 		}
 		catch (Exception e)
 		{
@@ -58,6 +62,9 @@ partial class ViewModelBase
 
 	public AsyncRelayCommand CreateCommand(Func<Task> asyncFunc)
 		=> new(() => CommandWrapper(asyncFunc));
+
+	public AsyncRelayCommand CreateCommand(Func<CancellationToken, Task> asyncFunc)
+		=> new(cancellationToken => CommandWrapper(() => asyncFunc(cancellationToken)));
 
 	public AsyncRelayCommand<T> CreateCommand<T>(Func<T, Task> asyncFunc)
 		=> new(arg => CommandWrapper(() => asyncFunc(arg)));
